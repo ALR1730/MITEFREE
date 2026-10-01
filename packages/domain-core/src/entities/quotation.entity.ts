@@ -85,6 +85,10 @@ export class QuotationItem {
       }),
     );
   }
+
+  static reconstitute(props: QuotationItemProps): QuotationItem {
+    return new QuotationItem(props);
+  }
 }
 
 export type QuotationStatus = 'Draft' | 'Sent' | 'Confirmed' | 'Expired';
@@ -104,7 +108,7 @@ export class Quotation {
   private constructor(params: {
     id: string;
     clientId: string;
-    items: QuotationItem[];
+    items: readonly QuotationItem[];
     discountAmount: Money;
     subtotal: Money;
     total: Money;
@@ -177,6 +181,21 @@ export class Quotation {
         expiresAt,
       }),
     );
+  }
+
+  static reconstitute(params: {
+    id: string;
+    clientId: string;
+    items: readonly QuotationItem[];
+    discountAmount: Money;
+    subtotal: Money;
+    total: Money;
+    depositRequired: Money;
+    status: QuotationStatus;
+    createdAt: Date;
+    expiresAt: Date;
+  }): Quotation {
+    return new Quotation(params);
   }
 
   isExpired(now: Date = new Date()): boolean {

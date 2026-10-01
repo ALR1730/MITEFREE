@@ -68,6 +68,16 @@ export class Wallet {
     });
   }
 
+  static reconstitute(params: {
+    id: string;
+    userId: string;
+    balance: Money;
+    version: number;
+    transactions: WalletTransaction[];
+  }): Wallet {
+    return new Wallet(params);
+  }
+
   creditCashback(
     transactionId: string,
     amount: Money,

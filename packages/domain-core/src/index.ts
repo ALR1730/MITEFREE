@@ -20,6 +20,6 @@ export * from './entities/appointment.entity.js';
 export * from './entities/wallet.entity.js';
 
 // Repositories (Interfaces)
-export * from './repositories/quotation-repository.interface.js';
-export * from './repositories/appointment-repository.interface.js';
-export * from './repositories/wallet-repository.interface.js';
+export type * from './repositories/quotation-repository.interface.js';
+export type * from './repositories/appointment-repository.interface.js';
+export type * from './repositories/wallet-repository.interface.js';

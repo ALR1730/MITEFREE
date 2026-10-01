@@ -1,0 +1,38 @@
+{
+  "name": "@mitefree/api",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Core Backend WebAPI for MITEFREE enterprise - ALR COMPANY",
+  "author": "Angel Luis Rosario <angelluisrosario12345@gmail.com>",
+  "main": "./src/main.ts",
+  "scripts": {
+    "dev": "bun --watch src/main.ts",
+    "build": "tsc -p tsconfig.build.json",
+    "start": "bun dist/main.js",
+    "test": "vitest run",
+    "test:unit": "vitest run",
+    "type-check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@mitefree/database": "workspace:*",
+    "@mitefree/domain-core": "workspace:*",
+    "@mitefree/shared-types": "workspace:*",
+    "@neondatabase/serverless": "^0.10.4",
+    "@nestjs/common": "^11.0.11",
+    "@nestjs/core": "^11.0.11",
+    "@nestjs/platform-express": "^11.0.11",
+    "@nestjs/swagger": "^11.0.6",
+    "@scalar/nestjs-api-reference": "^1.2.25",
+    "dotenv": "^16.4.7",
+    "drizzle-orm": "^0.39.3",
+    "reflect-metadata": "^0.2.2",
+    "rxjs": "^7.8.2",
+    "zod": "^3.24.2"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.0",
+    "@types/node": "^22.13.1",
+    "typescript": "^5.7.3",
+    "vitest": "^3.0.5"
+  }
+}
