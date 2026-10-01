@@ -20,8 +20,8 @@ Para conocer la especificación técnica completa, consulte el documento maestro
 
 ```bash
 # 1. Clonar el repositorio
-git clone https://github.com/ALR1730/mitefree.git
-cd mitefree
+git clone https://github.com/ALR1730/MITEFREE.git
+cd MITEFREE
 
 # 2. Configurar variables de entorno
 cp .env.example .env

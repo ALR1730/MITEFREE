@@ -35,6 +35,7 @@ Al comenzar cada conversación nueva, el agente debe:
 - **Compañía:** ALR COMPANY (División de Ingeniería de Software)
 - **Perfil de GitHub Oficial:** [github.com/ALR1730](https://github.com/ALR1730)
 - **Repositorios Base de Conocimiento e Implementación:**
+  - 📂 [MITEFREE (GitHub)](https://github.com/ALR1730/MITEFREE): Plataforma enterprise de cotización inteligente (DDD), gestión de citas y fidelización con Clean Architecture.
   - 📂 [RealEstateApp (GitHub)](https://github.com/ALR1730/RealEstateApp): Arquitectura limpia, Onion Architecture, ASP.NET Core MVC, EF Core, ASP.NET Identity, control de roles, UI moderna responsive con dark mode.
   - 📂 [UPS-orion (GitHub)](https://github.com/ALR1730/UPS-orion): Arquitectura en .NET 10, gestión ágil de proyectos y entregables Scrum.
   - 📂 [domino-score (GitHub)](https://github.com/ALR1730/domino-score): Lógica algorítmica de puntuación y cómputo de partidas.
