@@ -1,0 +1,24 @@
+{
+  "name": "MITEFREE — Limpieza & Desinfección Quirúrgica",
+  "short_name": "MITEFREE",
+  "description": "Plataforma enterprise de cotización inteligente, citas y eliminación de ácaros a nivel hospitalario.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#070A11",
+  "theme_color": "#00D4B2",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
