@@ -1,13 +1,15 @@
 # 🏗️ Plan de Implementación Quirúrgica: Esqueleto del Proyecto MITEFREE
+
 > **Organización:** [ALR COMPANY](https://github.com/ALR1730) — División de Ingeniería de Software  
 > **Líder de Proyecto & Founder:** [Angel Luis Rosario](https://github.com/ALR1730)  
 > **Mentor Académico:** Ing. Leonardo  
 > **Versión:** 1.0.0 — Edición "Turing-Grade"  
-> **Estándar:** Clean Architecture · DDD · Turborepo Monorepo · Dual-Stack Architecture  
+> **Estándar:** Clean Architecture · DDD · Turborepo Monorepo · Dual-Stack Architecture
 
 ---
 
 ## 🎯 Objetivo de la Fase
+
 Construir el **esqueleto base (scaffolding industrial)** de la solución MITEFREE con cero deuda técnica, dejando listo un entorno reproducible, compilable y con las fronteras de capas blindadas antes de escribir la lógica de negocio profunda.
 
 ---
@@ -39,6 +41,7 @@ graph TD
 ## 📋 Detalle Quirúrgico de Cada Paso
 
 ### 🔹 Paso 0: Tooling y Configuración Raíz del Monorepo
+
 - **Propósito:** Orquestar el espacio de trabajo monorepo para que múltiples aplicaciones y paquetes compartan dependencias, tipos y caché distribuido.
 - **Archivos a crear:**
   - `package.json` (Root con workspaces: `apps/*`, `packages/*`).
@@ -49,6 +52,7 @@ graph TD
 ---
 
 ### 🔹 Paso 1: Paquetes Compartidos (`packages/`)
+
 Siguiendo la **Regla de Dependencia Absoluta**, estos paquetes son la base sobre la cual se construye todo el software:
 
 1. **`packages/domain-core` (El Núcleo Sagrado):**
@@ -57,7 +61,7 @@ Siguiendo la **Regla de Dependencia Absoluta**, estos paquetes son la base sobre
    - **Enums:** `AppointmentStatus`, `FabricType`, `StainSeverity`, `PaymentType`, `WalletTransactionType`.
    - **Entities Base:** `Quotation`, `Appointment`, `Wallet`, `User`.
    - **Interfaces de Repositorio:** `IQuotationRepository`, `IAppointmentRepository`, `IWalletRepository`.
-   - *Equivalencia .NET:* `Mitefree.Core.Domain` de su repositorio [RealEstateApp](https://github.com/ALR1730/RealEstateApp).
+   - _Equivalencia .NET:_ `Mitefree.Core.Domain` de su repositorio [RealEstateApp](https://github.com/ALR1730/RealEstateApp).
 
 2. **`packages/shared-types` (Contratos de Transferencia):**
    - Schemas de validación en runtime con **Zod**.
@@ -74,11 +78,12 @@ Siguiendo la **Regla de Dependencia Absoluta**, estos paquetes son la base sobre
      - `schema/payments.ts` (`payments`, `invoices`, `webhook_events`)
      - `schema/wallets.ts` (`wallets`, `wallet_transactions`)
    - `drizzle.config.ts` para migraciones automáticas.
-   - *Equivalencia .NET:* `Mitefree.Infrastructure.Persistence` (DbSets y Fluent API).
+   - _Equivalencia .NET:_ `Mitefree.Infrastructure.Persistence` (DbSets y Fluent API).
 
 ---
 
 ### 🔹 Paso 2: Core Backend API (`apps/api`)
+
 - **Tecnología:** NestJS 11+ estructurado bajo **Clean Architecture en capas**:
   - `src/presentation/`:
     - `controllers/`: `HealthController`, `QuotationsController`, `AppointmentsController`, `WalletsController`.
@@ -91,11 +96,12 @@ Siguiendo la **Regla de Dependencia Absoluta**, estos paquetes son la base sobre
   - `src/infrastructure/`:
     - Adaptadores de repositorios implementando las interfaces de `domain-core` usando Drizzle ORM.
     - Stubs / Adaptadores iniciales de storage, payments y notificaciones.
-- *Equivalencia .NET:* `Mitefree.Presentation.WebAPI` + `Mitefree.Core.Application`.
+- _Equivalencia .NET:_ `Mitefree.Presentation.WebAPI` + `Mitefree.Core.Application`.
 
 ---
 
 ### 🔹 Paso 3: Cliente PWA (`apps/pwa-client`)
+
 - **Tecnología:** Next.js 15 (App Router + React Server Components).
 - **Enfoque:** Experiencia móvil de máxima fidelidad (PWA offline-ready).
 - **Rutas clave iniciales:**
@@ -109,6 +115,7 @@ Siguiendo la **Regla de Dependencia Absoluta**, estos paquetes son la base sobre
 ---
 
 ### 🔹 Paso 4: Panel Operativo & Técnicos (`apps/admin-portal`)
+
 - **Tecnología:** Next.js 15 + Tailwind CSS + Modo Oscuro / Claro.
 - **Propósito:** Gestión operativa interna de ALR COMPANY (despacho, finanzas, métricas).
 - **Vistas clave iniciales:**
@@ -121,6 +128,7 @@ Siguiendo la **Regla de Dependencia Absoluta**, estos paquetes son la base sobre
 ---
 
 ### 🔹 Paso 5: Suite de Pruebas y Quality Gate
+
 - **Vitest:**
   - Configuración multirunner ultrarrápida.
   - Primer suite de pruebas unitarias:
@@ -131,6 +139,7 @@ Siguiendo la **Regla de Dependencia Absoluta**, estos paquetes son la base sobre
 ---
 
 ### 🔹 Paso 6: Compilación, Verificación y Push a GitHub
+
 1. Ejecución de `turbo run build` para asegurar que todas las aplicaciones y paquetes compilan sin warnings ni errores.
 2. Comprobación de tipos con `turbo run type-check`.
 3. Verificación de `git status` y creación del commit formal:
@@ -142,6 +151,7 @@ Siguiendo la **Regla de Dependencia Absoluta**, estos paquetes son la base sobre
 ---
 
 ## ⏱️ Estimación de Ejecución
+
 - **Fase A (Tooling + Shared Packages):** ~15 minutos.
 - **Fase B (Core API Scaffolding):** ~15 minutos.
 - **Fase C (PWA Client & Admin Portal Scaffolding):** ~20 minutos.

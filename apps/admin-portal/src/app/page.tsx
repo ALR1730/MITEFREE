@@ -155,10 +155,30 @@ export default function DashboardPage() {
           </h3>
           <div className="space-y-3">
             {[
-              { zone: 'Distrito Nacional', share: '55%', count: '28 citas / sem', color: 'bg-cyan-500' },
-              { zone: 'Santo Domingo Este', share: '25%', count: '13 citas / sem', color: 'bg-indigo-500' },
-              { zone: 'Santo Domingo Oeste', share: '12%', count: '6 citas / sem', color: 'bg-emerald-500' },
-              { zone: 'Santo Domingo Norte', share: '8%', count: '4 citas / sem', color: 'bg-amber-500' },
+              {
+                zone: 'Distrito Nacional',
+                share: '55%',
+                count: '28 citas / sem',
+                color: 'bg-cyan-500',
+              },
+              {
+                zone: 'Santo Domingo Este',
+                share: '25%',
+                count: '13 citas / sem',
+                color: 'bg-indigo-500',
+              },
+              {
+                zone: 'Santo Domingo Oeste',
+                share: '12%',
+                count: '6 citas / sem',
+                color: 'bg-emerald-500',
+              },
+              {
+                zone: 'Santo Domingo Norte',
+                share: '8%',
+                count: '4 citas / sem',
+                color: 'bg-amber-500',
+              },
             ].map((z, idx) => (
               <div key={idx} className="space-y-1">
                 <div className="flex justify-between text-xs">
@@ -234,18 +254,22 @@ export default function DashboardPage() {
                   <td className="py-3.5 text-white font-sans font-semibold">{ord.client}</td>
                   <td className="py-3.5 text-gray-300 font-sans">{ord.zone}</td>
                   <td className="py-3.5 text-gray-400 font-sans max-w-xs truncate">{ord.items}</td>
-                  <td className="py-3.5 text-right font-bold text-white">${ord.total.toFixed(2)}</td>
-                  <td className="py-3.5 text-right font-bold text-emerald-400">${ord.deposit.toFixed(2)}</td>
+                  <td className="py-3.5 text-right font-bold text-white">
+                    ${ord.total.toFixed(2)}
+                  </td>
+                  <td className="py-3.5 text-right font-bold text-emerald-400">
+                    ${ord.deposit.toFixed(2)}
+                  </td>
                   <td className="py-3.5 text-center">
                     <span
                       className={`px-2 py-0.5 rounded text-[10px] font-bold ${
                         ord.status === 'Completada'
                           ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'
                           : ord.status === 'En Ruta'
-                          ? 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 animate-pulse'
-                          : ord.status === 'Confirmada'
-                          ? 'bg-indigo-500/10 text-indigo-400 border border-indigo-500/20'
-                          : 'bg-amber-500/10 text-amber-400 border border-amber-500/20'
+                            ? 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 animate-pulse'
+                            : ord.status === 'Confirmada'
+                              ? 'bg-indigo-500/10 text-indigo-400 border border-indigo-500/20'
+                              : 'bg-amber-500/10 text-amber-400 border border-amber-500/20'
                       }`}
                     >
                       {ord.status}

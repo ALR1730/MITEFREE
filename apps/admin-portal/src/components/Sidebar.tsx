@@ -34,10 +34,16 @@ export function Sidebar() {
           </div>
           <div>
             <div className="flex items-center gap-1.5">
-              <span className="font-extrabold text-base tracking-tight text-white">MITE<span className="text-cyan-400">FREE</span></span>
-              <span className="text-[9px] uppercase font-bold px-1.5 py-0.5 rounded bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">Ops</span>
+              <span className="font-extrabold text-base tracking-tight text-white">
+                MITE<span className="text-cyan-400">FREE</span>
+              </span>
+              <span className="text-[9px] uppercase font-bold px-1.5 py-0.5 rounded bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">
+                Ops
+              </span>
             </div>
-            <p className="text-[10px] text-gray-400 font-mono tracking-tight">ALR COMPANY EXECUTIVE</p>
+            <p className="text-[10px] text-gray-400 font-mono tracking-tight">
+              ALR COMPANY EXECUTIVE
+            </p>
           </div>
         </div>
 
@@ -48,7 +54,8 @@ export function Sidebar() {
           </div>
           {navigation.map((item) => {
             const Icon = item.icon;
-            const isActive = pathname === item.href || (item.href === '/dashboard' && pathname === '/');
+            const isActive =
+              pathname === item.href || (item.href === '/dashboard' && pathname === '/');
             return (
               <Link
                 key={item.name}
@@ -88,7 +95,9 @@ export function Sidebar() {
           </div>
           <div className="overflow-hidden">
             <div className="text-xs font-bold text-white truncate">Angel Luis Rosario</div>
-            <div className="text-[10px] text-gray-500 truncate font-mono">Founder · ALR COMPANY</div>
+            <div className="text-[10px] text-gray-500 truncate font-mono">
+              Founder · ALR COMPANY
+            </div>
           </div>
         </div>
       </div>

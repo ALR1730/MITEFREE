@@ -153,9 +153,7 @@ export class Quotation {
     }
 
     const totalRes =
-      subtotalAcc.amount >= discount.amount
-        ? subtotalAcc.subtract(discount)
-        : ok(Money.zero());
+      subtotalAcc.amount >= discount.amount ? subtotalAcc.subtract(discount) : ok(Money.zero());
 
     if (totalRes.isFailure) return fail(totalRes.error);
     const total = totalRes.value;

@@ -74,9 +74,7 @@ export default function PagosPage() {
   const [payments, setPayments] = useState<PaymentRecord[]>(INITIAL_PAYMENTS);
 
   const handleApprove = (id: string) => {
-    setPayments((prev) =>
-      prev.map((p) => (p.id === id ? { ...p, status: 'RECONCILED' } : p)),
-    );
+    setPayments((prev) => prev.map((p) => (p.id === id ? { ...p, status: 'RECONCILED' } : p)));
   };
 
   const totalReconciled = payments
@@ -121,9 +119,7 @@ export default function PagosPage() {
 
         <div className="admin-card rounded-2xl p-5 border border-admin-border">
           <span className="text-xs font-semibold text-gray-400">Canales Aceptados</span>
-          <div className="text-sm font-bold text-white mt-1">
-            Stripe · BPD · BHD · Banreservas
-          </div>
+          <div className="text-sm font-bold text-white mt-1">Stripe · BPD · BHD · Banreservas</div>
           <span className="text-[11px] text-indigo-400 block mt-1">Idempotencia 100% activa</span>
         </div>
       </div>

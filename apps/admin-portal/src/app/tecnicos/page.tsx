@@ -94,7 +94,8 @@ export default function TecnicosPage() {
             Control de Cuadrillas & Especialistas Técnicos
           </h1>
           <p className="text-xs text-gray-400 mt-0.5">
-            Monitoreo de técnicos certificados, equipos UV-C hospitalarios y liquidación de comisiones.
+            Monitoreo de técnicos certificados, equipos UV-C hospitalarios y liquidación de
+            comisiones.
           </p>
         </div>
         <div className="flex items-center gap-3">
@@ -115,7 +116,11 @@ export default function TecnicosPage() {
             <div className="flex justify-between items-start">
               <div className="flex items-center gap-3">
                 <div className="w-12 h-12 rounded-xl bg-gradient-to-tr from-indigo-600 to-cyan-500 text-white font-extrabold text-base flex items-center justify-center shadow-md">
-                  {sq.name.split(' ').map((n) => n[0]).slice(0, 2).join('')}
+                  {sq.name
+                    .split(' ')
+                    .map((n) => n[0])
+                    .slice(0, 2)
+                    .join('')}
                 </div>
                 <div>
                   <div className="flex items-center gap-2">
@@ -127,7 +132,9 @@ export default function TecnicosPage() {
                   <div className="flex items-center gap-1.5 text-xs text-amber-400 mt-0.5">
                     <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
                     <span className="font-bold">{sq.rating}</span>
-                    <span className="text-gray-500">({sq.completedJobs} servicios completados)</span>
+                    <span className="text-gray-500">
+                      ({sq.completedJobs} servicios completados)
+                    </span>
                   </div>
                 </div>
               </div>
@@ -137,11 +144,15 @@ export default function TecnicosPage() {
                   sq.status === 'ON_ROUTE'
                     ? 'bg-cyan-500/15 text-cyan-400 border border-cyan-500/30 animate-pulse'
                     : sq.status === 'ACTIVE'
-                    ? 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/30'
-                    : 'bg-gray-500/15 text-gray-400 border border-gray-500/30'
+                      ? 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/30'
+                      : 'bg-gray-500/15 text-gray-400 border border-gray-500/30'
                 }`}
               >
-                {sq.status === 'ON_ROUTE' ? 'En Ruta (GPS)' : sq.status === 'ACTIVE' ? 'Disponible' : 'Inactivo'}
+                {sq.status === 'ON_ROUTE'
+                  ? 'En Ruta (GPS)'
+                  : sq.status === 'ACTIVE'
+                    ? 'Disponible'
+                    : 'Inactivo'}
               </span>
             </div>
 
@@ -149,15 +160,21 @@ export default function TecnicosPage() {
             <div className="space-y-2 text-xs text-gray-300 border-t border-admin-border/50 pt-3">
               <div className="flex items-center gap-2">
                 <MapPin className="w-4 h-4 text-cyan-400 shrink-0" />
-                <span>Zona: <strong className="text-white">{sq.zone}</strong></span>
+                <span>
+                  Zona: <strong className="text-white">{sq.zone}</strong>
+                </span>
               </div>
               <div className="flex items-center gap-2">
                 <Truck className="w-4 h-4 text-indigo-400 shrink-0" />
-                <span>Vehículo: <strong className="text-white font-mono">{sq.vehiclePlate}</strong></span>
+                <span>
+                  Vehículo: <strong className="text-white font-mono">{sq.vehiclePlate}</strong>
+                </span>
               </div>
               <div className="flex items-start gap-2">
                 <Zap className="w-4 h-4 text-brand-400 shrink-0 mt-0.5" />
-                <span>Equipamiento: <span className="text-gray-400">{sq.equipment}</span></span>
+                <span>
+                  Equipamiento: <span className="text-gray-400">{sq.equipment}</span>
+                </span>
               </div>
             </div>
 

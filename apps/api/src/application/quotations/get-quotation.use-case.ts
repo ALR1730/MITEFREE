@@ -5,9 +5,7 @@ import { IUseCase } from '../common/use-case.interface.js';
 import { QUOTATION_REPOSITORY } from '../../infrastructure/database/database.tokens.js';
 
 @Injectable()
-export class GetQuotationUseCase
-  implements IUseCase<string, Result<QuotationResponseDto, string>>
-{
+export class GetQuotationUseCase implements IUseCase<string, Result<QuotationResponseDto, string>> {
   constructor(
     @Inject(QUOTATION_REPOSITORY)
     private readonly quotationRepo: IQuotationRepository,

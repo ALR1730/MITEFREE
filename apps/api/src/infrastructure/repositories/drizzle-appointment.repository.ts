@@ -50,8 +50,7 @@ export class DrizzleAppointmentRepository implements IAppointmentRepository {
     if (!this.db) {
       return Array.from(this.memoryStore.values()).filter(
         (a) =>
-          a.technicianId === technicianId &&
-          a.scheduledDate.toDateString() === date.toDateString(),
+          a.technicianId === technicianId && a.scheduledDate.toDateString() === date.toDateString(),
       );
     }
 
@@ -87,8 +86,7 @@ export class DrizzleAppointmentRepository implements IAppointmentRepository {
     if (!this.db) {
       return Array.from(this.memoryStore.values()).filter(
         (a) =>
-          a.timeSlotId === timeSlotId &&
-          a.scheduledDate.toDateString() === date.toDateString(),
+          a.timeSlotId === timeSlotId && a.scheduledDate.toDateString() === date.toDateString(),
       );
     }
 

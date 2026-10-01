@@ -1,4 +1,7 @@
-import { AppointmentStatus, isValidAppointmentTransition } from '../enums/appointment-status.enum.js';
+import {
+  AppointmentStatus,
+  isValidAppointmentTransition,
+} from '../enums/appointment-status.enum.js';
 import { Result, ok, fail } from '../common/result.js';
 
 export interface AppointmentProps {
@@ -75,7 +78,10 @@ export class Appointment {
   }
 
   assignTechnician(technicianId: string, now: Date = new Date()): Result<Appointment, string> {
-    if (this.status === AppointmentStatus.Cancelled || this.status === AppointmentStatus.Completed) {
+    if (
+      this.status === AppointmentStatus.Cancelled ||
+      this.status === AppointmentStatus.Completed
+    ) {
       return fail(`Cannot assign technician to an appointment with status ${this.status}`);
     }
 

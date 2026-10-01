@@ -68,11 +68,7 @@ export class DrizzleWalletRepository implements IWalletRepository {
     }
 
     try {
-      const rows = await this.db
-        .select()
-        .from(wallets)
-        .where(eq(wallets.userId, userId))
-        .limit(1);
+      const rows = await this.db.select().from(wallets).where(eq(wallets.userId, userId)).limit(1);
 
       const row = rows[0];
       if (!row) return null;

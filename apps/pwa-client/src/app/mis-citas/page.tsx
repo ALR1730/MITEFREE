@@ -103,8 +103,8 @@ export default function MisCitasPage() {
                     st.done
                       ? 'bg-brand-500 border-brand-500 tech-glow'
                       : st.current
-                      ? 'bg-cyan-500 border-white ring-4 ring-cyan-500/20 animate-pulse'
-                      : 'bg-dark-surface border-gray-600'
+                        ? 'bg-cyan-500 border-white ring-4 ring-cyan-500/20 animate-pulse'
+                        : 'bg-dark-surface border-gray-600'
                   }`}
                 />
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between">
@@ -113,8 +113,8 @@ export default function MisCitasPage() {
                       st.done
                         ? 'text-white'
                         : st.current
-                        ? 'text-cyan-400 font-bold'
-                        : 'text-gray-500'
+                          ? 'text-cyan-400 font-bold'
+                          : 'text-gray-500'
                     }`}
                   >
                     {st.label}
@@ -141,7 +141,9 @@ export default function MisCitasPage() {
                   Cuadrilla #04
                 </span>
               </div>
-              <p className="text-xs text-gray-400 mt-0.5">Especialista Certificado en Protocolo UV-C</p>
+              <p className="text-xs text-gray-400 mt-0.5">
+                Especialista Certificado en Protocolo UV-C
+              </p>
               <div className="flex items-center gap-1 text-xs text-amber-400 mt-1">
                 <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
                 <span className="font-bold">4.98</span>
@@ -194,11 +196,14 @@ export default function MisCitasPage() {
                 <span>¡Servicio Aprobado con Éxito!</span>
               </div>
               <p className="text-xs text-gray-300">
-                Se ha acreditado el 5% de cashback en tu billetera digital y tu certificado de desinfección está disponible.
+                Se ha acreditado el 5% de cashback en tu billetera digital y tu certificado de
+                desinfección está disponible.
               </p>
               <div className="pt-2 flex justify-center gap-3">
                 <button
-                  onClick={() => alert('Descargando Certificado Oficial de Desinfección MITEFREE (PDF)...')}
+                  onClick={() =>
+                    alert('Descargando Certificado Oficial de Desinfección MITEFREE (PDF)...')
+                  }
                   className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-dark-card border border-dark-border text-xs text-white hover:text-brand-400 transition-colors"
                 >
                   <Download className="w-3.5 h-3.5" />

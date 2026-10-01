@@ -25,10 +25,16 @@ export function Navbar() {
           </div>
           <div>
             <div className="flex items-center gap-1.5">
-              <span className="text-xl font-bold tracking-tight text-white">MITE<span className="text-brand-500">FREE</span></span>
-              <span className="px-1.5 py-0.5 text-[10px] uppercase font-semibold tracking-wider rounded bg-brand-500/10 text-brand-400 border border-brand-500/20">Pro</span>
+              <span className="text-xl font-bold tracking-tight text-white">
+                MITE<span className="text-brand-500">FREE</span>
+              </span>
+              <span className="px-1.5 py-0.5 text-[10px] uppercase font-semibold tracking-wider rounded bg-brand-500/10 text-brand-400 border border-brand-500/20">
+                Pro
+              </span>
             </div>
-            <p className="text-[10px] text-gray-400 -mt-1 font-mono tracking-tight">ALR COMPANY TECH</p>
+            <p className="text-[10px] text-gray-400 -mt-1 font-mono tracking-tight">
+              ALR COMPANY TECH
+            </p>
           </div>
         </Link>
 

@@ -155,10 +155,7 @@ export class DrizzleQuotationRepository implements IQuotationRepository {
     if (!this.db) return;
 
     try {
-      await this.db
-        .update(quotations)
-        .set({ status })
-        .where(eq(quotations.id, id));
+      await this.db.update(quotations).set({ status }).where(eq(quotations.id, id));
     } catch (error) {
       this.logger.error(`Error updating status for quotation ${id}`, error);
     }

@@ -5,9 +5,10 @@ import { IUseCase } from '../common/use-case.interface.js';
 import { APPOINTMENT_REPOSITORY } from '../../infrastructure/database/database.tokens.js';
 
 @Injectable()
-export class GetAppointmentUseCase
-  implements IUseCase<string, Result<AppointmentResponseDto, string>>
-{
+export class GetAppointmentUseCase implements IUseCase<
+  string,
+  Result<AppointmentResponseDto, string>
+> {
   constructor(
     @Inject(APPOINTMENT_REPOSITORY)
     private readonly appointmentRepo: IAppointmentRepository,

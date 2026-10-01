@@ -1,4 +1,5 @@
 # 🏛️ Plano Maestro de Arquitectura de Software — MITEFREE
+
 > **Versión:** 3.0.0 — Edición "Turing-Grade" por ALR COMPANY
 > **Líder de Proyecto & Founder:** **Angel Luis Rosario** ([github.com/ALR1730](https://github.com/ALR1730))
 > **Mentor & Base Formativa:** **Ing. Leonardo** (Programación III: C#, .NET 9, Onion Architecture)
@@ -29,25 +30,25 @@
 
 ## 1. Manifiesto y Filosofía de Diseño {#1-manifiesto}
 
-> *"La única manera de ir rápido, es ir bien. La base de datos es un detalle; la interfaz de usuario es un detalle; el framework es un detalle. El corazón de tu software son las Reglas de Negocio."*
+> _"La única manera de ir rápido, es ir bien. La base de datos es un detalle; la interfaz de usuario es un detalle; el framework es un detalle. El corazón de tu software son las Reglas de Negocio."_
 > — Robert C. Martin (Uncle Bob)
 
-> *"Conceptual Integrity — el sistema debe hablar con una sola voz. Un diseño unificado es más valioso que muchas ideas brillantes sin coherencia."*
+> _"Conceptual Integrity — el sistema debe hablar con una sola voz. Un diseño unificado es más valioso que muchas ideas brillantes sin coherencia."_
 > — Frederick Brooks (Turing Award 1999)
 
 **MITEFREE** es la plataforma de grado industrial concebida por **ALR COMPANY** para la gestión operativa, cotización algorítmica de precisión y fidelización de servicios de desinfección y limpieza profunda de tapicería. Su arquitectura está cimentada para **sobrevivir y escalar con cero deuda técnica durante los próximos 5 años**.
 
 ### Principios Fundacionales (No Negociables)
 
-| # | Principio | Declaración Operativa |
-|:--|:----------|:----------------------|
-| 1 | **Regla de Dependencia** | El código fuente apunta SOLO hacia adentro. `Domain` no conoce a `Infrastructure`. Jamás. |
-| 2 | **Independencia del Framework** | El motor de cotización no sabe si está siendo llamado por HTTP, gRPC o una prueba unitaria. |
-| 3 | **Independencia de la Base de Datos** | PostgreSQL / Drizzle ORM es un detalle intercambiable. El `Domain` es agnóstico a la persistencia. |
-| 4 | **TDD como Metodología** | Ningún motor crítico existe sin suite de pruebas que define su comportamiento primero (Vitest / xUnit). |
-| 5 | **Result\<T\> sobre Excepciones** | Los errores de negocio se modelan como valores tipados, no como excepciones de control de flujo (Dijkstra, 1972). |
-| 6 | **Immutability by Default** | Los Value Objects del dominio son inmutables. Los estados se transicionan mediante métodos explícitos. |
-| 7 | **Zero Technical Debt** | Cada archivo que se toca se deja más limpio. Ningún TODO sin ticket. Ningún magic number. |
+| #   | Principio                             | Declaración Operativa                                                                                             |
+| :-- | :------------------------------------ | :---------------------------------------------------------------------------------------------------------------- |
+| 1   | **Regla de Dependencia**              | El código fuente apunta SOLO hacia adentro. `Domain` no conoce a `Infrastructure`. Jamás.                         |
+| 2   | **Independencia del Framework**       | El motor de cotización no sabe si está siendo llamado por HTTP, gRPC o una prueba unitaria.                       |
+| 3   | **Independencia de la Base de Datos** | PostgreSQL / Drizzle ORM es un detalle intercambiable. El `Domain` es agnóstico a la persistencia.                |
+| 4   | **TDD como Metodología**              | Ningún motor crítico existe sin suite de pruebas que define su comportamiento primero (Vitest / xUnit).           |
+| 5   | **Result\<T\> sobre Excepciones**     | Los errores de negocio se modelan como valores tipados, no como excepciones de control de flujo (Dijkstra, 1972). |
+| 6   | **Immutability by Default**           | Los Value Objects del dominio son inmutables. Los estados se transicionan mediante métodos explícitos.            |
+| 7   | **Zero Technical Debt**               | Cada archivo que se toca se deja más limpio. Ningún TODO sin ticket. Ningún magic number.                         |
 
 ---
 
@@ -98,7 +99,8 @@ graph TB
     Infrastructure --> Resend
     Infrastructure --> RedisUpstash
 ```
-```
+
+````
 
 ---
 
@@ -145,16 +147,16 @@ graph LR
     style A fill:#1a5c2a,color:#fff,stroke:#81c784
     style I fill:#5c4a1a,color:#fff,stroke:#ffb74d
     style W fill:#5c1a1a,color:#fff,stroke:#ef9a9a
-```
+````
 
 ### Responsabilidades por Capa
 
-| Capa | Puede Importar | No Puede Importar | Ejemplos de Clases |
-|:-----|:--------------|:-----------------|:-------------------|
-| **Domain** | Solo primitivos del lenguaje | Nada externo (ni EF, ni AWS SDK) | `Quotation`, `Money`, `AppointmentStatus`, `IQuotationRepository` |
-| **Application** | Domain | Infrastructure, WebAPI | `CreateQuotationCommand`, `QuotationPricingEngine`, `IStorageService` |
-| **Infrastructure** | Domain, Application | WebAPI | `QuotationRepository`, `StripeGatewayAdapter`, `S3StorageAdapter` |
-| **WebAPI** | Application | Domain (para lógica), Infrastructure | `QuotationsController`, `GlobalExceptionMiddleware`, `Program.cs` |
+| Capa               | Puede Importar               | No Puede Importar                    | Ejemplos de Clases                                                    |
+| :----------------- | :--------------------------- | :----------------------------------- | :-------------------------------------------------------------------- |
+| **Domain**         | Solo primitivos del lenguaje | Nada externo (ni EF, ni AWS SDK)     | `Quotation`, `Money`, `AppointmentStatus`, `IQuotationRepository`     |
+| **Application**    | Domain                       | Infrastructure, WebAPI               | `CreateQuotationCommand`, `QuotationPricingEngine`, `IStorageService` |
+| **Infrastructure** | Domain, Application          | WebAPI                               | `QuotationRepository`, `StripeGatewayAdapter`, `S3StorageAdapter`     |
+| **WebAPI**         | Application                  | Domain (para lógica), Infrastructure | `QuotationsController`, `GlobalExceptionMiddleware`, `Program.cs`     |
 
 ---
 
@@ -300,14 +302,14 @@ erDiagram
 
 ### Detalle de Esquemas, Invariantes y Reglas de Integridad
 
-| Esquema | Tablas Clave | Invariantes Críticas |
-|:--------|:-------------|:--------------------|
-| **identity** | `users`, `roles`, `technician_profiles`, `addresses` | UUIDs obligatorios. Email y teléfono únicos con índice. `zone_code` en `addresses` siempre calculado desde lat/lng. |
-| **catalog** | `services`, `furniture_types`, `fabric_types`, `stain_severities`, `price_versions` | Precios versionados (nunca editables retroactivamente). Factor de tela siempre `> 0`. |
-| **quotations** | `quotations`, `quotation_items`, `quotation_photos` | `expires_at` = `created_at + 7 days`. Precio congelado en el momento de creación (snapshot). Estado: `Draft → Sent → Confirmed → Expired`. |
-| **scheduling** | `appointments`, `time_slots`, `zone_routes`, `appointment_status_logs` | Un `time_slot` no puede tener dos citas con el mismo técnico. `status_logs` es append-only. Estado: `PendingPayment → Confirmed → EnRoute → InProgress → Completed / Cancelled`. |
-| **loyalty** | `wallets`, `wallet_transactions`, `referral_codes`, `subscriptions` | Saldo de wallet nunca negativo (constraint en DB). `wallet_transactions` es immutable (sin UPDATE, sin DELETE). Ledger de doble entrada para integridad contable. |
-| **billing** | `payments`, `invoices` | `idempotency_key` único para prevenir doble procesamiento de webhooks. Anticipos del 20–30% obligatorios. |
+| Esquema        | Tablas Clave                                                                        | Invariantes Críticas                                                                                                                                                             |
+| :------------- | :---------------------------------------------------------------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **identity**   | `users`, `roles`, `technician_profiles`, `addresses`                                | UUIDs obligatorios. Email y teléfono únicos con índice. `zone_code` en `addresses` siempre calculado desde lat/lng.                                                              |
+| **catalog**    | `services`, `furniture_types`, `fabric_types`, `stain_severities`, `price_versions` | Precios versionados (nunca editables retroactivamente). Factor de tela siempre `> 0`.                                                                                            |
+| **quotations** | `quotations`, `quotation_items`, `quotation_photos`                                 | `expires_at` = `created_at + 7 days`. Precio congelado en el momento de creación (snapshot). Estado: `Draft → Sent → Confirmed → Expired`.                                       |
+| **scheduling** | `appointments`, `time_slots`, `zone_routes`, `appointment_status_logs`              | Un `time_slot` no puede tener dos citas con el mismo técnico. `status_logs` es append-only. Estado: `PendingPayment → Confirmed → EnRoute → InProgress → Completed / Cancelled`. |
+| **loyalty**    | `wallets`, `wallet_transactions`, `referral_codes`, `subscriptions`                 | Saldo de wallet nunca negativo (constraint en DB). `wallet_transactions` es immutable (sin UPDATE, sin DELETE). Ledger de doble entrada para integridad contable.                |
+| **billing**    | `payments`, `invoices`                                                              | `idempotency_key` único para prevenir doble procesamiento de webhooks. Anticipos del 20–30% obligatorios.                                                                        |
 
 ---
 
@@ -330,21 +332,21 @@ Para la Quotation completa:
 
 **Tabla de Factores de Tela:**
 
-| FabricType | Factor Multiplicador | Justificación |
-|:-----------|:--------------------:|:--------------|
-| `SYNTHETIC` | `1.00` | Material base estándar |
-| `LINEN` | `1.20` | Mayor absorbencia, cuidado especial |
-| `VELVET` | `1.40` | Delicado, requiere técnica diferenciada |
-| `LEATHER` | `1.50` | Productos especializados de limpieza |
-| `MICROFIBER` | `1.15` | Retención de suciedad específica |
+| FabricType   | Factor Multiplicador | Justificación                           |
+| :----------- | :------------------: | :-------------------------------------- |
+| `SYNTHETIC`  |        `1.00`        | Material base estándar                  |
+| `LINEN`      |        `1.20`        | Mayor absorbencia, cuidado especial     |
+| `VELVET`     |        `1.40`        | Delicado, requiere técnica diferenciada |
+| `LEATHER`    |        `1.50`        | Productos especializados de limpieza    |
+| `MICROFIBER` |        `1.15`        | Retención de suciedad específica        |
 
 **Tabla de Recargos por Severidad de Mancha:**
 
-| StainSeverity | Recargo Fijo | Criterio |
-|:--------------|:------------:|:---------|
-| `LIGHT` | `+$0` | Manchas superficiales recientes |
-| `MODERATE` | `+$15` | Manchas con penetración en fibra |
-| `CRITICAL` | `+$35` | Manchas antiguas, biológicas o de tinta |
+| StainSeverity | Recargo Fijo | Criterio                                |
+| :------------ | :----------: | :-------------------------------------- |
+| `LIGHT`       |    `+$0`     | Manchas superficiales recientes         |
+| `MODERATE`    |    `+$15`    | Manchas con penetración en fibra        |
+| `CRITICAL`    |    `+$35`    | Manchas antiguas, biológicas o de tinta |
 
 #### Pipeline de Imágenes (Upload Multimedia de Manchas)
 
@@ -374,23 +376,24 @@ sequenceDiagram
 **Zonificación Geoespacial:**
 Las direcciones del cliente se clasifican automáticamente en zonas durante el registro, utilizando las coordenadas lat/lng.
 
-| Zona | Código | Cobertura |
-|:-----|:-------|:----------|
-| Norte | `ZONE-N` | Barrios al norte del eje central |
-| Sur | `ZONE-S` | Barrios al sur del eje central |
-| Oriente | `ZONE-E` | Barrios al este |
-| Occidente | `ZONE-W` | Barrios al oeste |
-| Centro | `ZONE-C` | Área central densa |
+| Zona      | Código   | Cobertura                        |
+| :-------- | :------- | :------------------------------- |
+| Norte     | `ZONE-N` | Barrios al norte del eje central |
+| Sur       | `ZONE-S` | Barrios al sur del eje central   |
+| Oriente   | `ZONE-E` | Barrios al este                  |
+| Occidente | `ZONE-W` | Barrios al oeste                 |
+| Centro    | `ZONE-C` | Área central densa               |
 
 **Bloques Horarios (TimeSlots):**
 
-| Bloque | Horario | Duración máx. por cita |
-|:-------|:--------|:----------------------|
-| Mañana | `08:30 – 11:30` | 3 horas |
-| Tarde Temprano | `12:00 – 15:00` | 3 horas |
-| Tarde | `15:30 – 18:30` | 3 horas |
+| Bloque         | Horario         | Duración máx. por cita |
+| :------------- | :-------------- | :--------------------- |
+| Mañana         | `08:30 – 11:30` | 3 horas                |
+| Tarde Temprano | `12:00 – 15:00` | 3 horas                |
+| Tarde          | `15:30 – 18:30` | 3 horas                |
 
 **Algoritmo de Descuento por Zona de Ruta:**
+
 ```
 Cuando se confirma Appointment(zona=X, fecha=D, técnico=T):
   ventanas_libres = TimeSlots donde técnico T, fecha D, zona X, estado = Available
@@ -400,6 +403,7 @@ Cuando se confirma Appointment(zona=X, fecha=D, técnico=T):
 ```
 
 **Protección Anti-Double Booking:**
+
 ```sql
 -- Constraint de unicidad en BD (no solo en código)
 CREATE UNIQUE INDEX uq_timeslot_technician
@@ -427,6 +431,7 @@ stateDiagram-v2
 ```
 
 **Protección Anti-Doble Procesamiento de Webhooks:**
+
 ```
 Al recibir POST /api/v1/webhooks/stripe:
   1. Verificar firma HMAC del payload con webhook secret
@@ -481,6 +486,7 @@ sequenceDiagram
 ```
 
 **Deep Link de Onboarding desde WhatsApp:**
+
 ```
 URL: https://mitefree.com/cotizar?source=wa&client_id={uuid}&ref={referral_code}&utm_campaign={campaign}
 
@@ -495,22 +501,23 @@ Al abrir la PWA con este URL:
 
 ## 7. Estrategia de Seguridad — Threat Model {#7-seguridad}
 
-> *"Todo input externo es hostil hasta que se demuestre lo contrario."*
+> _"Todo input externo es hostil hasta que se demuestre lo contrario."_
 
 ### Mapa de Superficie de Ataque y Controles
 
-| Superficie | Amenaza | Control Implementado |
-|:-----------|:--------|:--------------------|
-| Auth endpoints (`/login`, `/register`) | Brute force, credential stuffing | Rate limiting: 5 req/min por IP · Argon2id para hashing |
-| Subida de imágenes | Upload de ejecutables, SSRF | Validar MIME en servidor · Extensión whitelist · Tamaño max 5MB · Presigned URL (no pasa por API) |
-| Webhooks Stripe / WhatsApp | Replay attack, payload forjado | Verificación de firma HMAC en middleware antes de procesar · Idempotency keys |
-| Endpoints de consulta | Acceso a datos de otros usuarios (IDOR) | Siempre filtrar por `user_id` del JWT. Nunca confiar en `client_id` del body. |
-| Queries a BD | SQL Injection | EF Core parametrizado siempre. Nunca concatenar strings en queries raw. |
-| Panel Admin | Elevación de privilegios | `[Authorize(Roles = "Admin")]` en cada endpoint sensible. Registro de audit log. |
-| Wallet transactions | Manipulación de saldo | Optimistic concurrency con campo `version` en Wallet. Inmutabilidad del ledger. |
-| Tokens JWT | Token theft, long-lived sessions | Access Token TTL: 15 min. Refresh Token TTL: 7 días con rotación. Refresh Token en `HttpOnly cookie`. |
+| Superficie                             | Amenaza                                 | Control Implementado                                                                                  |
+| :------------------------------------- | :-------------------------------------- | :---------------------------------------------------------------------------------------------------- |
+| Auth endpoints (`/login`, `/register`) | Brute force, credential stuffing        | Rate limiting: 5 req/min por IP · Argon2id para hashing                                               |
+| Subida de imágenes                     | Upload de ejecutables, SSRF             | Validar MIME en servidor · Extensión whitelist · Tamaño max 5MB · Presigned URL (no pasa por API)     |
+| Webhooks Stripe / WhatsApp             | Replay attack, payload forjado          | Verificación de firma HMAC en middleware antes de procesar · Idempotency keys                         |
+| Endpoints de consulta                  | Acceso a datos de otros usuarios (IDOR) | Siempre filtrar por `user_id` del JWT. Nunca confiar en `client_id` del body.                         |
+| Queries a BD                           | SQL Injection                           | EF Core parametrizado siempre. Nunca concatenar strings en queries raw.                               |
+| Panel Admin                            | Elevación de privilegios                | `[Authorize(Roles = "Admin")]` en cada endpoint sensible. Registro de audit log.                      |
+| Wallet transactions                    | Manipulación de saldo                   | Optimistic concurrency con campo `version` en Wallet. Inmutabilidad del ledger.                       |
+| Tokens JWT                             | Token theft, long-lived sessions        | Access Token TTL: 15 min. Refresh Token TTL: 7 días con rotación. Refresh Token en `HttpOnly cookie`. |
 
 ### Cabeceras de Seguridad HTTP (Obligatorias)
+
 ```
 Strict-Transport-Security: max-age=63072000; includeSubDomains; preload
 X-Content-Type-Options: nosniff
@@ -536,16 +543,17 @@ graph TD
 
 ### Cobertura Mínima Requerida por Módulo
 
-| Módulo | Tipo de Test Prioritario | Cobertura Mínima |
-|:-------|:------------------------|:-----------------|
-| `QuotationPricingEngine` | Unit | **≥ 98%** — Motor crítico de negocio |
-| `WalletLedger` | Unit + Integration | **≥ 97%** — Integridad contable |
-| `RouteOptimizationEngine` | Unit | **≥ 95%** — Lógica de asignación |
-| `PaymentWebhookHandler` | Integration | **≥ 95%** — Idempotencia crítica |
-| `AppointmentRepository` | Integration | **≥ 90%** — Anti-double booking |
-| Controllers / Middlewares | Integration (HTTP) | **≥ 80%** |
+| Módulo                    | Tipo de Test Prioritario | Cobertura Mínima                     |
+| :------------------------ | :----------------------- | :----------------------------------- |
+| `QuotationPricingEngine`  | Unit                     | **≥ 98%** — Motor crítico de negocio |
+| `WalletLedger`            | Unit + Integration       | **≥ 97%** — Integridad contable      |
+| `RouteOptimizationEngine` | Unit                     | **≥ 95%** — Lógica de asignación     |
+| `PaymentWebhookHandler`   | Integration              | **≥ 95%** — Idempotencia crítica     |
+| `AppointmentRepository`   | Integration              | **≥ 90%** — Anti-double booking      |
+| Controllers / Middlewares | Integration (HTTP)       | **≥ 80%**                            |
 
 ### Convención de Nombres de Tests (Especificaciones Vivas)
+
 ```
 // Patrón: Given[Contexto]_When[Acción]_Then[ResultadoEsperado]
 
@@ -657,49 +665,51 @@ mitefree/
 
 > Para que **Angel Luis Rosario** y cualquier ingeniero formado en el currículo de **.NET 9** naveguen este repositorio de inmediato:
 
-| Módulo Monorepo (TypeScript / Bun) | Proyecto Equivalente en .NET 9 ([RealEstateApp](https://github.com/ALR1730/RealEstateApp)) | Responsabilidad Arquitectónica |
-|:-----------------------------------|:------------------------------------------------------------------------------------------|:-------------------------------|
-| `packages/domain-core` | `Mitefree.Core.Domain` | Entidades puras, Value Objects, Domain Events, sin dependencias externas. |
-| `apps/api/src/application` | `Mitefree.Core.Application` | Casos de uso CQRS (MediatR), validación FluentValidation / Zod, motores de negocio. |
-| `packages/database` + `infra/persistence` | `Mitefree.Infrastructure.Persistence` | EF Core DbContext / Drizzle Schema, Migraciones, Repositorios concretos. |
-| `apps/api/src/infrastructure/*` | `Mitefree.Infrastructure.Shared` | Implementaciones de AWS/R2, Stripe SDK, WhatsApp Cloud API, Resend/MailKit. |
-| `apps/api/src/presentation` | `Mitefree.Presentation.WebAPI` | ASP.NET Web API Controllers, Filters, Middlewares ProblemDetails, OpenAPI Scalar / Swagger. |
-| `apps/pwa-client` | Razor Views / Blazor Client | Interfaz web móvil de cara al cliente final (Next.js 15 PWA). |
-| `apps/admin-portal` | ASP.NET MVC Admin Controllers & Views | Interfaz administrativa para directores y técnicos. |
-| `tests/unit` | `Mitefree.UnitTests` (xUnit v3) | Pruebas unitarias de motores críticos sin dependencias de base de datos. |
+| Módulo Monorepo (TypeScript / Bun)        | Proyecto Equivalente en .NET 9 ([RealEstateApp](https://github.com/ALR1730/RealEstateApp)) | Responsabilidad Arquitectónica                                                              |
+| :---------------------------------------- | :----------------------------------------------------------------------------------------- | :------------------------------------------------------------------------------------------ |
+| `packages/domain-core`                    | `Mitefree.Core.Domain`                                                                     | Entidades puras, Value Objects, Domain Events, sin dependencias externas.                   |
+| `apps/api/src/application`                | `Mitefree.Core.Application`                                                                | Casos de uso CQRS (MediatR), validación FluentValidation / Zod, motores de negocio.         |
+| `packages/database` + `infra/persistence` | `Mitefree.Infrastructure.Persistence`                                                      | EF Core DbContext / Drizzle Schema, Migraciones, Repositorios concretos.                    |
+| `apps/api/src/infrastructure/*`           | `Mitefree.Infrastructure.Shared`                                                           | Implementaciones de AWS/R2, Stripe SDK, WhatsApp Cloud API, Resend/MailKit.                 |
+| `apps/api/src/presentation`               | `Mitefree.Presentation.WebAPI`                                                             | ASP.NET Web API Controllers, Filters, Middlewares ProblemDetails, OpenAPI Scalar / Swagger. |
+| `apps/pwa-client`                         | Razor Views / Blazor Client                                                                | Interfaz web móvil de cara al cliente final (Next.js 15 PWA).                               |
+| `apps/admin-portal`                       | ASP.NET MVC Admin Controllers & Views                                                      | Interfaz administrativa para directores y técnicos.                                         |
+| `tests/unit`                              | `Mitefree.UnitTests` (xUnit v3)                                                            | Pruebas unitarias de motores críticos sin dependencias de base de datos.                    |
 
 ---
 
 ## 10. Infraestructura y Pipeline CI/CD {#10-devops}
 
 ### Stack Tecnológico de ALR COMPANY 2025–2026
-> *Validado con: Stack Overflow Developer Survey 2025 · State of JS 2025 · Tendencias de contratación activas en LATAM y mercado global.*
 
-| Capa | Tecnología Principal | Alternativa Aprobada | Por qué es el mejor en 2025 |
-|:-----|:--------------------|:---------------------|:-----------------------------|
-| **Runtime** | **Bun 1.x** | Node.js 22 LTS | 3x más rápido que Node. Package manager, test runner y bundler integrados. |
-| **Lenguaje** | **TypeScript 5+** (strict mode) | — | Estándar absoluto de la industria. End-to-end type safety. |
-| **Backend Framework** | **NestJS** + Clean Architecture | **Hono** (edge/serverless) | Más adoptado para APIs enterprise TypeScript. DI, módulos, interceptores. |
-| **Frontend** | **Next.js 15** App Router + RSC | **Remix v2** | Líder indiscutible. React Server Components reducen JS del cliente. |
-| **Base de Datos** | **PostgreSQL 16+** vía **Neon** | Turso (edge/SQLite) | Postgres es el rey. Neon añade serverless branching para dev/staging. |
-| **ORM** | **Drizzle ORM** | **Prisma 5** | SQL-like, type-safe, edge-compatible. Bundle 10x más pequeño que Prisma. |
-| **Cache & Cola de Mensajes** | **Redis** vía **Upstash** | DragonflyDB | Serverless, pago por uso, compatible 100% con Redis API. |
-| **Background Jobs** | **BullMQ** (OTel nativo) | **Inngest** (serverless) | BullMQ + Upstash Redis = jobs confiables con tracing distribuido. |
-| **Autenticación** | **Better Auth** (self-hosted) | **Clerk** / Auth0 | Open-source, framework-agnostic, integra con Drizzle nativamente. |
-| **Storage** | **Cloudflare R2** | AWS S3 + Presigned URLs | Compatible S3 API. $0 egress fee vs $0.09/GB en S3. |
-| **Pagos** | **Stripe** | Polar.sh / Lemon Squeezy | #1 del mercado. Webhooks, suscripciones, invoicing incluidos. |
-| **PDF** | **@react-pdf/renderer** + **Puppeteer** | Playwright PDF | TypeScript nativo. React components para PDFs. |
-| **Email Transaccional** | **Resend** + **React Email** | SendGrid | API moderna, React components para templates, excelente deliverability. |
-| **Mensajería WhatsApp** | **Meta WhatsApp Cloud API** | Twilio | Estándar oficial. Plantillas, botones interactivos, webhooks. |
-| **Monorepo** | **Turborepo** | Nx | Remote caching, pipelines paralelos, liviano y rápido. |
-| **Contenerización** | **Docker Multi-Stage** + Compose | Nixpacks (Railway) | Estándar universal. Multi-stage reduce imagen final a ~150MB. |
-| **CI/CD** | **GitHub Actions** | GitLab CI / Dagger | Más usado del mundo. Ecosystem de actions enorme. |
-| **Observabilidad** | **OpenTelemetry** + **Sentry** + **Axiom** | BetterStack / SigNoz | OTel = vendor-neutral. Sentry para errores. Axiom para logs/trazas. |
-| **Testing Unit** | **Vitest** | Jest | 10-20x más rápido que Jest. Configuración mínima. Compatible Jest API. |
-| **Testing E2E** | **Playwright** | Cypress | Más rápido, multi-browser, PDF testing, generación de trazas. |
-| **Validación** | **Zod** | Valibot | Estándar de facto en TypeScript. tRPC, Drizzle y React Hook Form lo usan. |
+> _Validado con: Stack Overflow Developer Survey 2025 · State of JS 2025 · Tendencias de contratación activas en LATAM y mercado global._
+
+| Capa                         | Tecnología Principal                       | Alternativa Aprobada       | Por qué es el mejor en 2025                                                |
+| :--------------------------- | :----------------------------------------- | :------------------------- | :------------------------------------------------------------------------- |
+| **Runtime**                  | **Bun 1.x**                                | Node.js 22 LTS             | 3x más rápido que Node. Package manager, test runner y bundler integrados. |
+| **Lenguaje**                 | **TypeScript 5+** (strict mode)            | —                          | Estándar absoluto de la industria. End-to-end type safety.                 |
+| **Backend Framework**        | **NestJS** + Clean Architecture            | **Hono** (edge/serverless) | Más adoptado para APIs enterprise TypeScript. DI, módulos, interceptores.  |
+| **Frontend**                 | **Next.js 15** App Router + RSC            | **Remix v2**               | Líder indiscutible. React Server Components reducen JS del cliente.        |
+| **Base de Datos**            | **PostgreSQL 16+** vía **Neon**            | Turso (edge/SQLite)        | Postgres es el rey. Neon añade serverless branching para dev/staging.      |
+| **ORM**                      | **Drizzle ORM**                            | **Prisma 5**               | SQL-like, type-safe, edge-compatible. Bundle 10x más pequeño que Prisma.   |
+| **Cache & Cola de Mensajes** | **Redis** vía **Upstash**                  | DragonflyDB                | Serverless, pago por uso, compatible 100% con Redis API.                   |
+| **Background Jobs**          | **BullMQ** (OTel nativo)                   | **Inngest** (serverless)   | BullMQ + Upstash Redis = jobs confiables con tracing distribuido.          |
+| **Autenticación**            | **Better Auth** (self-hosted)              | **Clerk** / Auth0          | Open-source, framework-agnostic, integra con Drizzle nativamente.          |
+| **Storage**                  | **Cloudflare R2**                          | AWS S3 + Presigned URLs    | Compatible S3 API. $0 egress fee vs $0.09/GB en S3.                        |
+| **Pagos**                    | **Stripe**                                 | Polar.sh / Lemon Squeezy   | #1 del mercado. Webhooks, suscripciones, invoicing incluidos.              |
+| **PDF**                      | **@react-pdf/renderer** + **Puppeteer**    | Playwright PDF             | TypeScript nativo. React components para PDFs.                             |
+| **Email Transaccional**      | **Resend** + **React Email**               | SendGrid                   | API moderna, React components para templates, excelente deliverability.    |
+| **Mensajería WhatsApp**      | **Meta WhatsApp Cloud API**                | Twilio                     | Estándar oficial. Plantillas, botones interactivos, webhooks.              |
+| **Monorepo**                 | **Turborepo**                              | Nx                         | Remote caching, pipelines paralelos, liviano y rápido.                     |
+| **Contenerización**          | **Docker Multi-Stage** + Compose           | Nixpacks (Railway)         | Estándar universal. Multi-stage reduce imagen final a ~150MB.              |
+| **CI/CD**                    | **GitHub Actions**                         | GitLab CI / Dagger         | Más usado del mundo. Ecosystem de actions enorme.                          |
+| **Observabilidad**           | **OpenTelemetry** + **Sentry** + **Axiom** | BetterStack / SigNoz       | OTel = vendor-neutral. Sentry para errores. Axiom para logs/trazas.        |
+| **Testing Unit**             | **Vitest**                                 | Jest                       | 10-20x más rápido que Jest. Configuración mínima. Compatible Jest API.     |
+| **Testing E2E**              | **Playwright**                             | Cypress                    | Más rápido, multi-browser, PDF testing, generación de trazas.              |
+| **Validación**               | **Zod**                                    | Valibot                    | Estándar de facto en TypeScript. tRPC, Drizzle y React Hook Form lo usan.  |
 
 ### Docker Multi-Stage Build (TypeScript / Bun)
+
 ```dockerfile
 # .dockerfile — Build optimizado para NestJS + Bun
 # Imagen final ~120MB vs ~800MB naive build
@@ -729,6 +739,7 @@ CMD ["bun", "dist/main.js"]
 ```
 
 ### Golden CI/CD Pipeline (GitHub Actions)
+
 ```yaml
 # .github/workflows/ci.yml
 # Pipeline irrompible de ALR COMPANY. Un merge a main sin pasar esto no existe.
@@ -837,12 +848,12 @@ gantt
 
 ### Criterios de Aceptación por Fase
 
-| Fase | Criterio de Aceptación Primario |
-|:-----|:-------------------------------|
-| **Fase 1** | `docker-compose up` levanta API, BD y migraciones correctamente en entorno limpio. Auth JWT funcional. |
-| **Fase 2** | 20 casos de pricing combinando todas las telas y severidades dan resultados exactos al centavo. PDF generado en < 1.5s. |
-| **Fase 3** | Dos solicitudes simultáneas al mismo TimeSlot → solo una gana. Webhook Stripe procesado exactamente una vez. |
-| **Fase 4** | Cashback acreditado automáticamente al marcar cita como `Completed`. Saldo de wallet nunca negativo bajo concurrencia. |
+| Fase       | Criterio de Aceptación Primario                                                                                                                                           |
+| :--------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **Fase 1** | `docker-compose up` levanta API, BD y migraciones correctamente en entorno limpio. Auth JWT funcional.                                                                    |
+| **Fase 2** | 20 casos de pricing combinando todas las telas y severidades dan resultados exactos al centavo. PDF generado en < 1.5s.                                                   |
+| **Fase 3** | Dos solicitudes simultáneas al mismo TimeSlot → solo una gana. Webhook Stripe procesado exactamente una vez.                                                              |
+| **Fase 4** | Cashback acreditado automáticamente al marcar cita como `Completed`. Saldo de wallet nunca negativo bajo concurrencia.                                                    |
 | **Fase 5** | Flujo E2E completo: cotizar → pagar anticipo → WhatsApp de confirmación → técnico completa → puntos acreditados. Deploy a producción en < 5 minutos desde merge a `main`. |
 
 ---
@@ -851,24 +862,24 @@ gantt
 
 > Estos términos son **sagrados**. Se usan de forma idéntica en código, base de datos, API, documentación y comunicación del equipo. Desviarse de ellos es deuda de Conceptual Integrity.
 
-| Término de Negocio | Nombre en Código | Tipo | Descripción |
-|:-------------------|:----------------|:-----|:------------|
-| Cotización | `Quotation` | Aggregate Root | Presupuesto con vigencia de 7 días. Precio congelado al momento de creación. |
-| Ítem de Cotización | `QuotationItem` | Entity | Un mueble específico dentro de la cotización con su cálculo de precio propio. |
-| Foto de Mancha | `QuotationPhoto` | Entity | Imagen subida por el cliente vinculada a un ítem, almacenada en S3. |
-| Cita | `Appointment` | Aggregate Root | Servicio confirmado, con técnico, bloque horario y zona asignados. |
-| Bloque de Tiempo | `TimeSlot` | Entity | Ventana horaria disponible (08:30-11:30 / 12:00-15:00 / 15:30-18:30). |
-| Zona de Ruta | `ZoneRoute` | Entity | Cuadrante geoespacial de operación (N/S/E/W/Centro). |
-| Billetera Digital | `Wallet` | Aggregate Root | Saldo de cashback del cliente. Nunca negativo. Concurrencia controlada. |
-| Transacción de Billetera | `WalletTransaction` | Entity (Immutable) | Registro contable de cada movimiento. Nunca editable ni eliminable. |
-| Código de Referido | `ReferralCode` | Entity | Código alfanumérico único por cliente (`MITE-XXXX00`). |
-| Anticipo | `Payment(type=Deposit)` | Entity | Cobro parcial (20-30%) para confirmar la reserva del TimeSlot. |
-| Liquidación | `Payment(type=Settlement)` | Entity | Cobro del saldo restante al completar el servicio. |
-| Severidad de Mancha | `StainSeverity` | Enum | `LIGHT` · `MODERATE` · `CRITICAL` |
-| Tipo de Tela | `FabricType` | Enum | `SYNTHETIC` · `LINEN` · `VELVET` · `LEATHER` · `MICROFIBER` |
-| Estado de Cita | `AppointmentStatus` | Enum | `PendingPayment → Confirmed → EnRoute → InProgress → Completed / Cancelled` |
+| Término de Negocio       | Nombre en Código           | Tipo               | Descripción                                                                   |
+| :----------------------- | :------------------------- | :----------------- | :---------------------------------------------------------------------------- |
+| Cotización               | `Quotation`                | Aggregate Root     | Presupuesto con vigencia de 7 días. Precio congelado al momento de creación.  |
+| Ítem de Cotización       | `QuotationItem`            | Entity             | Un mueble específico dentro de la cotización con su cálculo de precio propio. |
+| Foto de Mancha           | `QuotationPhoto`           | Entity             | Imagen subida por el cliente vinculada a un ítem, almacenada en S3.           |
+| Cita                     | `Appointment`              | Aggregate Root     | Servicio confirmado, con técnico, bloque horario y zona asignados.            |
+| Bloque de Tiempo         | `TimeSlot`                 | Entity             | Ventana horaria disponible (08:30-11:30 / 12:00-15:00 / 15:30-18:30).         |
+| Zona de Ruta             | `ZoneRoute`                | Entity             | Cuadrante geoespacial de operación (N/S/E/W/Centro).                          |
+| Billetera Digital        | `Wallet`                   | Aggregate Root     | Saldo de cashback del cliente. Nunca negativo. Concurrencia controlada.       |
+| Transacción de Billetera | `WalletTransaction`        | Entity (Immutable) | Registro contable de cada movimiento. Nunca editable ni eliminable.           |
+| Código de Referido       | `ReferralCode`             | Entity             | Código alfanumérico único por cliente (`MITE-XXXX00`).                        |
+| Anticipo                 | `Payment(type=Deposit)`    | Entity             | Cobro parcial (20-30%) para confirmar la reserva del TimeSlot.                |
+| Liquidación              | `Payment(type=Settlement)` | Entity             | Cobro del saldo restante al completar el servicio.                            |
+| Severidad de Mancha      | `StainSeverity`            | Enum               | `LIGHT` · `MODERATE` · `CRITICAL`                                             |
+| Tipo de Tela             | `FabricType`               | Enum               | `SYNTHETIC` · `LINEN` · `VELVET` · `LEATHER` · `MICROFIBER`                   |
+| Estado de Cita           | `AppointmentStatus`        | Enum               | `PendingPayment → Confirmed → EnRoute → InProgress → Completed / Cancelled`   |
 
 ---
 
-*Documento mantenido por ALR COMPANY — División de Ingeniería de Élite.*
-*"Clean code always looks like it was written by someone who cares." — Robert C. Martin*
+_Documento mantenido por ALR COMPANY — División de Ingeniería de Élite._
+_"Clean code always looks like it was written by someone who cares." — Robert C. Martin_

@@ -35,7 +35,11 @@ async function bootstrap() {
       'Enterprise platform for smart quotes, technician scheduling, and cashback loyalty — ALR COMPANY',
     )
     .setVersion('1.0.0')
-    .setContact('Angel Luis Rosario', 'https://github.com/ALR1730', 'angelluisrosario12345@gmail.com')
+    .setContact(
+      'Angel Luis Rosario',
+      'https://github.com/ALR1730',
+      'angelluisrosario12345@gmail.com',
+    )
     .addTag('Health & Telemetry', 'Health probes and status checks')
     .addTag('Quotations (Cotizaciones)', 'Quotation creation and canonical pricing engine')
     .addTag('Appointments (Citas y Rutas)', 'Technician booking and dispatch slots')
@@ -59,7 +63,9 @@ async function bootstrap() {
   await app.listen(port);
 
   logger.log(`🚀 MITEFREE Core WebAPI running on: http://localhost:${port}`);
-  logger.log(`📚 Modern Scalar OpenAPI Documentation available at: http://localhost:${port}/api/docs`);
+  logger.log(
+    `📚 Modern Scalar OpenAPI Documentation available at: http://localhost:${port}/api/docs`,
+  );
   logger.log(`🩺 Health Probe endpoint: http://localhost:${port}/health`);
 }
 

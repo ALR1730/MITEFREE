@@ -42,6 +42,8 @@ describe('Appointment Entity (Unit Tests)', () => {
     const assignedRes = cancelled.assignTechnician('tech-kelvin-rosario');
 
     expect(assignedRes.isFailure).toBe(true);
-    expect(assignedRes.error).toContain('Cannot assign technician to an appointment with status Cancelled');
+    expect(assignedRes.error).toContain(
+      'Cannot assign technician to an appointment with status Cancelled',
+    );
   });
 });

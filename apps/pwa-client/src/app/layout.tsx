@@ -40,11 +40,11 @@ export default function RootLayout({
       <head>
         <link rel="manifest" href="/manifest.json" />
       </head>
-      <body className={`${inter.variable} min-h-screen bg-dark-bg text-gray-100 antialiased selection:bg-brand-500/30 selection:text-brand-300`}>
+      <body
+        className={`${inter.variable} min-h-screen bg-dark-bg text-gray-100 antialiased selection:bg-brand-500/30 selection:text-brand-300`}
+      >
         <Navbar />
-        <main className="min-h-[calc(100vh-4rem)]">
-          {children}
-        </main>
+        <main className="min-h-[calc(100vh-4rem)]">{children}</main>
         <Footer />
         <BottomNav />
 

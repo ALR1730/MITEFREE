@@ -40,7 +40,11 @@ export default function ConfiguracionPage() {
           type="submit"
           className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-indigo-600 to-cyan-500 text-white font-bold text-xs admin-glow-indigo active:scale-95 transition-all shadow-md"
         >
-          {saved ? <CheckCircle className="w-4 h-4 text-emerald-300" /> : <Save className="w-4 h-4" />}
+          {saved ? (
+            <CheckCircle className="w-4 h-4 text-emerald-300" />
+          ) : (
+            <Save className="w-4 h-4" />
+          )}
           <span>{saved ? '¡Configuración Guardada!' : 'Guardar Cambios'}</span>
         </button>
       </div>
@@ -82,7 +86,9 @@ export default function ConfiguracionPage() {
           </div>
 
           <div className="p-4 rounded-xl bg-admin-sidebar border border-admin-border space-y-2">
-            <label className="text-xs font-semibold text-gray-400 block">Expiración Cotización</label>
+            <label className="text-xs font-semibold text-gray-400 block">
+              Expiración Cotización
+            </label>
             <div className="flex items-center gap-2">
               <input
                 type="number"
@@ -130,11 +136,36 @@ export default function ConfiguracionPage() {
             </thead>
             <tbody className="divide-y divide-admin-border/40 font-mono">
               {[
-                { name: 'Sintética / Poliéster', mult: '1.00x', surcharge: '0%', note: 'Extracción estándar neutra' },
-                { name: 'Microfibra / Gamuzina', mult: '1.10x', surcharge: '+10%', note: 'Doble pasada de succión' },
-                { name: 'Lino Natural', mult: '1.25x', surcharge: '+25%', note: 'pH 6.5 balanceado' },
-                { name: 'Terciopelo / Chenille', mult: '1.40x', surcharge: '+40%', note: 'Protector anti-aplastamiento' },
-                { name: 'Cuero / Piel Genuina', mult: '1.60x', surcharge: '+60%', note: 'Bálsamo hidratante UV' },
+                {
+                  name: 'Sintética / Poliéster',
+                  mult: '1.00x',
+                  surcharge: '0%',
+                  note: 'Extracción estándar neutra',
+                },
+                {
+                  name: 'Microfibra / Gamuzina',
+                  mult: '1.10x',
+                  surcharge: '+10%',
+                  note: 'Doble pasada de succión',
+                },
+                {
+                  name: 'Lino Natural',
+                  mult: '1.25x',
+                  surcharge: '+25%',
+                  note: 'pH 6.5 balanceado',
+                },
+                {
+                  name: 'Terciopelo / Chenille',
+                  mult: '1.40x',
+                  surcharge: '+40%',
+                  note: 'Protector anti-aplastamiento',
+                },
+                {
+                  name: 'Cuero / Piel Genuina',
+                  mult: '1.60x',
+                  surcharge: '+60%',
+                  note: 'Bálsamo hidratante UV',
+                },
               ].map((row, i) => (
                 <tr key={i} className="hover:bg-admin-hover/40">
                   <td className="py-3 font-sans font-bold text-white">{row.name}</td>

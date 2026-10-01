@@ -15,15 +15,37 @@ import {
 
 const COVERAGE_ZONES = [
   { id: 'DN', name: 'Distrito Nacional', areas: 'Piantini, Naco, Bella Vista, Gazcue, Evaristo' },
-  { id: 'SDE', name: 'Santo Domingo Este', areas: 'Alma Rosa, Ensanche Ozama, Autopista San Isidro' },
+  {
+    id: 'SDE',
+    name: 'Santo Domingo Este',
+    areas: 'Alma Rosa, Ensanche Ozama, Autopista San Isidro',
+  },
   { id: 'SDO', name: 'Santo Domingo Oeste', areas: 'Herrera, Alameda, Manoguayabo, Los Ríos' },
   { id: 'SDN', name: 'Santo Domingo Norte', areas: 'Villa Mella, El Edén, Mirador Norte' },
 ];
 
 const TIME_SLOTS = [
-  { id: 'MORNING', label: 'Bloque Mañana', time: '08:30 AM – 11:30 AM', available: true, badge: 'Recomendado' },
-  { id: 'AFTERNOON', label: 'Bloque Tarde', time: '01:00 PM – 04:00 PM', available: true, badge: 'Popular' },
-  { id: 'EVENING', label: 'Bloque Vespertino', time: '04:30 PM – 07:30 PM', available: true, badge: 'Últimos cupos' },
+  {
+    id: 'MORNING',
+    label: 'Bloque Mañana',
+    time: '08:30 AM – 11:30 AM',
+    available: true,
+    badge: 'Recomendado',
+  },
+  {
+    id: 'AFTERNOON',
+    label: 'Bloque Tarde',
+    time: '01:00 PM – 04:00 PM',
+    available: true,
+    badge: 'Popular',
+  },
+  {
+    id: 'EVENING',
+    label: 'Bloque Vespertino',
+    time: '04:30 PM – 07:30 PM',
+    available: true,
+    badge: 'Últimos cupos',
+  },
 ];
 
 export default function AgendaPage() {
@@ -91,7 +113,9 @@ export default function AgendaPage() {
                       : 'border-dark-border bg-dark-surface/60 hover:bg-dark-hover text-gray-400'
                   }`}
                 >
-                  <span className="text-[11px] uppercase font-semibold text-gray-400">{item.dayName}</span>
+                  <span className="text-[11px] uppercase font-semibold text-gray-400">
+                    {item.dayName}
+                  </span>
                   <span className="text-lg font-bold text-white my-0.5">{item.dayNum}</span>
                   <span className="text-[10px] text-gray-400">{item.month}</span>
                 </button>
@@ -165,7 +189,9 @@ export default function AgendaPage() {
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label className="block text-xs font-semibold text-gray-300 mb-1">Nombre Completo</label>
+                <label className="block text-xs font-semibold text-gray-300 mb-1">
+                  Nombre Completo
+                </label>
                 <input
                   type="text"
                   required
@@ -176,7 +202,9 @@ export default function AgendaPage() {
                 />
               </div>
               <div>
-                <label className="block text-xs font-semibold text-gray-300 mb-1">WhatsApp / Teléfono</label>
+                <label className="block text-xs font-semibold text-gray-300 mb-1">
+                  WhatsApp / Teléfono
+                </label>
                 <input
                   type="tel"
                   required
@@ -189,7 +217,9 @@ export default function AgendaPage() {
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-gray-300 mb-1">Dirección Exacta y Referencia</label>
+              <label className="block text-xs font-semibold text-gray-300 mb-1">
+                Dirección Exacta y Referencia
+              </label>
               <textarea
                 required
                 rows={2}
@@ -220,7 +250,8 @@ export default function AgendaPage() {
           <div>
             <h2 className="text-2xl font-extrabold text-white">¡Cita Agendada Exitosamente!</h2>
             <p className="text-sm text-gray-300 mt-2 max-w-md mx-auto">
-              Hemos reservado el bloque para <span className="text-brand-400 font-semibold">{fullName}</span> en{' '}
+              Hemos reservado el bloque para{' '}
+              <span className="text-brand-400 font-semibold">{fullName}</span> en{' '}
               <span className="text-white font-medium">{address}</span>.
             </p>
           </div>

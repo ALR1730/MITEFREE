@@ -6,9 +6,10 @@ import { IUseCase } from '../common/use-case.interface.js';
 import { WALLET_REPOSITORY } from '../../infrastructure/database/database.tokens.js';
 
 @Injectable()
-export class RedeemWalletUseCase
-  implements IUseCase<RedeemWalletRequestDto, Result<WalletResponseDto, string>>
-{
+export class RedeemWalletUseCase implements IUseCase<
+  RedeemWalletRequestDto,
+  Result<WalletResponseDto, string>
+> {
   constructor(
     @Inject(WALLET_REPOSITORY)
     private readonly walletRepo: IWalletRepository,

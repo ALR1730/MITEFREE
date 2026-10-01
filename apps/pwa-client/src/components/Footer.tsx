@@ -11,30 +11,54 @@ export function Footer() {
             <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-brand-600 to-cyan-400 flex items-center justify-center text-dark-bg">
               <Sparkles className="w-4 h-4" />
             </div>
-            <span className="text-lg font-bold text-white tracking-tight">MITE<span className="text-brand-500">FREE</span></span>
+            <span className="text-lg font-bold text-white tracking-tight">
+              MITE<span className="text-brand-500">FREE</span>
+            </span>
           </div>
           <p className="text-sm text-gray-400 leading-relaxed">
-            Plataforma enterprise de desinfección profunda de ácaros y alérgenos con tecnología hospitalaria UV-C y extracción hidrocinética.
+            Plataforma enterprise de desinfección profunda de ácaros y alérgenos con tecnología
+            hospitalaria UV-C y extracción hidrocinética.
           </p>
           <div className="text-xs text-gray-500 font-mono">
-            Una división de ingeniería de <span className="text-brand-400 font-semibold">ALR COMPANY</span>.
+            Una división de ingeniería de{' '}
+            <span className="text-brand-400 font-semibold">ALR COMPANY</span>.
           </div>
         </div>
 
         {/* Quick Links */}
         <div>
-          <h4 className="text-sm font-semibold uppercase tracking-wider text-gray-300 mb-3">Servicios</h4>
+          <h4 className="text-sm font-semibold uppercase tracking-wider text-gray-300 mb-3">
+            Servicios
+          </h4>
           <ul className="space-y-2 text-sm text-gray-400">
-            <li><Link href="/cotizar" className="hover:text-brand-400 transition-colors">Cotizador Inteligente</Link></li>
-            <li><Link href="/agenda" className="hover:text-brand-400 transition-colors">Agendamiento Inmediato</Link></li>
-            <li><Link href="/mis-citas" className="hover:text-brand-400 transition-colors">Seguimiento de Cuadrilla</Link></li>
-            <li><Link href="/wallet" className="hover:text-brand-400 transition-colors">Billetera de Cashback</Link></li>
+            <li>
+              <Link href="/cotizar" className="hover:text-brand-400 transition-colors">
+                Cotizador Inteligente
+              </Link>
+            </li>
+            <li>
+              <Link href="/agenda" className="hover:text-brand-400 transition-colors">
+                Agendamiento Inmediato
+              </Link>
+            </li>
+            <li>
+              <Link href="/mis-citas" className="hover:text-brand-400 transition-colors">
+                Seguimiento de Cuadrilla
+              </Link>
+            </li>
+            <li>
+              <Link href="/wallet" className="hover:text-brand-400 transition-colors">
+                Billetera de Cashback
+              </Link>
+            </li>
           </ul>
         </div>
 
         {/* Cobertura */}
         <div>
-          <h4 className="text-sm font-semibold uppercase tracking-wider text-gray-300 mb-3">Zonas de Cobertura</h4>
+          <h4 className="text-sm font-semibold uppercase tracking-wider text-gray-300 mb-3">
+            Zonas de Cobertura
+          </h4>
           <ul className="space-y-2 text-sm text-gray-400">
             <li>Distrito Nacional (Piantini, Naco, Bella Vista)</li>
             <li>Santo Domingo Este (Alma Rosa, San Isidro)</li>
@@ -45,7 +69,9 @@ export function Footer() {
 
         {/* Garantías */}
         <div className="space-y-3">
-          <h4 className="text-sm font-semibold uppercase tracking-wider text-gray-300 mb-3">Garantía ALR</h4>
+          <h4 className="text-sm font-semibold uppercase tracking-wider text-gray-300 mb-3">
+            Garantía ALR
+          </h4>
           <div className="flex items-start gap-2.5 text-xs text-gray-400">
             <ShieldCheck className="w-4 h-4 text-brand-400 mt-0.5 shrink-0" />
             <span>99.9% de reducción de ácaros y bacterias garantizado por laboratorio.</span>
@@ -56,7 +82,9 @@ export function Footer() {
           </div>
           <div className="flex items-start gap-2.5 text-xs text-gray-400">
             <HeartHandshake className="w-4 h-4 text-brand-400 mt-0.5 shrink-0" />
-            <span>30% de anticipo seguro con devolución garantizada ante cancelaciones oportunas.</span>
+            <span>
+              30% de anticipo seguro con devolución garantizada ante cancelaciones oportunas.
+            </span>
           </div>
         </div>
       </div>

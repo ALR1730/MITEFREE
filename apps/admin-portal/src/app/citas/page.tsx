@@ -96,11 +96,27 @@ const INITIAL_APPOINTMENTS: KanbanAppointment[] = [
 ];
 
 const COLUMNS = [
-  { id: 'PENDING_DEPOSIT', label: 'Pendiente Anticipo (30%)', color: 'border-amber-500/40 text-amber-400' },
-  { id: 'CONFIRMED', label: 'Confirmada / Por Asignar', color: 'border-indigo-500/40 text-indigo-400' },
+  {
+    id: 'PENDING_DEPOSIT',
+    label: 'Pendiente Anticipo (30%)',
+    color: 'border-amber-500/40 text-amber-400',
+  },
+  {
+    id: 'CONFIRMED',
+    label: 'Confirmada / Por Asignar',
+    color: 'border-indigo-500/40 text-indigo-400',
+  },
   { id: 'IN_ROUTE', label: 'Técnico en Ruta (GPS)', color: 'border-cyan-500/40 text-cyan-400' },
-  { id: 'IN_SERVICE', label: 'En Limpieza Quirúrgica', color: 'border-purple-500/40 text-purple-400' },
-  { id: 'COMPLETED', label: 'Completada & Certificada', color: 'border-emerald-500/40 text-emerald-400' },
+  {
+    id: 'IN_SERVICE',
+    label: 'En Limpieza Quirúrgica',
+    color: 'border-purple-500/40 text-purple-400',
+  },
+  {
+    id: 'COMPLETED',
+    label: 'Completada & Certificada',
+    color: 'border-emerald-500/40 text-emerald-400',
+  },
 ];
 
 export default function CitasKanbanPage() {
@@ -166,7 +182,9 @@ export default function CitasKanbanPage() {
                   >
                     <div className="flex justify-between items-start">
                       <span className="font-mono font-bold text-indigo-400">{apt.id}</span>
-                      <span className="font-mono text-emerald-400 font-bold">${apt.deposit} USD (30%)</span>
+                      <span className="font-mono text-emerald-400 font-bold">
+                        ${apt.deposit} USD (30%)
+                      </span>
                     </div>
 
                     <div>

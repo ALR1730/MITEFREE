@@ -136,7 +136,8 @@ export default function WalletPage() {
           <div>
             <h3 className="text-base font-bold text-white">Programa de Embajadores & Referidos</h3>
             <p className="text-xs text-gray-400 mt-0.5">
-              Comparte tu código: tu amigo recibe $10 de descuento en su primera cita y tú ganas $20 en tu wallet.
+              Comparte tu código: tu amigo recibe $10 de descuento en su primera cita y tú ganas $20
+              en tu wallet.
             </p>
           </div>
         </div>

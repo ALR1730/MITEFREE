@@ -64,7 +64,8 @@ export default function HomePage() {
 
         {/* Subtitle */}
         <p className="mt-6 text-lg sm:text-xl text-gray-300 max-w-2xl font-light leading-relaxed">
-          Cotiza en 60 segundos con nuestro motor algorítmico, agenda una cuadrilla técnica certificada y gana cashback en cada servicio con MITEFREE.
+          Cotiza en 60 segundos con nuestro motor algorítmico, agenda una cuadrilla técnica
+          certificada y gana cashback en cada servicio con MITEFREE.
         </p>
 
         {/* Hero CTAs */}
@@ -127,7 +128,8 @@ export default function HomePage() {
             ¿Cómo funciona MITEFREE?
           </h3>
           <p className="text-sm text-gray-400 mt-2">
-            Eliminamos la fricción de cotizar por teléfono o mensajes sin respuesta con una experiencia digital instantánea.
+            Eliminamos la fricción de cotizar por teléfono o mensajes sin respuesta con una
+            experiencia digital instantánea.
           </p>
         </div>
 
@@ -174,7 +176,8 @@ export default function HomePage() {
               ¿Listo para una sala y camas libres de ácaros y malos olores?
             </h3>
             <p className="text-sm sm:text-base text-gray-300 leading-relaxed mb-6 font-light">
-              Obtén tu presupuesto formal al instante con desglose transparente y agenda tu cita para el bloque horario que mejor te convenga.
+              Obtén tu presupuesto formal al instante con desglose transparente y agenda tu cita
+              para el bloque horario que mejor te convenga.
             </p>
             <Link
               href="/cotizar"

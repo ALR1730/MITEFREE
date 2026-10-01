@@ -11,7 +11,8 @@
   "scripts": {
     "build": "tsc --noEmit",
     "test": "vitest run",
-    "type-check": "tsc --noEmit"
+    "type-check": "tsc --noEmit",
+    "lint": "prettier --check \"src/**/*.ts\""
   },
   "devDependencies": {
     "typescript": "^5.7.0",

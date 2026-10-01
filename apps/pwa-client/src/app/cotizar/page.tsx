@@ -23,31 +23,104 @@ interface FurnitureOption {
 
 const FURNITURE_OPTIONS: FurnitureOption[] = [
   { id: 'sofa-1', name: 'Sillón Individual', basePrice: 45, iconText: '🛋️', category: 'Sala' },
-  { id: 'sofa-2', name: 'Sofá 2 Puestos (Loveseat)', basePrice: 75, iconText: '🛋️', category: 'Sala' },
-  { id: 'sofa-3', name: 'Sofá 3 Puestos Estándar', basePrice: 100, iconText: '🛋️', category: 'Sala' },
-  { id: 'sofa-l', name: 'Sofá Modular en L (4-5 puestos)', basePrice: 160, iconText: '🛋️', category: 'Sala' },
-  { id: 'bed-queen', name: 'Colchón Queen Size', basePrice: 80, iconText: '🛏️', category: 'Dormitorio' },
-  { id: 'bed-king', name: 'Colchón King Size', basePrice: 95, iconText: '🛏️', category: 'Dormitorio' },
-  { id: 'dining-chair', name: 'Silla de Comedor Acolchada', basePrice: 18, iconText: '🪑', category: 'Comedor' },
+  {
+    id: 'sofa-2',
+    name: 'Sofá 2 Puestos (Loveseat)',
+    basePrice: 75,
+    iconText: '🛋️',
+    category: 'Sala',
+  },
+  {
+    id: 'sofa-3',
+    name: 'Sofá 3 Puestos Estándar',
+    basePrice: 100,
+    iconText: '🛋️',
+    category: 'Sala',
+  },
+  {
+    id: 'sofa-l',
+    name: 'Sofá Modular en L (4-5 puestos)',
+    basePrice: 160,
+    iconText: '🛋️',
+    category: 'Sala',
+  },
+  {
+    id: 'bed-queen',
+    name: 'Colchón Queen Size',
+    basePrice: 80,
+    iconText: '🛏️',
+    category: 'Dormitorio',
+  },
+  {
+    id: 'bed-king',
+    name: 'Colchón King Size',
+    basePrice: 95,
+    iconText: '🛏️',
+    category: 'Dormitorio',
+  },
+  {
+    id: 'dining-chair',
+    name: 'Silla de Comedor Acolchada',
+    basePrice: 18,
+    iconText: '🪑',
+    category: 'Comedor',
+  },
 ];
 
 const FABRIC_OPTIONS = [
-  { id: 'SYNTHETIC', name: 'Sintética / Poliéster', multiplier: 1.0, desc: 'Fácil extracción, secado estándar' },
-  { id: 'MICROFIBER', name: 'Microfibra / Gamuzina', multiplier: 1.1, desc: 'Tejido denso, retención moderada' },
-  { id: 'LINEN', name: 'Lino Natural', multiplier: 1.25, desc: 'Fibra delicada, requiere pH neutro' },
-  { id: 'VELVET', name: 'Terciopelo / Chenille', multiplier: 1.4, desc: 'Tratamiento especial anti-aplastamiento' },
-  { id: 'LEATHER', name: 'Cuero / Piel Genuina', multiplier: 1.6, desc: 'Nutrición con bálsamo e hidratación' },
+  {
+    id: 'SYNTHETIC',
+    name: 'Sintética / Poliéster',
+    multiplier: 1.0,
+    desc: 'Fácil extracción, secado estándar',
+  },
+  {
+    id: 'MICROFIBER',
+    name: 'Microfibra / Gamuzina',
+    multiplier: 1.1,
+    desc: 'Tejido denso, retención moderada',
+  },
+  {
+    id: 'LINEN',
+    name: 'Lino Natural',
+    multiplier: 1.25,
+    desc: 'Fibra delicada, requiere pH neutro',
+  },
+  {
+    id: 'VELVET',
+    name: 'Terciopelo / Chenille',
+    multiplier: 1.4,
+    desc: 'Tratamiento especial anti-aplastamiento',
+  },
+  {
+    id: 'LEATHER',
+    name: 'Cuero / Piel Genuina',
+    multiplier: 1.6,
+    desc: 'Nutrición con bálsamo e hidratación',
+  },
 ];
 
 const STAIN_OPTIONS = [
   { id: 'LIGHT', name: 'Leve / Mantenimiento', surcharge: 0, desc: 'Polvo habitual, uso diario' },
-  { id: 'MODERATE', name: 'Moderada / Grasa o Comida', surcharge: 15, desc: 'Manchas visibles, marcas de sudor' },
-  { id: 'CRITICAL', name: 'Crítica / Orina o Vómito', surcharge: 35, desc: 'Desinfección biológica enzimática' },
+  {
+    id: 'MODERATE',
+    name: 'Moderada / Grasa o Comida',
+    surcharge: 15,
+    desc: 'Manchas visibles, marcas de sudor',
+  },
+  {
+    id: 'CRITICAL',
+    name: 'Crítica / Orina o Vómito',
+    surcharge: 35,
+    desc: 'Desinfección biológica enzimática',
+  },
 ];
 
 export default function CotizadorPage() {
   const [currentStep, setCurrentStep] = useState<number>(1);
-  const [selectedFurniture, setSelectedFurniture] = useState<FurnitureOption>(FURNITURE_OPTIONS[2]!);
+  const [selectedFurniture, setSelectedFurniture] = useState<FurnitureOption>(
+    FURNITURE_OPTIONS[2]!,
+  );
   const [selectedFabric, setSelectedFabric] = useState(FABRIC_OPTIONS[0]!);
   const [selectedStain, setSelectedStain] = useState(STAIN_OPTIONS[0]!);
   const [promoCode, setPromoCode] = useState<string>('');
@@ -122,7 +195,8 @@ export default function CotizadorPage() {
             <span className="text-brand-400">1.</span> Selecciona el mueble a desinfectar:
           </h2>
           <p className="text-xs text-gray-400 mb-6">
-            Elige el tipo y tamaño de la pieza principal. Podrás añadir piezas secundarias más adelante.
+            Elige el tipo y tamaño de la pieza principal. Podrás añadir piezas secundarias más
+            adelante.
           </p>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
@@ -187,7 +261,9 @@ export default function CotizadorPage() {
                 >
                   <div className="flex justify-between items-center mb-1">
                     <span className="font-semibold text-sm text-white">{fab.name}</span>
-                    <span className="text-xs font-mono text-brand-400">+{Math.round((fab.multiplier - 1) * 100)}%</span>
+                    <span className="text-xs font-mono text-brand-400">
+                      +{Math.round((fab.multiplier - 1) * 100)}%
+                    </span>
                   </div>
                   <p className="text-xs text-gray-400">{fab.desc}</p>
                 </button>
@@ -200,7 +276,8 @@ export default function CotizadorPage() {
               <span className="text-brand-400">2B.</span> Nivel de Suciedad o Manchas:
             </h2>
             <p className="text-xs text-gray-400 mb-4">
-              Determina si se requiere formulación de enzimas bio-activas o tratamiento UV-C extendido.
+              Determina si se requiere formulación de enzimas bio-activas o tratamiento UV-C
+              extendido.
             </p>
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
@@ -301,14 +378,20 @@ export default function CotizadorPage() {
           <div className="p-5 rounded-xl bg-dark-surface/90 border border-brand-500/30 tech-glow space-y-3">
             <div className="flex justify-between items-baseline">
               <span className="text-sm font-semibold text-gray-300">Total del Servicio:</span>
-              <span className="text-2xl font-extrabold text-white font-mono">${total.toFixed(2)} <span className="text-xs font-normal text-gray-400">USD</span></span>
+              <span className="text-2xl font-extrabold text-white font-mono">
+                ${total.toFixed(2)} <span className="text-xs font-normal text-gray-400">USD</span>
+              </span>
             </div>
             <div className="flex justify-between items-center pt-2 border-t border-dark-border/60">
               <div>
                 <span className="text-xs font-bold text-brand-400">Anticipo Requerido (30%):</span>
-                <p className="text-[11px] text-gray-400">El restante 70% se abona contra servicio aprobado</p>
+                <p className="text-[11px] text-gray-400">
+                  El restante 70% se abona contra servicio aprobado
+                </p>
               </div>
-              <span className="text-lg font-bold text-brand-400 font-mono">${depositRequired.toFixed(2)} USD</span>
+              <span className="text-lg font-bold text-brand-400 font-mono">
+                ${depositRequired.toFixed(2)} USD
+              </span>
             </div>
           </div>
 

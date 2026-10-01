@@ -16,9 +16,10 @@ import { IUseCase } from '../common/use-case.interface.js';
 import { QUOTATION_REPOSITORY } from '../../infrastructure/database/database.tokens.js';
 
 @Injectable()
-export class CreateQuotationUseCase
-  implements IUseCase<CreateQuotationRequestDto, Result<QuotationResponseDto, string>>
-{
+export class CreateQuotationUseCase implements IUseCase<
+  CreateQuotationRequestDto,
+  Result<QuotationResponseDto, string>
+> {
   constructor(
     @Inject(QUOTATION_REPOSITORY)
     private readonly quotationRepo: IQuotationRepository,
@@ -44,7 +45,8 @@ export class CreateQuotationUseCase
       items.push(itemResult.value);
     }
 
-    const discountAmount = dto.discountCode === 'ALRPROMO' ? Money.create(15).unwrap() : Money.zero();
+    const discountAmount =
+      dto.discountCode === 'ALRPROMO' ? Money.create(15).unwrap() : Money.zero();
 
     const quoteResult = Quotation.create({
       id: randomUUID(),

@@ -16,9 +16,10 @@ import {
 } from '../../infrastructure/database/database.tokens.js';
 
 @Injectable()
-export class ScheduleAppointmentUseCase
-  implements IUseCase<CreateAppointmentDto, Result<AppointmentResponseDto, string>>
-{
+export class ScheduleAppointmentUseCase implements IUseCase<
+  CreateAppointmentDto,
+  Result<AppointmentResponseDto, string>
+> {
   constructor(
     @Inject(APPOINTMENT_REPOSITORY)
     private readonly appointmentRepo: IAppointmentRepository,

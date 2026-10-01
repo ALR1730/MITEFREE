@@ -1,4 +1,5 @@
 # 🛡️ MITEFREE — Enterprise Platform
+
 > **Organización:** [ALR COMPANY](https://github.com/ALR1730) — División de Ingeniería de Software  
 > **Líder de Proyecto & Founder:** [Angel Luis Rosario](https://github.com/ALR1730)  
 > **Mentor Académico:** Ing. Leonardo (Base formativa Programación III: C#, .NET 9, Onion Architecture)  
@@ -59,14 +60,14 @@ mitefree/
 
 ## 🗺️ Mapa de Equivalencias para Desarrolladores .NET
 
-| Capa TypeScript / Bun | Proyecto Equivalente .NET 9 ([RealEstateApp](https://github.com/ALR1730/RealEstateApp)) |
-| :--- | :--- |
-| `packages/domain-core` | `Mitefree.Core.Domain` |
-| `apps/api/src/application` | `Mitefree.Core.Application` (CQRS / MediatR) |
-| `packages/database` + `infra/persistence` | `Mitefree.Infrastructure.Persistence` (EF Core / Drizzle) |
-| `apps/api/src/infrastructure` | `Mitefree.Infrastructure.Shared` |
-| `apps/api/src/presentation` | `Mitefree.Presentation.WebAPI` |
-| `apps/pwa-client` & `admin-portal` | ASP.NET MVC / Razor / Blazor Views |
+| Capa TypeScript / Bun                     | Proyecto Equivalente .NET 9 ([RealEstateApp](https://github.com/ALR1730/RealEstateApp)) |
+| :---------------------------------------- | :-------------------------------------------------------------------------------------- |
+| `packages/domain-core`                    | `Mitefree.Core.Domain`                                                                  |
+| `apps/api/src/application`                | `Mitefree.Core.Application` (CQRS / MediatR)                                            |
+| `packages/database` + `infra/persistence` | `Mitefree.Infrastructure.Persistence` (EF Core / Drizzle)                               |
+| `apps/api/src/infrastructure`             | `Mitefree.Infrastructure.Shared`                                                        |
+| `apps/api/src/presentation`               | `Mitefree.Presentation.WebAPI`                                                          |
+| `apps/pwa-client` & `admin-portal`        | ASP.NET MVC / Razor / Blazor Views                                                      |
 
 ---
 
