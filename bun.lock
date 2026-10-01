@@ -10,6 +10,28 @@
         "typescript": "^5.7.0",
       },
     },
+    "apps/admin-portal": {
+      "name": "@mitefree/admin-portal",
+      "version": "1.0.0",
+      "dependencies": {
+        "@mitefree/shared-types": "workspace:*",
+        "clsx": "^2.1.1",
+        "lucide-react": "^1.49.0",
+        "next": "^15.1.7",
+        "react": "^19.0.0",
+        "react-dom": "^19.0.0",
+        "tailwind-merge": "^2.6.0",
+      },
+      "devDependencies": {
+        "@types/node": "^22.13.1",
+        "@types/react": "^19.0.8",
+        "@types/react-dom": "^19.0.3",
+        "autoprefixer": "^10.6.1",
+        "postcss": "^8.5.28",
+        "tailwindcss": "^3.4.17",
+        "typescript": "^5.7.3",
+      },
+    },
     "apps/api": {
       "name": "@mitefree/api",
       "version": "1.0.0",
@@ -219,6 +241,8 @@
     "@lukeed/csprng": ["@lukeed/csprng@1.1.0", "", {}, "sha512-Z7C/xXCiGWsg0KuKsHTKJxbWhpI3Vs5GwLfOean7MGyVFGqdRgBbAjOCh6u4bbjPc/8MJ2pZmK/0DLdCbivLDA=="],
 
     "@microsoft/tsdoc": ["@microsoft/tsdoc@0.16.0", "", {}, "sha512-xgAyonlVVS+q7Vc7qLW0UrJU7rSFcETRWsqdXZtjzRU8dF+6CkozTK4V4y1LwOX7j8r/vHphjDeMeGI4tNGeGA=="],
+
+    "@mitefree/admin-portal": ["@mitefree/admin-portal@workspace:apps/admin-portal"],
 
     "@mitefree/api": ["@mitefree/api@workspace:apps/api"],
 
