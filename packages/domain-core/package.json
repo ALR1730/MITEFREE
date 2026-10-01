@@ -1,0 +1,20 @@
+{
+  "name": "@mitefree/domain-core",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Pure domain core for MITEFREE enterprise - ALR COMPANY",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "build": "tsc --noEmit",
+    "test": "vitest run",
+    "type-check": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.0",
+    "vitest": "^3.0.0"
+  }
+}

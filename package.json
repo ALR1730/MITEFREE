@@ -1,0 +1,28 @@
+{
+  "name": "mitefree-monorepo",
+  "version": "1.0.0",
+  "private": true,
+  "description": "MITEFREE enterprise platform monorepo - ALR COMPANY",
+  "author": "Angel Luis Rosario <angelluisrosario12345@gmail.com>",
+  "license": "UNLICENSED",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "turbo run dev",
+    "build": "turbo run build",
+    "test": "turbo run test",
+    "test:unit": "turbo run test:unit",
+    "lint": "turbo run lint",
+    "type-check": "turbo run type-check",
+    "clean": "turbo run clean",
+    "format": "prettier --write \"**/*.{ts,tsx,md,json}\""
+  },
+  "devDependencies": {
+    "prettier": "^3.5.0",
+    "turbo": "^2.4.0",
+    "typescript": "^5.7.0"
+  },
+  "packageManager": "bun@1.4.2"
+}
