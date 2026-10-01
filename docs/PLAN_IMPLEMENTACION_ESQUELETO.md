@@ -12,17 +12,17 @@ Construir el **esqueleto base (scaffolding industrial)** de la solución MITEFRE
 
 ---
 
-## 📐 Matriz de Ejecución por Pasos
+## 📐 Matriz de Ejecución por Pasos (100% Completada)
 
 ```mermaid
 graph TD
-    P0["Paso 0: Runtime & Tooling<br/>(Bun/Node + Turborepo + Root Configs)"]
-    P1["Paso 1: Packages Centrales Compartidos<br/>(domain-core + database + shared-types)"]
-    P2["Paso 2: Core API (apps/api)<br/>(NestJS Clean Architecture + Healthcheck + Drizzle)"]
-    P3["Paso 3: PWA Cliente (apps/pwa-client)<br/>(Next.js 15 + App Router + PWA Manifest)"]
-    P4["Paso 4: Admin Portal (apps/admin-portal)<br/>(Next.js 15 + Dark Mode + Despacho UI)"]
-    P5["Paso 5: Quality Gate & Testing Suite<br/>(Vitest + TypeCheck + Arch Rules)"]
-    P6["Paso 6: Integración y Commit Inicial<br/>(Commit 'feat(core): scaffold monorepo' + Push)"]
+    P0["Paso 0: Runtime & Tooling (✅ COMPLETADO)<br/>(Bun + Turborepo + Root Configs)"]
+    P1["Paso 1: Packages Centrales Compartidos (✅ COMPLETADO)<br/>(domain-core + database + shared-types)"]
+    P2["Paso 2: Core API (✅ COMPLETADO)<br/>(NestJS Clean Architecture + Healthcheck + Drizzle)"]
+    P3["Paso 3: PWA Cliente (✅ COMPLETADO)<br/>(Next.js 15 + App Router + PWA Manifest)"]
+    P4["Paso 4: Admin Portal (✅ COMPLETADO)<br/>(Next.js 15 + Dark Mode + Despacho UI)"]
+    P5["Paso 5: Quality Gate & Testing Suite (✅ COMPLETADO)<br/>(Vitest + TypeCheck + Arch Rules)"]
+    P6["Paso 6: Integración y Push a GitHub (✅ COMPLETADO)<br/>(Commits 'feat(*)' publicados en main)"]
 
     P0 --> P1
     P1 --> P2
