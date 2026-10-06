@@ -9,6 +9,8 @@ import {
   Save,
   CheckCircle,
   ShieldAlert,
+  Calculator,
+  RefreshCw,
 } from 'lucide-react';
 
 export default function ConfiguracionPage() {
@@ -17,6 +19,19 @@ export default function ConfiguracionPage() {
   const [expirationDays, setExpirationDays] = useState<number>(7);
   const [commissionRate, setCommissionRate] = useState<number>(15);
   const [saved, setSaved] = useState<boolean>(false);
+
+  // Simulador de Cotización en Vivo (Admin Testing Tool)
+  const [simBasePrice, setSimBasePrice] = useState<number>(100);
+  const [simMultiplier, setSimMultiplier] = useState<number>(1.4); // Terciopelo
+  const [simSurcharge, setSimSurcharge] = useState<number>(35); // Crítica
+  const [simDiscount, setSimDiscount] = useState<number>(15);
+  const [simWallet, setSimWallet] = useState<number>(10);
+
+  const simSubtotal = Math.round((simBasePrice * simMultiplier + simSurcharge) * 100) / 100;
+  const simAfterDiscount = Math.max(0, simSubtotal - simDiscount);
+  const simTotal = Math.max(0, Math.round((simAfterDiscount - simWallet) * 100) / 100);
+  const simDeposit = Math.round(simTotal * (depositRate / 100) * 100) / 100;
+  const simRemaining = Math.round((simTotal - simDeposit) * 100) / 100;
 
   const handleSave = (e: React.FormEvent) => {
     e.preventDefault();
@@ -30,10 +45,10 @@ export default function ConfiguracionPage() {
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
           <h1 className="text-2xl font-extrabold text-white tracking-tight">
-            Matriz de Tarifas & Reglas de Negocio
+            Matriz de Tarifas & Reglas de Negocio (Fase 2)
           </h1>
           <p className="text-xs text-gray-400 mt-0.5">
-            Configuración global de precios canónicos, multiplicadores de tejidos y fidelización.
+            Configuración global de precios canónicos, multiplicadores de tejidos y motor algorítmico.
           </p>
         </div>
         <button
@@ -98,7 +113,7 @@ export default function ConfiguracionPage() {
               />
               <span className="text-xs font-bold text-cyan-400">Días</span>
             </div>
-            <span className="text-[10px] text-gray-500 block">Canónico: 7 días</span>
+            <span className="text-[10px] text-gray-500 block">Canónico: 7 días congelado</span>
           </div>
 
           <div className="p-4 rounded-xl bg-admin-sidebar border border-admin-border space-y-2">
@@ -121,7 +136,7 @@ export default function ConfiguracionPage() {
       <div className="admin-card rounded-2xl p-6 border border-admin-border space-y-4">
         <h3 className="text-sm font-bold uppercase tracking-wider text-gray-300 flex items-center gap-2">
           <Layers className="w-4 h-4 text-cyan-400" />
-          <span>Matriz de Multiplicadores por Tejido</span>
+          <span>Matriz Canónica de Multiplicadores por Tejido</span>
         </h3>
 
         <div className="overflow-x-auto">
@@ -144,27 +159,33 @@ export default function ConfiguracionPage() {
                 },
                 {
                   name: 'Microfibra / Gamuzina',
-                  mult: '1.10x',
-                  surcharge: '+10%',
-                  note: 'Doble pasada de succión',
+                  mult: '1.15x',
+                  surcharge: '+15%',
+                  note: 'Doble pasada de succión y cepillado',
                 },
                 {
                   name: 'Lino Natural',
-                  mult: '1.25x',
-                  surcharge: '+25%',
-                  note: 'pH 6.5 balanceado',
+                  mult: '1.20x',
+                  surcharge: '+20%',
+                  note: 'pH 6.5 balanceado con secado controlado',
                 },
                 {
                   name: 'Terciopelo / Chenille',
                   mult: '1.40x',
                   surcharge: '+40%',
-                  note: 'Protector anti-aplastamiento',
+                  note: 'Protector anti-aplastamiento de fibra',
                 },
                 {
                   name: 'Cuero / Piel Genuina',
-                  mult: '1.60x',
-                  surcharge: '+60%',
-                  note: 'Bálsamo hidratante UV',
+                  mult: '1.50x',
+                  surcharge: '+50%',
+                  note: 'Bálsamo hidratante UV y sellado de poro',
+                },
+                {
+                  name: 'Seda / Fibras Nobles',
+                  mult: '1.80x',
+                  surcharge: '+80%',
+                  note: 'Limpieza en seco artesanal especializada',
                 },
               ].map((row, i) => (
                 <tr key={i} className="hover:bg-admin-hover/40">
@@ -176,6 +197,80 @@ export default function ConfiguracionPage() {
               ))}
             </tbody>
           </table>
+        </div>
+      </div>
+
+      {/* Stain Surcharge Table & Live Simulator */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="admin-card rounded-2xl p-6 border border-admin-border space-y-4">
+          <h3 className="text-sm font-bold uppercase tracking-wider text-gray-300 flex items-center gap-2">
+            <ShieldAlert className="w-4 h-4 text-amber-400" />
+            <span>Recargos por Severidad de Manchas</span>
+          </h3>
+
+          <div className="space-y-3">
+            {[
+              { level: 'LIGHT (Leve)', fee: '$0.00 USD', desc: 'Mantenimiento preventivo general' },
+              { level: 'MODERATE (Moderada)', fee: '+$15.00 USD', desc: 'Grasa, café, comida visible' },
+              { level: 'CRITICAL (Crítica)', fee: '+$35.00 USD', desc: 'Orina, sangre, vómito (Enzimático)' },
+            ].map((stain, idx) => (
+              <div key={idx} className="p-3 rounded-xl bg-admin-sidebar border border-admin-border flex justify-between items-center">
+                <div>
+                  <span className="text-xs font-bold text-white block">{stain.level}</span>
+                  <span className="text-[11px] text-gray-400">{stain.desc}</span>
+                </div>
+                <span className="font-mono text-xs font-bold text-amber-400">{stain.fee}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Live Quotation Engine Simulator */}
+        <div className="admin-card rounded-2xl p-6 border border-indigo-500/30 admin-glow-indigo space-y-4">
+          <h3 className="text-sm font-bold uppercase tracking-wider text-white flex items-center gap-2">
+            <Calculator className="w-4 h-4 text-indigo-400" />
+            <span>Simulador Algorítmico en Vivo (DDD)</span>
+          </h3>
+
+          <div className="space-y-2 text-xs">
+            <div className="flex justify-between items-center">
+              <span className="text-gray-400">Base ($):</span>
+              <input
+                type="number"
+                value={simBasePrice}
+                onChange={(e) => setSimBasePrice(Number(e.target.value))}
+                className="w-20 px-2 py-1 rounded bg-admin-sidebar border border-admin-border text-white text-right font-mono"
+              />
+            </div>
+            <div className="flex justify-between items-center">
+              <span className="text-gray-400">Multiplicador Tela:</span>
+              <span className="font-mono text-cyan-400">x{simMultiplier.toFixed(2)}</span>
+            </div>
+            <div className="flex justify-between items-center">
+              <span className="text-gray-400">Recargo Mancha ($):</span>
+              <span className="font-mono text-amber-400">+${simSurcharge.toFixed(2)}</span>
+            </div>
+            <div className="flex justify-between items-center pt-2 border-t border-admin-border">
+              <span className="text-gray-300 font-bold">Subtotal Calculado:</span>
+              <span className="font-mono text-white font-bold">${simSubtotal.toFixed(2)}</span>
+            </div>
+            <div className="flex justify-between items-center text-emerald-400">
+              <span>Descuento Aplicado:</span>
+              <span className="font-mono">-${simDiscount.toFixed(2)}</span>
+            </div>
+            <div className="flex justify-between items-center text-cyan-400">
+              <span>Canje Cashback:</span>
+              <span className="font-mono">-${simWallet.toFixed(2)}</span>
+            </div>
+            <div className="flex justify-between items-center pt-2 border-t border-admin-border text-sm">
+              <span className="text-white font-extrabold">Total Final:</span>
+              <span className="font-mono text-indigo-400 font-extrabold">${simTotal.toFixed(2)} USD</span>
+            </div>
+            <div className="flex justify-between items-center pt-1 text-[11px] text-gray-400">
+              <span>Anticipo ({depositRate}%): <b className="text-white font-mono">${simDeposit.toFixed(2)}</b></span>
+              <span>Saldo (70%): <b className="text-white font-mono">${simRemaining.toFixed(2)}</b></span>
+            </div>
+          </div>
         </div>
       </div>
     </form>

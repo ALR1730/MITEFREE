@@ -23,3 +23,7 @@ export * from './entities/wallet.entity.js';
 export type * from './repositories/quotation-repository.interface.js';
 export type * from './repositories/appointment-repository.interface.js';
 export type * from './repositories/wallet-repository.interface.js';
+
+// Engines (Domain Services)
+export * from './engines/quotation-pricing.engine.js';
+
