@@ -32,6 +32,7 @@ export type * from './repositories/payment-repository.interface.js';
 export * from './engines/quotation-pricing.engine.js';
 export * from './engines/route-optimization.engine.js';
 export * from './engines/deposit-policy.engine.js';
+export * from './engines/loyalty-policy.engine.js';
 
 
 

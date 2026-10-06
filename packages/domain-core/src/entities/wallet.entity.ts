@@ -154,4 +154,82 @@ export class Wallet {
       }),
     );
   }
+
+  creditReferralBonus(
+    transactionId: string,
+    amount: Money,
+    sourceReference: string,
+    now: Date = new Date(),
+  ): Result<Wallet, string> {
+    if (amount.isZero() || amount.amount < 0) {
+      return fail('Referral bonus amount must be greater than zero');
+    }
+    const newBalanceResult = this.balance.add(amount);
+    if (newBalanceResult.isFailure) {
+      return fail(newBalanceResult.error);
+    }
+
+    const tx = new WalletTransaction({
+      id: transactionId,
+      walletId: this.id,
+      type: WalletTransactionType.ReferralBonus,
+      amount,
+      balanceBefore: this.balance,
+      balanceAfter: newBalanceResult.value,
+      sourceReference,
+      createdAt: now,
+    });
+
+    return ok(
+      new Wallet({
+        id: this.id,
+        userId: this.userId,
+        balance: newBalanceResult.value,
+        version: this.version + 1,
+        transactions: [...this.transactions, tx],
+      }),
+    );
+  }
+
+  adjustBalance(
+    transactionId: string,
+    amount: Money,
+    isPositive: boolean,
+    reason: string,
+    now: Date = new Date(),
+  ): Result<Wallet, string> {
+    if (amount.isZero() || amount.amount < 0) {
+      return fail('Adjustment amount must be positive');
+    }
+
+    const newBalanceResult = isPositive
+      ? this.balance.add(amount)
+      : this.balance.subtract(amount);
+
+    if (newBalanceResult.isFailure) {
+      return fail(newBalanceResult.error);
+    }
+
+    const tx = new WalletTransaction({
+      id: transactionId,
+      walletId: this.id,
+      type: WalletTransactionType.Adjustment,
+      amount,
+      balanceBefore: this.balance,
+      balanceAfter: newBalanceResult.value,
+      sourceReference: `ADJUSTMENT: ${reason}`,
+      createdAt: now,
+    });
+
+    return ok(
+      new Wallet({
+        id: this.id,
+        userId: this.userId,
+        balance: newBalanceResult.value,
+        version: this.version + 1,
+        transactions: [...this.transactions, tx],
+      }),
+    );
+  }
 }
+

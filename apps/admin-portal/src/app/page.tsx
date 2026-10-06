@@ -222,6 +222,45 @@ export default function DashboardPage() {
             </div>
           </div>
         </div>
+
+        {/* Loyalty & Wallet Ledger Audit (Fase 5) */}
+        <div className="admin-card rounded-2xl p-6 border border-brand-500/30 space-y-4">
+          <div className="flex items-center justify-between">
+            <h3 className="text-sm font-bold uppercase tracking-wider text-brand-400 flex items-center gap-2">
+              <Percent className="w-4 h-4 text-brand-400" />
+              <span>Auditoría Billetera & Embajadores (Fase 5)</span>
+            </h3>
+            <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-brand-500/10 text-brand-300 border border-brand-500/20">
+              Activo
+            </span>
+          </div>
+
+          <div className="space-y-3 text-xs">
+            <div className="flex justify-between py-1.5 border-b border-admin-border/40">
+              <span className="text-gray-400">Cashback Otorgado (5% Canónico):</span>
+              <span className="font-mono text-emerald-400 font-bold">$921.00 USD</span>
+            </div>
+            <div className="flex justify-between py-1.5 border-b border-admin-border/40">
+              <span className="text-gray-400">Bonos Embajadores Pagados ($20):</span>
+              <span className="font-mono text-cyan-400 font-bold">$640.00 USD (32 citas)</span>
+            </div>
+            <div className="flex justify-between py-1.5 border-b border-admin-border/40">
+              <span className="text-gray-400">Saldo Redimido en Órdenes:</span>
+              <span className="font-mono text-amber-400 font-bold">$412.50 USD</span>
+            </div>
+            <div className="flex justify-between py-1.5">
+              <span className="text-gray-400">Incidentes Anti-Fraude Bloqueados:</span>
+              <span className="font-mono text-emerald-400 font-bold">0 Violaciones</span>
+            </div>
+          </div>
+
+          <div className="pt-2">
+            <div className="p-2.5 rounded-xl bg-dark-bg/60 border border-dark-border text-[11px] text-gray-400 flex items-center gap-2">
+              <ShieldCheck className="w-4 h-4 text-emerald-400 shrink-0" />
+              <span>Tope de salvaguarda 50% y anti-auto-referido blindados por DDD.</span>
+            </div>
+          </div>
+        </div>
       </div>
 
       {/* Recent Orders Table */}

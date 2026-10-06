@@ -155,9 +155,10 @@ export default function CotizadorPage() {
   const discountApplied = Math.max(routeDiscountAmount, couponDiscount);
   const subtotalAfterDiscount = Math.max(0, subtotal - discountApplied);
 
-  // Billetera cashback
+  // Billetera cashback (Tope de salvaguarda financiera del 50% según LoyaltyPolicyEngine)
+  const maxRedeemableCap = Math.round(subtotalAfterDiscount * 0.5 * 100) / 100;
   const walletCreditApplied = useWalletCashback
-    ? Math.min(walletBalanceAvailable, subtotalAfterDiscount)
+    ? Math.min(walletBalanceAvailable, maxRedeemableCap)
     : 0;
 
   const total = Math.max(0, Math.round((subtotalAfterDiscount - walletCreditApplied) * 100) / 100);
@@ -165,11 +166,17 @@ export default function CotizadorPage() {
   const remainingBalance = Math.round((total - depositRequired) * 100) / 100; // 70% restante
 
   const handleApplyCoupon = () => {
-    if (promoCode.trim().toUpperCase() === 'ALRPROMO') {
+    const code = promoCode.trim().toUpperCase();
+    if (code === 'ALRPROMO') {
       setCouponDiscount(15);
       setCouponApplied(true);
+    } else if (code.startsWith('MITE-')) {
+      // Código de Embajador / Referido: 10% de bienvenida
+      const referralDisc = Math.round(subtotal * 0.1 * 100) / 100;
+      setCouponDiscount(referralDisc);
+      setCouponApplied(true);
     } else {
-      alert('Cupón no válido. Prueba usando ALRPROMO para $15 de descuento.');
+      alert('Código no reconocido. Prueba ALRPROMO ($15 USD) o el código de embajador MITE-ANGEL-2026 (10% OFF).');
     }
   };
 
@@ -531,7 +538,7 @@ export default function CotizadorPage() {
                   <span>Billetera Cashback</span>
                 </span>
                 <p className="text-[11px] text-gray-400">
-                  Saldo disponible: ${walletBalanceAvailable.toFixed(2)} USD
+                  Saldo: ${walletBalanceAvailable.toFixed(2)} | Máx redimible (50%): ${maxRedeemableCap.toFixed(2)} USD
                 </p>
               </div>
               <button

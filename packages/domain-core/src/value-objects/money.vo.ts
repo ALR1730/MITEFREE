@@ -40,6 +40,10 @@ export class Money {
     return new Money(0, currency);
   }
 
+  static from(amount: number, currency: string = 'USD'): Money {
+    return new Money(Math.round(amount * 100), currency);
+  }
+
   static fromCents(cents: number, currency: string = 'USD'): Money {
     return new Money(cents, currency);
   }
