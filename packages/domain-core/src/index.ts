@@ -20,14 +20,18 @@ export * from './value-objects/email-address.vo.js';
 export * from './entities/quotation.entity.js';
 export * from './entities/appointment.entity.js';
 export * from './entities/wallet.entity.js';
+export * from './entities/payment.entity.js';
 
 // Repositories (Interfaces)
 export type * from './repositories/quotation-repository.interface.js';
 export type * from './repositories/appointment-repository.interface.js';
 export type * from './repositories/wallet-repository.interface.js';
+export type * from './repositories/payment-repository.interface.js';
 
 // Engines (Domain Services)
 export * from './engines/quotation-pricing.engine.js';
 export * from './engines/route-optimization.engine.js';
+export * from './engines/deposit-policy.engine.js';
+
 
 

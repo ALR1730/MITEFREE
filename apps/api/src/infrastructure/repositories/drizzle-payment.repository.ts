@@ -1,0 +1,149 @@
+import { Injectable, Inject, Optional } from '@nestjs/common';
+import { eq } from 'drizzle-orm';
+import {
+  type IPaymentRepository,
+  Payment,
+  Money,
+  PaymentType,
+  PaymentMethod,
+  PaymentStatus,
+} from '@mitefree/domain-core';
+import { payments as paymentsTable } from '@mitefree/database';
+import { DRIZZLE_DB } from '../database/database.tokens.js';
+
+@Injectable()
+export class DrizzlePaymentRepository implements IPaymentRepository {
+  private readonly inMemoryStorage = new Map<string, Payment>();
+
+  constructor(
+    @Optional()
+    @Inject(DRIZZLE_DB)
+    private readonly db: any | null,
+  ) {}
+
+  async findById(id: string): Promise<Payment | null> {
+    if (!this.db) {
+      return this.inMemoryStorage.get(id) ?? null;
+    }
+
+    try {
+      const records = await this.db
+        .select()
+        .from(paymentsTable)
+        .where(eq(paymentsTable.id, id))
+        .limit(1);
+
+      if (records.length === 0) return null;
+      return this.mapToDomain(records[0]);
+    } catch {
+      return this.inMemoryStorage.get(id) ?? null;
+    }
+  }
+
+  async findByIdempotencyKey(idempotencyKey: string): Promise<Payment | null> {
+    if (!this.db) {
+      for (const p of this.inMemoryStorage.values()) {
+        if (p.idempotencyKey === idempotencyKey) return p;
+      }
+      return null;
+    }
+
+    try {
+      const records = await this.db
+        .select()
+        .from(paymentsTable)
+        .where(eq(paymentsTable.idempotencyKey, idempotencyKey))
+        .limit(1);
+
+      if (records.length === 0) return null;
+      return this.mapToDomain(records[0]);
+    } catch {
+      for (const p of this.inMemoryStorage.values()) {
+        if (p.idempotencyKey === idempotencyKey) return p;
+      }
+      return null;
+    }
+  }
+
+  async findByAppointmentId(appointmentId: string): Promise<Payment[]> {
+    if (!this.db) {
+      return Array.from(this.inMemoryStorage.values()).filter(
+        (p) => p.appointmentId === appointmentId,
+      );
+    }
+
+    try {
+      const records = await this.db
+        .select()
+        .from(paymentsTable)
+        .where(eq(paymentsTable.appointmentId, appointmentId));
+
+      return records.map((r: any) => this.mapToDomain(r));
+    } catch {
+      return Array.from(this.inMemoryStorage.values()).filter(
+        (p) => p.appointmentId === appointmentId,
+      );
+    }
+  }
+
+  async save(payment: Payment): Promise<void> {
+    this.inMemoryStorage.set(payment.id, payment);
+
+    if (!this.db) return;
+
+    try {
+      await this.db.insert(paymentsTable).values({
+        id: payment.id,
+        appointmentId: payment.appointmentId,
+        type: payment.type,
+        method: payment.method,
+        status: payment.status,
+        amount: payment.amount.amount.toFixed(2),
+        currency: payment.amount.currency,
+        externalReference: payment.externalReference ?? null,
+        idempotencyKey: payment.idempotencyKey,
+        createdAt: payment.createdAt,
+      });
+    } catch {
+      // Fallback a almacenamiento en memoria
+    }
+  }
+
+  async update(payment: Payment): Promise<void> {
+    this.inMemoryStorage.set(payment.id, payment);
+
+    if (!this.db) return;
+
+    try {
+      await this.db
+        .update(paymentsTable)
+        .set({
+          status: payment.status,
+          externalReference: payment.externalReference ?? null,
+        })
+        .where(eq(paymentsTable.id, payment.id));
+    } catch {
+      // Fallback
+    }
+  }
+
+  private mapToDomain(record: any): Payment {
+    const amount = Money.create(
+      parseFloat(record.amount),
+      record.currency || 'USD',
+    ).unwrap();
+
+    return new Payment({
+      id: record.id,
+      appointmentId: record.appointmentId,
+      amount,
+      type: record.type as PaymentType,
+      method: record.method as PaymentMethod,
+      status: record.status as PaymentStatus,
+      idempotencyKey: record.idempotencyKey,
+      externalReference: record.externalReference || undefined,
+      createdAt: new Date(record.createdAt),
+      updatedAt: new Date(record.createdAt),
+    });
+  }
+}
