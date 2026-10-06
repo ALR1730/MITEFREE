@@ -4,4 +4,6 @@ export * from './dtos/appointment.dto.js';
 export * from './dtos/wallet.dto.js';
 export * from './dtos/pricing-preview.dto.js';
 export * from './dtos/quotation-photo.dto.js';
+export * from './dtos/appointment-schedule.dto.js';
+
 

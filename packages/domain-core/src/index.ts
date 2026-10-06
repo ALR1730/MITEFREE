@@ -7,6 +7,8 @@ export * from './enums/fabric-type.enum.js';
 export * from './enums/stain-severity.enum.js';
 export * from './enums/payment-type.enum.js';
 export * from './enums/wallet-transaction-type.enum.js';
+export * from './enums/zone-code.enum.js';
+export * from './enums/time-slot-code.enum.js';
 
 // Value Objects
 export * from './value-objects/money.vo.js';
@@ -26,4 +28,6 @@ export type * from './repositories/wallet-repository.interface.js';
 
 // Engines (Domain Services)
 export * from './engines/quotation-pricing.engine.js';
+export * from './engines/route-optimization.engine.js';
+
 

@@ -12,6 +12,9 @@ import {
   Truck,
   Sparkles,
   AlertCircle,
+  Zap,
+  ChevronRight,
+  UserCheck,
 } from 'lucide-react';
 
 interface KanbanAppointment {
@@ -19,6 +22,7 @@ interface KanbanAppointment {
   client: string;
   phone: string;
   zone: string;
+  zoneCode: 'ZONE-DN' | 'ZONE-SDE' | 'ZONE-SDO' | 'ZONE-SDN';
   address: string;
   timeSlot: string;
   service: string;
@@ -28,111 +32,115 @@ interface KanbanAppointment {
   technician?: string;
 }
 
+const TECHNICIAN_CREWS = [
+  'Ing. Kelvin Rosario (Cuadrilla #01 - DN)',
+  'Marcos Santana (Cuadrilla #02 - SDE)',
+  'Darío Tavárez (Cuadrilla #03 - SDO)',
+  'Junior Polanco (Cuadrilla #04 - SDN)',
+];
+
 const INITIAL_APPOINTMENTS: KanbanAppointment[] = [
   {
     id: 'APT-101',
     client: 'Laura Mercedes',
     phone: '+1 809-555-0123',
     zone: 'Distrito Nacional',
+    zoneCode: 'ZONE-DN',
     address: 'Piantini, Calle Geraldino #45',
     timeSlot: '08:30 – 11:30 AM',
     service: 'Sofá L 5 Puestos (Terciopelo) + Mancha Crítica',
     total: 259.0,
     deposit: 77.7,
     status: 'IN_ROUTE',
-    technician: 'Ing. Kelvin Rosario (Cuadrilla #04)',
+    technician: 'Ing. Kelvin Rosario (Cuadrilla #01 - DN)',
   },
   {
     id: 'APT-102',
     client: 'Carlos Méndez',
     phone: '+1 809-555-0188',
     zone: 'Santo Domingo Este',
+    zoneCode: 'ZONE-SDE',
     address: 'Alma Rosa, C/ Costa Rica #12',
     timeSlot: '01:00 – 04:00 PM',
     service: '2 Colchones Queen + Sillón Individual',
     total: 205.0,
     deposit: 61.5,
     status: 'CONFIRMED',
-    technician: 'Sin asignar',
+    technician: 'Marcos Santana (Cuadrilla #02 - SDE)',
   },
   {
     id: 'APT-103',
     client: 'Dra. Patricia Gómez',
-    phone: '+1 809-555-0144',
+    phone: '+1 809-555-0944',
     zone: 'Distrito Nacional',
-    address: 'Naco, Av. Tiradentes Torre Sol',
-    timeSlot: '08:30 – 11:30 AM',
-    service: 'Juego de Sala Lino Natural',
-    total: 340.0,
-    deposit: 102.0,
-    status: 'COMPLETED',
-    technician: 'Cuadrilla #01 (Luis Almonte)',
+    zoneCode: 'ZONE-DN',
+    address: 'Bella Vista, Av. Sarasota #108',
+    timeSlot: '04:30 – 07:30 PM',
+    service: 'Juego de Sala 3+2 Puestos (Lino)',
+    total: 180.0,
+    deposit: 54.0,
+    status: 'CONFIRMED',
+    technician: 'Ing. Kelvin Rosario (Cuadrilla #01 - DN)',
   },
   {
     id: 'APT-104',
-    client: 'Manuel Tavárez',
-    phone: '+1 809-555-0177',
+    client: 'Miguelina Valenzuela',
+    phone: '+1 809-555-0612',
     zone: 'Santo Domingo Oeste',
-    address: 'Alameda, Manzana B casa 8',
-    timeSlot: '04:30 – 07:30 PM',
-    service: 'Sofá 3 Puestos Microfibra',
-    total: 110.0,
-    deposit: 33.0,
+    zoneCode: 'ZONE-SDO',
+    address: 'Alameda, C/ Manzanos #3',
+    timeSlot: '08:30 – 11:30 AM',
+    service: 'Colchón King Size + Tratamiento UV-C',
+    total: 115.0,
+    deposit: 34.5,
     status: 'PENDING_DEPOSIT',
   },
   {
     id: 'APT-105',
-    client: 'Sofía Reyes',
-    phone: '+1 809-555-0199',
+    client: 'Roberto Salcedo',
+    phone: '+1 809-555-0777',
     zone: 'Distrito Nacional',
-    address: 'Bella Vista, Av. Sarasota',
-    timeSlot: '01:00 – 04:00 PM',
-    service: 'Colchón King Size + Desinfección UV-C',
-    total: 95.0,
-    deposit: 28.5,
-    status: 'IN_SERVICE',
-    technician: 'Cuadrilla #03 (Pedro Henríquez)',
+    zoneCode: 'ZONE-DN',
+    address: 'Naco, C/ Fantino Falco #18',
+    timeSlot: '08:30 – 11:30 AM',
+    service: 'Sofá 3 Puestos (Microfibra) + 4 Sillas Comedor',
+    total: 187.0,
+    deposit: 56.1,
+    status: 'COMPLETED',
+    technician: 'Ing. Kelvin Rosario (Cuadrilla #01 - DN)',
   },
 ];
 
-const COLUMNS = [
-  {
-    id: 'PENDING_DEPOSIT',
-    label: 'Pendiente Anticipo (30%)',
-    color: 'border-amber-500/40 text-amber-400',
-  },
-  {
-    id: 'CONFIRMED',
-    label: 'Confirmada / Por Asignar',
-    color: 'border-indigo-500/40 text-indigo-400',
-  },
-  { id: 'IN_ROUTE', label: 'Técnico en Ruta (GPS)', color: 'border-cyan-500/40 text-cyan-400' },
-  {
-    id: 'IN_SERVICE',
-    label: 'En Limpieza Quirúrgica',
-    color: 'border-purple-500/40 text-purple-400',
-  },
-  {
-    id: 'COMPLETED',
-    label: 'Completada & Certificada',
-    color: 'border-emerald-500/40 text-emerald-400',
-  },
+const COLUMNS: Array<{
+  id: KanbanAppointment['status'];
+  title: string;
+  color: string;
+  border: string;
+}> = [
+  { id: 'PENDING_DEPOSIT', title: 'Pendiente Anticipo (30%)', color: 'text-amber-400', border: 'border-amber-500/30' },
+  { id: 'CONFIRMED', title: 'Confirmadas / En Agenda', color: 'text-cyan-400', border: 'border-cyan-500/30' },
+  { id: 'IN_ROUTE', title: 'Cuadrilla en Ruta', color: 'text-indigo-400', border: 'border-indigo-500/30' },
+  { id: 'IN_SERVICE', title: 'Servicio en Proceso', color: 'text-brand-400', border: 'border-brand-500/30' },
+  { id: 'COMPLETED', title: 'Completado y Liquidado', color: 'text-emerald-400', border: 'border-emerald-500/30' },
 ];
 
-export default function CitasKanbanPage() {
+export default function CitasPage() {
   const [appointments, setAppointments] = useState<KanbanAppointment[]>(INITIAL_APPOINTMENTS);
+  const [filterZone, setFilterZone] = useState<string>('ALL');
 
-  const moveNext = (id: string) => {
+  const filteredAppointments = filterZone === 'ALL'
+    ? appointments
+    : appointments.filter((a) => a.zoneCode === filterZone);
+
+  const moveStatus = (id: string, nextStatus: KanbanAppointment['status']) => {
     setAppointments((prev) =>
-      prev.map((apt) => {
-        if (apt.id !== id) return apt;
-        if (apt.status === 'PENDING_DEPOSIT') return { ...apt, status: 'CONFIRMED' };
-        if (apt.status === 'CONFIRMED')
-          return { ...apt, status: 'IN_ROUTE', technician: 'Ing. Kelvin Rosario (Cuadrilla #04)' };
-        if (apt.status === 'IN_ROUTE') return { ...apt, status: 'IN_SERVICE' };
-        if (apt.status === 'IN_SERVICE') return { ...apt, status: 'COMPLETED' };
-        return apt;
-      }),
+      prev.map((apt) => (apt.id === id ? { ...apt, status: nextStatus } : apt)),
+    );
+  };
+
+  const assignTech = (id: string, techName: string) => {
+    setAppointments((prev) =>
+      prev.map((apt) => (apt.id === id ? { ...apt, technician: techName } : apt)),
     );
   };
 
@@ -141,88 +149,149 @@ export default function CitasKanbanPage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
+          <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-cyan-500/10 text-cyan-400 text-xs font-semibold mb-1 border border-cyan-500/20">
+            <Truck className="w-3.5 h-3.5" />
+            <span>Tablero de Despacho & Optimización de Rutas (Fase 3)</span>
+          </div>
           <h1 className="text-2xl font-extrabold text-white tracking-tight">
-            Tablero Kanban de Despacho & Citas
+            Control de Citas & Flota por Zonas
           </h1>
-          <p className="text-xs text-gray-400 mt-0.5">
-            Flujo de estados de servicio en tiempo real para Gran Santo Domingo.
+          <p className="text-xs text-gray-400">
+            Monitoreo en tiempo real, transiciones de estado de servicio y asignación de cuadrillas.
           </p>
         </div>
+
+        {/* Zone filter */}
         <div className="flex items-center gap-2">
-          <span className="text-xs px-3 py-1.5 rounded-xl bg-admin-card border border-admin-border text-gray-300 font-mono">
-            Total en Tablero: {appointments.length} Citas
-          </span>
+          <Filter className="w-4 h-4 text-gray-400" />
+          <select
+            value={filterZone}
+            onChange={(e) => setFilterZone(e.target.value)}
+            className="px-3 py-1.5 rounded-lg bg-admin-sidebar border border-admin-border text-xs text-white focus:outline-none focus:border-cyan-500 font-medium"
+          >
+            <option value="ALL">Todas las Zonas</option>
+            <option value="ZONE-DN">Distrito Nacional (DN)</option>
+            <option value="ZONE-SDE">Santo Domingo Este (SDE)</option>
+            <option value="ZONE-SDO">Santo Domingo Oeste (SDO)</option>
+            <option value="ZONE-SDN">Santo Domingo Norte (SDN)</option>
+          </select>
         </div>
       </div>
 
-      {/* Kanban Board Horizontal Scroll */}
-      <div className="grid grid-cols-1 md:grid-cols-5 gap-4 overflow-x-auto pb-4">
+      {/* Kanban Board Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4 overflow-x-auto pb-4">
         {COLUMNS.map((col) => {
-          const colAppointments = appointments.filter((a) => a.status === col.id);
+          const colAppointments = filteredAppointments.filter((a) => a.status === col.id);
 
           return (
             <div
               key={col.id}
-              className="bg-admin-sidebar/90 rounded-2xl p-4 border border-admin-border flex flex-col min-w-[260px] h-[calc(100vh-14rem)]"
+              className="flex flex-col min-w-[260px] rounded-2xl bg-admin-sidebar/80 border border-admin-border p-3.5 space-y-3"
             >
-              {/* Column Header */}
-              <div className={`pb-3 mb-3 border-b ${col.color} flex justify-between items-center`}>
-                <h3 className="text-xs font-bold uppercase tracking-wider">{col.label}</h3>
-                <span className="w-5 h-5 rounded-full bg-admin-card border border-admin-border text-[11px] font-mono flex items-center justify-center font-bold text-white">
+              <div className="flex items-center justify-between pb-2 border-b border-admin-border/60">
+                <span className={`text-xs font-extrabold uppercase tracking-wider ${col.color}`}>
+                  {col.title}
+                </span>
+                <span className="w-5 h-5 rounded-full bg-admin-card flex items-center justify-center text-[10px] font-bold text-gray-300">
                   {colAppointments.length}
                 </span>
               </div>
 
-              {/* Cards List */}
-              <div className="flex-1 overflow-y-auto space-y-3 pr-1">
+              <div className="space-y-3 flex-1">
                 {colAppointments.map((apt) => (
                   <div
                     key={apt.id}
-                    className="admin-card rounded-xl p-4 border border-admin-border space-y-3 admin-card-hover transition-all text-xs"
+                    className="p-3.5 rounded-xl bg-admin-card border border-admin-border hover:border-gray-600 transition-all space-y-2.5 shadow-sm"
                   >
                     <div className="flex justify-between items-start">
-                      <span className="font-mono font-bold text-indigo-400">{apt.id}</span>
-                      <span className="font-mono text-emerald-400 font-bold">
-                        ${apt.deposit} USD (30%)
+                      <span className="font-mono text-[10px] font-bold px-2 py-0.5 rounded bg-admin-sidebar text-cyan-400 border border-cyan-500/20">
+                        {apt.id}
+                      </span>
+                      <span className="text-[10px] font-mono text-gray-400 px-1.5 py-0.5 rounded bg-dark-bg/60">
+                        {apt.zoneCode}
                       </span>
                     </div>
 
                     <div>
-                      <h4 className="font-bold text-white text-sm">{apt.client}</h4>
-                      <p className="text-gray-400 text-[11px] mt-0.5">{apt.service}</p>
+                      <h4 className="text-xs font-bold text-white">{apt.client}</h4>
+                      <p className="text-[11px] text-gray-400 truncate">{apt.service}</p>
                     </div>
 
-                    <div className="space-y-1.5 text-[11px] text-gray-400 border-t border-admin-border/50 pt-2">
+                    <div className="space-y-1 text-[11px] text-gray-400">
                       <div className="flex items-center gap-1.5">
-                        <MapPin className="w-3.5 h-3.5 text-cyan-400 shrink-0" />
+                        <Clock className="w-3.5 h-3.5 text-gray-500" />
+                        <span className="font-mono text-gray-300">{apt.timeSlot}</span>
+                      </div>
+                      <div className="flex items-center gap-1.5">
+                        <MapPin className="w-3.5 h-3.5 text-gray-500" />
                         <span className="truncate">{apt.address}</span>
                       </div>
-                      <div className="flex items-center gap-1.5">
-                        <Clock className="w-3.5 h-3.5 text-indigo-400 shrink-0" />
-                        <span>{apt.timeSlot}</span>
-                      </div>
-                      {apt.technician && (
-                        <div className="flex items-center gap-1.5 text-brand-400 font-semibold pt-1">
-                          <Truck className="w-3.5 h-3.5 shrink-0" />
-                          <span className="truncate">{apt.technician}</span>
-                        </div>
-                      )}
                     </div>
 
-                    {apt.status !== 'COMPLETED' && (
-                      <button
-                        onClick={() => moveNext(apt.id)}
-                        className="w-full mt-2 py-1.5 px-3 rounded-lg bg-indigo-600/30 hover:bg-indigo-600/50 border border-indigo-500/40 text-[11px] font-bold text-indigo-300 flex items-center justify-center gap-1.5 transition-colors active:scale-95"
+                    {/* Technician selector */}
+                    <div className="pt-2 border-t border-admin-border/50">
+                      <label className="text-[10px] text-gray-500 block mb-1 flex items-center gap-1">
+                        <UserCheck className="w-3 h-3 text-cyan-400" />
+                        <span>Cuadrilla Asignada:</span>
+                      </label>
+                      <select
+                        value={apt.technician || ''}
+                        onChange={(e) => assignTech(apt.id, e.target.value)}
+                        className="w-full px-2 py-1 rounded bg-admin-sidebar border border-admin-border text-[10px] text-white focus:outline-none focus:border-cyan-500 truncate"
                       >
-                        <span>Avanzar Estado</span>
-                        <ArrowRight className="w-3 h-3" />
-                      </button>
-                    )}
+                        <option value="">Sin Asignar</option>
+                        {TECHNICIAN_CREWS.map((t, idx) => (
+                          <option key={idx} value={t}>
+                            {t}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+
+                    {/* Status Advance Buttons */}
+                    <div className="flex items-center justify-between pt-2 border-t border-admin-border/40 text-[10px]">
+                      <span className="font-mono font-bold text-white">
+                        ${apt.total.toFixed(2)} USD
+                      </span>
+
+                      {col.id === 'PENDING_DEPOSIT' && (
+                        <button
+                          onClick={() => moveStatus(apt.id, 'CONFIRMED')}
+                          className="px-2 py-1 rounded bg-cyan-500/20 text-cyan-300 hover:bg-cyan-500/30 font-semibold"
+                        >
+                          Confirmar →
+                        </button>
+                      )}
+                      {col.id === 'CONFIRMED' && (
+                        <button
+                          onClick={() => moveStatus(apt.id, 'IN_ROUTE')}
+                          className="px-2 py-1 rounded bg-indigo-500/20 text-indigo-300 hover:bg-indigo-500/30 font-semibold"
+                        >
+                          En Ruta →
+                        </button>
+                      )}
+                      {col.id === 'IN_ROUTE' && (
+                        <button
+                          onClick={() => moveStatus(apt.id, 'IN_SERVICE')}
+                          className="px-2 py-1 rounded bg-brand-500/20 text-brand-300 hover:bg-brand-500/30 font-semibold"
+                        >
+                          Iniciar →
+                        </button>
+                      )}
+                      {col.id === 'IN_SERVICE' && (
+                        <button
+                          onClick={() => moveStatus(apt.id, 'COMPLETED')}
+                          className="px-2 py-1 rounded bg-emerald-500/20 text-emerald-300 hover:bg-emerald-500/30 font-semibold"
+                        >
+                          Finalizar ✓
+                        </button>
+                      )}
+                    </div>
                   </div>
                 ))}
 
                 {colAppointments.length === 0 && (
-                  <div className="h-32 flex items-center justify-center text-[11px] text-gray-600 border border-dashed border-admin-border/60 rounded-xl">
+                  <div className="p-6 text-center text-gray-500 text-xs italic">
                     Sin citas en este estado
                   </div>
                 )}

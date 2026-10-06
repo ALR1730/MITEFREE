@@ -2,31 +2,44 @@ import {
   Controller,
   Post,
   Get,
+  Patch,
   Body,
   Param,
+  Query,
   UsePipes,
   BadRequestException,
   NotFoundException,
   HttpStatus,
   HttpCode,
 } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse, ApiParam } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiQuery } from '@nestjs/swagger';
 import {
   CreateAppointmentSchema,
+  TransitionAppointmentStatusSchema,
+  AssignTechnicianSchema,
   type CreateAppointmentDto,
   type AppointmentResponseDto,
-  type TimeSlotDto,
+  type TimeSlotAvailabilityDto,
+  type GetAvailableSlotsQueryDto,
+  type TransitionAppointmentStatusDto,
+  type AssignTechnicianDto,
 } from '@mitefree/shared-types';
 import { ZodValidationPipe } from '../pipes/zod-validation.pipe.js';
 import { ScheduleAppointmentUseCase } from '../../application/appointments/schedule-appointment.use-case.js';
 import { GetAppointmentUseCase } from '../../application/appointments/get-appointment.use-case.js';
+import { GetAvailableSlotsUseCase } from '../../application/appointments/get-available-slots.use-case.js';
+import { TransitionAppointmentStatusUseCase } from '../../application/appointments/transition-status.use-case.js';
+import { AssignTechnicianUseCase } from '../../application/appointments/assign-technician.use-case.js';
 
-@ApiTags('Appointments (Citas y Rutas)')
+@ApiTags('Appointments (Citas & Logística por Zonas)')
 @Controller('appointments')
 export class AppointmentsController {
   constructor(
     private readonly scheduleAppointmentUseCase: ScheduleAppointmentUseCase,
     private readonly getAppointmentUseCase: GetAppointmentUseCase,
+    private readonly getAvailableSlotsUseCase: GetAvailableSlotsUseCase,
+    private readonly transitionStatusUseCase: TransitionAppointmentStatusUseCase,
+    private readonly assignTechnicianUseCase: AssignTechnicianUseCase,
   ) {}
 
   @Post()
@@ -46,32 +59,73 @@ export class AppointmentsController {
   }
 
   @Get('slots')
-  @ApiOperation({ summary: 'Get active dispatch time slots' })
-  @ApiResponse({ status: 200, description: 'List of available time slots.' })
-  getSlots(): TimeSlotDto[] {
-    return [
-      {
-        id: 'slot-morning-01',
-        code: 'MORNING',
-        startTime: '08:30',
-        endTime: '11:30',
-        zoneCode: 'DISTRITO_NACIONAL',
-      },
-      {
-        id: 'slot-afternoon-02',
-        code: 'AFTERNOON',
-        startTime: '13:00',
-        endTime: '16:00',
-        zoneCode: 'DISTRITO_NACIONAL',
-      },
-      {
-        id: 'slot-evening-03',
-        code: 'EVENING',
-        startTime: '16:30',
-        endTime: '19:30',
-        zoneCode: 'DISTRITO_NACIONAL',
-      },
-    ];
+  @ApiOperation({ summary: 'Get active dispatch time slots with dynamic Route Promotion detection' })
+  @ApiQuery({ name: 'zoneCode', required: false, example: 'ZONE-DN' })
+  @ApiQuery({ name: 'date', required: false, example: '2026-10-15' })
+  @ApiResponse({ status: 200, description: 'List of evaluated time slots.' })
+  async getSlots(
+    @Query('zoneCode') zoneCode?: string,
+    @Query('date') date?: string,
+  ): Promise<TimeSlotAvailabilityDto[]> {
+    const defaultZone = (zoneCode || 'ZONE-DN') as any;
+    const defaultDate = date || new Date().toISOString().split('T')[0]!;
+
+    const queryDto: GetAvailableSlotsQueryDto = {
+      zoneCode: defaultZone,
+      date: defaultDate,
+    };
+
+    const result = await this.getAvailableSlotsUseCase.execute(queryDto);
+
+    if (result.isFailure) {
+      throw new BadRequestException(result.error);
+    }
+
+    return result.value;
+  }
+
+  @Patch(':id/status')
+  @ApiOperation({ summary: 'Transition appointment state (Confirmed -> EnRoute -> InProgress -> Completed)' })
+  @ApiParam({ name: 'id', description: 'UUID of the appointment' })
+  @ApiResponse({ status: 200, description: 'Appointment status transitioned.' })
+  @ApiResponse({ status: 400, description: 'Invalid status transition invariant.' })
+  @UsePipes(new ZodValidationPipe(TransitionAppointmentStatusSchema))
+  async transitionStatus(
+    @Param('id') id: string,
+    @Body() body: TransitionAppointmentStatusDto,
+  ): Promise<AppointmentResponseDto> {
+    const result = await this.transitionStatusUseCase.execute({
+      appointmentId: id,
+      nextStatus: body.nextStatus as any,
+    });
+
+    if (result.isFailure) {
+      throw new BadRequestException(result.error);
+    }
+
+    return result.value;
+  }
+
+  @Patch(':id/assign')
+  @ApiOperation({ summary: 'Assign technician crew to appointment with anti-double-booking check' })
+  @ApiParam({ name: 'id', description: 'UUID of the appointment' })
+  @ApiResponse({ status: 200, description: 'Technician assigned successfully.' })
+  @ApiResponse({ status: 400, description: 'Technician has schedule collision.' })
+  @UsePipes(new ZodValidationPipe(AssignTechnicianSchema))
+  async assignTechnician(
+    @Param('id') id: string,
+    @Body() body: AssignTechnicianDto,
+  ): Promise<AppointmentResponseDto> {
+    const result = await this.assignTechnicianUseCase.execute({
+      appointmentId: id,
+      technicianId: body.technicianId,
+    });
+
+    if (result.isFailure) {
+      throw new BadRequestException(result.error);
+    }
+
+    return result.value;
   }
 
   @Get(':id')
