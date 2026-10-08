@@ -22,6 +22,7 @@ export function Sidebar({ onClose }: { onClose?: () => void } = {}) {
     { name: 'Dashboard Ejecutivo', href: '/dashboard', icon: LayoutDashboard },
     { name: 'Tablero de Citas', href: '/citas', icon: CalendarDays },
     { name: 'Cuadrillas Técnicas', href: '/tecnicos', icon: Users },
+    { name: 'Directorio de Clientes', href: '/clientes', icon: Users },
     { name: 'Conciliación de Pagos', href: '/pagos', icon: CreditCard },
     { name: 'Matriz de Tarifas', href: '/configuracion', icon: Sliders },
   ];

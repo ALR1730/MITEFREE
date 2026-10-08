@@ -22,6 +22,11 @@ import type {
   ApplyWalletRedemptionDto,
   WalletRedemptionResponseDto,
   DiscountPolicyConfig,
+  RegisterClientDto,
+  LoginDto,
+  WhatsAppOtpLoginDto,
+  AuthResponseDto,
+  UserProfileDto,
 } from '@mitefree/shared-types';
 
 export type ApiResult<T> =
@@ -155,5 +160,30 @@ export const apiClient = {
 
   config: {
     getDiscounts: () => request<DiscountPolicyConfig>('/config/discounts'),
+  },
+
+  auth: {
+    register: (body: RegisterClientDto) =>
+      request<AuthResponseDto>('/auth/register', {
+        method: 'POST',
+        body: JSON.stringify(body),
+      }),
+
+    login: (body: LoginDto) =>
+      request<AuthResponseDto>('/auth/login', {
+        method: 'POST',
+        body: JSON.stringify(body),
+      }),
+
+    loginWithOtp: (body: WhatsAppOtpLoginDto) =>
+      request<AuthResponseDto>('/auth/whatsapp-otp', {
+        method: 'POST',
+        body: JSON.stringify(body),
+      }),
+
+    getMe: (token?: string) =>
+      request<UserProfileDto>('/auth/me', {
+        headers: token ? { Authorization: `Bearer ${token}` } : {},
+      }),
   },
 };

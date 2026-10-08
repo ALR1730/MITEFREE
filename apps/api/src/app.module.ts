@@ -6,6 +6,7 @@ import { AppointmentsModule } from './modules/appointments.module.js';
 import { WalletsModule } from './modules/wallets.module.js';
 import { PaymentsModule } from './modules/payments.module.js';
 import { ConfigModule } from './modules/config.module.js';
+import { AuthModule } from './modules/auth.module.js';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { ConfigModule } from './modules/config.module.js';
     WalletsModule,
     PaymentsModule,
     ConfigModule,
+    AuthModule,
   ],
 })
 export class AppModule {}

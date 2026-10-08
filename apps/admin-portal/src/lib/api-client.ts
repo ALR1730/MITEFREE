@@ -12,6 +12,7 @@ import type {
   ReviewPaymentDto,
   QuotationResponseDto,
   DiscountPolicyConfig,
+  ClientDirectoryItemDto,
 } from '@mitefree/shared-types';
 
 export type ApiResult<T> =
@@ -122,5 +123,9 @@ export const adminApiClient = {
         method: 'PUT',
         body: JSON.stringify(body),
       }),
+  },
+
+  clients: {
+    getAll: () => request<ClientDirectoryItemDto[]>('/auth/clients'),
   },
 };

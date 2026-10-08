@@ -4,6 +4,7 @@ import './globals.css';
 import { Navbar } from '../components/Navbar';
 import { BottomNav } from '../components/BottomNav';
 import { Footer } from '../components/Footer';
+import { AuthProvider } from '../context/AuthContext';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -43,10 +44,12 @@ export default function RootLayout({
       <body
         className={`${inter.variable} min-h-screen bg-dark-bg text-gray-100 antialiased selection:bg-brand-500/30 selection:text-brand-300`}
       >
-        <Navbar />
-        <main className="min-h-[calc(100vh-4rem)] pb-24 md:pb-0">{children}</main>
-        <Footer />
-        <BottomNav />
+        <AuthProvider>
+          <Navbar />
+          <main className="min-h-[calc(100vh-4rem)] pb-24 md:pb-0">{children}</main>
+          <Footer />
+          <BottomNav />
+        </AuthProvider>
 
         {/* PWA Service Worker: Limpieza en dev y activación en producción */}
         <script

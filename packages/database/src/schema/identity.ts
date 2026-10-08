@@ -5,6 +5,8 @@ export const users = pgTable('users', {
   email: text('email').notNull().unique(),
   phone: text('phone').notNull().unique(),
   fullName: text('full_name').notNull(),
+  passwordHash: text('password_hash'),
+  zoneCode: text('zone_code'),
   role: text('role').notNull().default('CLIENT'), // CLIENT, TECHNICIAN, ADMIN
   isActive: boolean('is_active').notNull().default(true),
   createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),

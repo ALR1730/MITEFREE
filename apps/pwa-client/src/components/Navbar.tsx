@@ -3,10 +3,22 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Sparkles, Calendar, ShieldCheck, Wallet, ArrowRight } from 'lucide-react';
+import {
+  Sparkles,
+  Calendar,
+  ShieldCheck,
+  Wallet,
+  ArrowRight,
+  User,
+  LogOut,
+  LogIn,
+  UserPlus,
+} from 'lucide-react';
+import { useAuth } from '@/context/AuthContext';
 
 export function Navbar() {
   const pathname = usePathname();
+  const { user, isAuthenticated, logout } = useAuth();
 
   const navLinks = [
     { href: '/', label: 'Inicio' },
@@ -56,22 +68,63 @@ export function Navbar() {
           })}
         </nav>
 
-        {/* CTA & WhatsApp Button */}
-        <div className="flex items-center gap-2.5">
-          <a
-            href="https://wa.me/18095134773"
-            target="_blank"
-            rel="noreferrer"
-            className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-semibold hover:bg-emerald-500/20 transition-colors"
-          >
-            <span>(809) 513-4773</span>
-          </a>
+        {/* User Session & CTA Buttons */}
+        <div className="flex items-center gap-2">
+          {isAuthenticated && user ? (
+            /* Logged In User Pill */
+            <div className="flex items-center gap-2 pl-2">
+              <Link
+                href="/wallet"
+                className="hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-cyan-300 text-xs font-mono font-bold hover:bg-cyan-500/20 transition-all"
+                title="Ver tu saldo de Cashback"
+              >
+                <Wallet className="w-3.5 h-3.5 text-cyan-400" />
+                <span>RD$ {user.walletBalance.toLocaleString('es-DO')}</span>
+              </Link>
+
+              <div className="flex items-center gap-2 p-1 pl-2 rounded-xl bg-dark-surface/90 border border-dark-border">
+                <div className="w-7 h-7 rounded-lg bg-gradient-to-tr from-brand-500 to-cyan-400 flex items-center justify-center text-dark-bg font-extrabold text-xs shadow-sm">
+                  {user.fullName.charAt(0).toUpperCase()}
+                </div>
+                <span className="text-xs font-bold text-white hidden md:inline truncate max-w-[100px]">
+                  {user.fullName.split(' ')[0]}
+                </span>
+                <button
+                  type="button"
+                  onClick={logout}
+                  title="Cerrar Sesión"
+                  className="p-1 rounded-lg text-gray-400 hover:text-rose-400 hover:bg-rose-500/10 transition-all"
+                >
+                  <LogOut className="w-4 h-4" />
+                </button>
+              </div>
+            </div>
+          ) : (
+            /* Guest Auth Buttons */
+            <div className="flex items-center gap-1.5">
+              <Link
+                href="/login"
+                className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg text-gray-300 hover:text-white hover:bg-dark-hover transition-all"
+              >
+                <LogIn className="w-3.5 h-3.5 text-cyan-400" />
+                <span>Ingresar</span>
+              </Link>
+              <Link
+                href="/registro"
+                className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg bg-cyan-500/15 border border-cyan-500/30 text-cyan-300 hover:bg-cyan-500/25 transition-all"
+              >
+                <UserPlus className="w-3.5 h-3.5" />
+                <span>Registrarse</span>
+              </Link>
+            </div>
+          )}
+
           <Link
             href="/cotizar"
-            className="flex items-center gap-2 px-4 py-2 text-sm font-semibold rounded-lg bg-gradient-to-r from-brand-500 to-cyan-500 text-dark-bg tech-glow hover:opacity-95 transition-all shadow-md active:scale-95"
+            className="hidden lg:flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-semibold rounded-lg bg-gradient-to-r from-brand-500 to-cyan-500 text-dark-bg tech-glow hover:opacity-95 transition-all shadow-md active:scale-95 ml-1"
           >
-            <span>Cotizar en 60s</span>
-            <ArrowRight className="w-4 h-4" />
+            <span>Cotizar 60s</span>
+            <ArrowRight className="w-3.5 h-3.5" />
           </Link>
         </div>
       </div>

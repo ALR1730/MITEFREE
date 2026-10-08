@@ -18,6 +18,7 @@ import {
   Sparkles,
 } from 'lucide-react';
 import { apiClient } from '@/lib/api-client';
+import { useAuth } from '@/context/AuthContext';
 import { DEFAULT_DISCOUNT_POLICY, type DiscountPolicyConfig } from '@mitefree/shared-types';
 
 const COVERAGE_ZONES = [
@@ -71,6 +72,8 @@ function AgendaContent() {
   const quotationId = searchParams.get('quotationId');
   const totalParam = searchParams.get('total');
 
+  const { user } = useAuth();
+
   const [selectedZone, setSelectedZone] = useState<string>(COVERAGE_ZONES[0]!.id);
   const [selectedSlot, setSelectedSlot] = useState<string>(TIME_SLOTS[0]!.id);
   const [selectedDayOffset, setSelectedDayOffset] = useState<number>(1);
@@ -81,6 +84,16 @@ function AgendaContent() {
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [bookedAppointmentId, setBookedAppointmentId] = useState<string | null>(null);
   const [dynamicSlots, setDynamicSlots] = useState(TIME_SLOTS);
+
+  // Prellenar automáticamente con datos del cliente autenticado
+  useEffect(() => {
+    if (user) {
+      if (user.fullName) setFullName(user.fullName);
+      if (user.phone) setPhone(user.phone);
+      if (user.address) setAddress(user.address);
+      if (user.zoneCode) setSelectedZone(user.zoneCode);
+    }
+  }, [user]);
 
   // Política dinámica de descuentos configurada en el Admin Portal
   const [discountPolicy, setDiscountPolicy] =
@@ -179,7 +192,7 @@ function AgendaContent() {
           quotationId && quotationId.length === 36
             ? quotationId
             : '00000000-0000-0000-0000-000000000001',
-        clientId: 'a0000000-0000-0000-0000-000000000001',
+        clientId: user?.id || 'a0000000-0000-0000-0000-000000000001',
         timeSlotId:
           selectedSlot && selectedSlot.length === 36
             ? selectedSlot

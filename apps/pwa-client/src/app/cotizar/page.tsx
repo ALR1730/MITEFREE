@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { useAuth } from '@/context/AuthContext';
 import { apiClient } from '@/lib/api-client';
 import type { FabricType, StainSeverity } from '@mitefree/shared-types';
 import {
@@ -258,6 +259,7 @@ const STAIN_OPTIONS = [
 
 export default function CotizadorPage() {
   const router = useRouter();
+  const { user } = useAuth();
   const [currentStep, setCurrentStep] = useState<number>(1);
   const [isSubmittingQuotation, setIsSubmittingQuotation] = useState<boolean>(false);
   const [persistedQuotationId, setPersistedQuotationId] = useState<string | null>(null);
@@ -529,7 +531,7 @@ ALR COMPANY — División de Ingeniería de Software`;
 
     try {
       const quotationPayload = {
-        clientId: 'a0000000-0000-0000-0000-000000000001',
+        clientId: user?.id || 'a0000000-0000-0000-0000-000000000001',
         items: selectedItems.map((item) => ({
           furnitureType: item.name,
           fabricType: selectedFabric.id as FabricType,
@@ -563,7 +565,7 @@ ALR COMPANY — División de Ingeniería de Software`;
     setIsSubmittingQuotation(true);
     try {
       const quotationPayload = {
-        clientId: 'a0000000-0000-0000-0000-000000000001',
+        clientId: user?.id || 'a0000000-0000-0000-0000-000000000001',
         items: selectedItems.map((item) => ({
           furnitureType: item.name,
           fabricType: selectedFabric.id as FabricType,
