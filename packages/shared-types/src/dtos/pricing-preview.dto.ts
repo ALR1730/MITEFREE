@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { FabricTypeEnum, StainSeverityEnum } from './quotation.dto.js';
+import { FabricTypeEnum, StainSeverityEnum } from './quotation.dto';
 
 export const PricePreviewItemSchema = z.object({
   furnitureType: z.string().min(2, 'Furniture type must be at least 2 characters'),
