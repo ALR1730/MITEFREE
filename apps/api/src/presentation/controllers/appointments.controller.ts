@@ -11,6 +11,7 @@ import {
   NotFoundException,
   HttpStatus,
   HttpCode,
+  Inject,
 } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiQuery } from '@nestjs/swagger';
 import {
@@ -24,12 +25,14 @@ import {
   type TransitionAppointmentStatusDto,
   type AssignTechnicianDto,
 } from '@mitefree/shared-types';
+import type { IAppointmentRepository } from '@mitefree/domain-core';
 import { ZodValidationPipe } from '../pipes/zod-validation.pipe.js';
 import { ScheduleAppointmentUseCase } from '../../application/appointments/schedule-appointment.use-case.js';
 import { GetAppointmentUseCase } from '../../application/appointments/get-appointment.use-case.js';
 import { GetAvailableSlotsUseCase } from '../../application/appointments/get-available-slots.use-case.js';
 import { TransitionAppointmentStatusUseCase } from '../../application/appointments/transition-status.use-case.js';
 import { AssignTechnicianUseCase } from '../../application/appointments/assign-technician.use-case.js';
+import { APPOINTMENT_REPOSITORY } from '../../infrastructure/database/database.tokens.js';
 
 @ApiTags('Appointments (Citas & Logística por Zonas)')
 @Controller('appointments')
@@ -40,7 +43,27 @@ export class AppointmentsController {
     private readonly getAvailableSlotsUseCase: GetAvailableSlotsUseCase,
     private readonly transitionStatusUseCase: TransitionAppointmentStatusUseCase,
     private readonly assignTechnicianUseCase: AssignTechnicianUseCase,
+    @Inject(APPOINTMENT_REPOSITORY)
+    private readonly appointmentRepo: IAppointmentRepository,
   ) {}
+
+  @Get()
+  @ApiOperation({ summary: 'List all appointments for Kanban dispatch board' })
+  @ApiResponse({ status: 200, description: 'List of all appointments.' })
+  async listAll(): Promise<AppointmentResponseDto[]> {
+    const list = await this.appointmentRepo.findAll();
+    return list.map((apt) => ({
+      id: apt.id,
+      quotationId: apt.quotationId,
+      clientId: apt.clientId,
+      technicianId: apt.technicianId,
+      timeSlotId: apt.timeSlotId,
+      scheduledDate: apt.scheduledDate.toISOString().split('T')[0]!,
+      status: apt.status,
+      createdAt: apt.createdAt.toISOString(),
+      updatedAt: apt.updatedAt.toISOString(),
+    }));
+  }
 
   @Post()
   @HttpCode(HttpStatus.CREATED)

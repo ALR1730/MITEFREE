@@ -43,6 +43,26 @@ export class PaymentsController {
     private readonly paymentRepo: IPaymentRepository,
   ) {}
 
+  @Get()
+  @ApiOperation({ summary: 'List all payment records for admin reconciliation' })
+  @ApiResponse({ status: 200, description: 'List of all payment records.' })
+  async listAll(): Promise<PaymentRecordResponseDto[]> {
+    const records = await this.paymentRepo.findAll();
+    return records.map((p) => ({
+      id: p.id,
+      appointmentId: p.appointmentId,
+      amount: p.amount.amount,
+      currency: p.amount.currency,
+      type: p.type,
+      method: p.method,
+      status: p.status,
+      idempotencyKey: p.idempotencyKey,
+      externalReference: p.externalReference,
+      createdAt: p.createdAt.toISOString(),
+      updatedAt: p.updatedAt.toISOString(),
+    }));
+  }
+
   @Post('intent')
   @HttpCode(HttpStatus.CREATED)
   @ApiOperation({ summary: 'Create a Stripe Payment Intent with strict idempotency' })

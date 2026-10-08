@@ -46,6 +46,33 @@ export class DrizzleAppointmentRepository implements IAppointmentRepository {
     }
   }
 
+  async findAll(): Promise<Appointment[]> {
+    if (!this.db) {
+      return Array.from(this.memoryStore.values());
+    }
+
+    try {
+      const rows = await this.db.select().from(appointments);
+      return rows.map(
+        (row) =>
+          new Appointment({
+            id: row.id,
+            quotationId: row.quotationId,
+            clientId: row.clientId,
+            technicianId: row.technicianId ?? undefined,
+            timeSlotId: row.timeSlotId,
+            scheduledDate: row.scheduledDate,
+            status: row.status as AppointmentStatus,
+            createdAt: row.createdAt,
+            updatedAt: row.updatedAt,
+          }),
+      );
+    } catch (error) {
+      this.logger.error('Error finding all appointments, falling back to memory', error);
+      return Array.from(this.memoryStore.values());
+    }
+  }
+
   async findByTechnicianAndDate(technicianId: string, date: Date): Promise<Appointment[]> {
     if (!this.db) {
       return Array.from(this.memoryStore.values()).filter(

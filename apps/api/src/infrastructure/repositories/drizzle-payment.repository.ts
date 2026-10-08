@@ -88,6 +88,19 @@ export class DrizzlePaymentRepository implements IPaymentRepository {
     }
   }
 
+  async findAll(): Promise<Payment[]> {
+    if (!this.db) {
+      return Array.from(this.inMemoryStorage.values());
+    }
+
+    try {
+      const records = await this.db.select().from(paymentsTable);
+      return records.map((r) => this.mapToDomain(r));
+    } catch {
+      return Array.from(this.inMemoryStorage.values());
+    }
+  }
+
   async save(payment: Payment): Promise<void> {
     this.inMemoryStorage.set(payment.id, payment);
 
