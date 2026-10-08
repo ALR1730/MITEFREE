@@ -12,6 +12,7 @@
   "scripts": {
     "dev": "turbo run dev",
     "build": "turbo run build",
+    "db:seed": "turbo run db:seed",
     "test": "turbo run test",
     "test:unit": "turbo run test:unit",
     "lint": "turbo run lint",

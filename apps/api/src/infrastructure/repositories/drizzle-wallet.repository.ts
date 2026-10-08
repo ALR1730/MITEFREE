@@ -6,7 +6,7 @@ import {
   WalletTransactionType,
   Money,
 } from '@mitefree/domain-core';
-import { type DatabaseClient, wallets, walletTransactions } from '@mitefree/database';
+import { type DatabaseClient, wallets, walletTransactions, SEED_DATA } from '@mitefree/database';
 import { eq, and } from 'drizzle-orm';
 import { DRIZZLE_DB } from '../database/database.tokens.js';
 
@@ -18,7 +18,37 @@ export class DrizzleWalletRepository implements IWalletRepository {
   constructor(
     @Inject(DRIZZLE_DB)
     private readonly db: DatabaseClient | null,
-  ) {}
+  ) {
+    if (!this.db) {
+      for (const w of SEED_DATA.wallets) {
+        const txs = SEED_DATA.walletTransactions
+          .filter((t) => t.walletId === w.id)
+          .map(
+            (t) =>
+              new WalletTransaction({
+                id: t.id,
+                walletId: t.walletId,
+                type: t.type as WalletTransactionType,
+                amount: Money.from(Number(t.amount), 'USD'),
+                balanceBefore: Money.from(Number(t.balanceBefore), 'USD'),
+                balanceAfter: Money.from(Number(t.balanceAfter), 'USD'),
+                sourceReference: t.sourceReference,
+                createdAt: new Date(),
+              }),
+          );
+
+        const wallet = Wallet.reconstitute({
+          id: w.id,
+          userId: w.userId,
+          balance: Money.from(Number(w.balance), 'USD'),
+          version: w.version,
+          transactions: txs,
+        });
+
+        this.memoryStore.set(w.id, wallet);
+      }
+    }
+  }
 
   async findById(id: string): Promise<Wallet | null> {
     if (!this.db) {

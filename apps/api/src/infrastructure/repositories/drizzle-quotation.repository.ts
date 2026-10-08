@@ -8,7 +8,7 @@ import {
   StainSeverity,
   QuotationStatus,
 } from '@mitefree/domain-core';
-import { type DatabaseClient, quotations, quotationItems } from '@mitefree/database';
+import { type DatabaseClient, quotations, quotationItems, SEED_DATA } from '@mitefree/database';
 import { eq } from 'drizzle-orm';
 import { DRIZZLE_DB } from '../database/database.tokens.js';
 
@@ -21,7 +21,39 @@ export class DrizzleQuotationRepository implements IQuotationRepository {
   constructor(
     @Inject(DRIZZLE_DB)
     private readonly db: DatabaseClient | null,
-  ) {}
+  ) {
+    if (!this.db) {
+      for (const q of SEED_DATA.quotations) {
+        const itemResult = QuotationItem.create({
+          id: `item-${q.id.substring(0, 8)}`,
+          furnitureType: 'Sofá Modular 5 Plazas L',
+          fabricType: FabricType.Velvet,
+          stainSeverity: StainSeverity.Critical,
+          basePriceAmount: 2500,
+        });
+
+        const items = itemResult.isSuccess ? [itemResult.value] : [];
+        const subtotal = Money.create(Number(q.subtotal), 'DOP').unwrap();
+        const total = Money.create(Number(q.total), 'DOP').unwrap();
+        const deposit = Money.create(Number(q.depositRequired), 'DOP').unwrap();
+
+        const quote = Quotation.reconstitute({
+          id: q.id,
+          clientId: q.clientId,
+          items,
+          discountAmount: Money.zero('DOP'),
+          subtotal,
+          total,
+          depositRequired: deposit,
+          status: q.status as QuotationStatus,
+          createdAt: new Date(),
+          expiresAt: q.expiresAt,
+        });
+
+        this.memoryStore.set(q.id, quote);
+      }
+    }
+  }
 
   async findById(id: string): Promise<Quotation | null> {
     if (!this.db) {

@@ -12,6 +12,7 @@
     "build": "tsc --noEmit",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
+    "db:seed": "bun run src/seed.ts",
     "db:studio": "drizzle-kit studio",
     "type-check": "tsc --noEmit",
     "lint": "prettier --check \"src/**/*.ts\""

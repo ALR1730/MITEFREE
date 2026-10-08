@@ -1,6 +1,6 @@
 import { Injectable, Inject, Logger } from '@nestjs/common';
 import { type IAppointmentRepository, Appointment, AppointmentStatus } from '@mitefree/domain-core';
-import { type DatabaseClient, appointments } from '@mitefree/database';
+import { type DatabaseClient, appointments, SEED_DATA } from '@mitefree/database';
 import { eq } from 'drizzle-orm';
 import { DRIZZLE_DB } from '../database/database.tokens.js';
 
@@ -12,7 +12,27 @@ export class DrizzleAppointmentRepository implements IAppointmentRepository {
   constructor(
     @Inject(DRIZZLE_DB)
     private readonly db: DatabaseClient | null,
-  ) {}
+  ) {
+    if (!this.db) {
+      const now = new Date();
+      for (const apt of SEED_DATA.appointments) {
+        this.memoryStore.set(
+          apt.id,
+          new Appointment({
+            id: apt.id,
+            quotationId: apt.quotationId,
+            clientId: apt.clientId,
+            technicianId: apt.technicianId ?? undefined,
+            timeSlotId: apt.timeSlotId,
+            scheduledDate: apt.scheduledDate,
+            status: apt.status as AppointmentStatus,
+            createdAt: now,
+            updatedAt: now,
+          }),
+        );
+      }
+    }
+  }
 
   async findById(id: string): Promise<Appointment | null> {
     if (!this.db) {

@@ -8,7 +8,7 @@ import {
   PaymentMethod,
   PaymentStatus,
 } from '@mitefree/domain-core';
-import { payments as paymentsTable, type DatabaseClient } from '@mitefree/database';
+import { payments as paymentsTable, type DatabaseClient, SEED_DATA } from '@mitefree/database';
 import { DRIZZLE_DB } from '../database/database.tokens.js';
 
 @Injectable()
@@ -19,7 +19,28 @@ export class DrizzlePaymentRepository implements IPaymentRepository {
     @Optional()
     @Inject(DRIZZLE_DB)
     private readonly db: DatabaseClient | null,
-  ) {}
+  ) {
+    if (!this.db) {
+      const now = new Date();
+      for (const p of SEED_DATA.payments) {
+        this.inMemoryStorage.set(
+          p.id,
+          new Payment({
+            id: p.id,
+            appointmentId: p.appointmentId,
+            type: p.type as PaymentType,
+            method: p.method as PaymentMethod,
+            status: p.status as PaymentStatus,
+            amount: Money.from(Number(p.amount), p.currency),
+            idempotencyKey: p.idempotencyKey,
+            externalReference: p.externalReference,
+            createdAt: now,
+            updatedAt: now,
+          }),
+        );
+      }
+    }
+  }
 
   async findById(id: string): Promise<Payment | null> {
     if (!this.db) {
