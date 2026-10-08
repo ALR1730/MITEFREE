@@ -21,6 +21,7 @@ build/
 out/
 bin/
 obj/
+*.tsbuildinfo
 
 # Environment variables & Secrets
 .env
