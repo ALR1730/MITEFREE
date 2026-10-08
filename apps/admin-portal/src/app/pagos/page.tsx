@@ -203,12 +203,12 @@ export default function PagosPage() {
         </div>
 
         {/* Filter buttons */}
-        <div className="flex bg-admin-sidebar p-1 rounded-xl border border-admin-border text-xs">
+        <div className="flex overflow-x-auto scrollbar-none max-w-full bg-admin-sidebar p-1 rounded-xl border border-admin-border text-xs shrink-0">
           {(['ALL', 'PENDING', 'RECONCILED', 'REJECTED'] as const).map((tab) => (
             <button
               key={tab}
               onClick={() => setFilter(tab)}
-              className={`px-3 py-1.5 rounded-lg font-bold transition-all ${
+              className={`px-3 py-1.5 rounded-lg font-bold shrink-0 whitespace-nowrap transition-all ${
                 filter === tab
                   ? 'bg-admin-card text-white shadow'
                   : 'text-gray-400 hover:text-gray-200'
@@ -267,9 +267,93 @@ export default function PagosPage() {
         </div>
       </div>
 
-      {/* Transactions Table */}
+      {/* Transactions Container */}
       <div className="admin-card rounded-2xl border border-admin-border overflow-hidden">
-        <div className="overflow-x-auto">
+        {/* Mobile Cards (Phone View) */}
+        <div className="block md:hidden divide-y divide-admin-border/40 font-mono">
+          {filtered.map((p) => (
+            <div key={p.id} className="p-4 space-y-3">
+              <div className="flex justify-between items-start gap-2">
+                <div>
+                  <span className="font-bold text-white text-sm">{p.id}</span>
+                  <span className="block text-[11px] text-gray-500 font-sans">{p.date}</span>
+                </div>
+                {p.status === 'RECONCILED' && (
+                  <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-emerald-500/15 text-emerald-400 text-[10px] font-bold border border-emerald-500/30">
+                    <CheckCircle className="w-3 h-3" />
+                    <span>Conciliado</span>
+                  </span>
+                )}
+                {p.status === 'PENDING' && (
+                  <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-amber-500/15 text-amber-400 text-[10px] font-bold border border-amber-500/30">
+                    <Clock className="w-3 h-3" />
+                    <span>Pendiente</span>
+                  </span>
+                )}
+                {p.status === 'REJECTED' && (
+                  <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-red-500/15 text-red-400 text-[10px] font-bold border border-red-500/30">
+                    <AlertCircle className="w-3 h-3" />
+                    <span>Rechazado</span>
+                  </span>
+                )}
+              </div>
+
+              <div className="grid grid-cols-2 gap-2 text-xs font-sans">
+                <div className="min-w-0 pr-1">
+                  <span className="text-[10px] text-gray-500 uppercase font-mono block">
+                    Cliente & Orden
+                  </span>
+                  <span className="font-bold text-gray-200 block truncate">{p.client}</span>
+                  <span className="text-[10px] text-gray-500 font-mono">{p.orderId}</span>
+                </div>
+                <div className="text-right">
+                  <span className="text-[10px] text-gray-500 uppercase font-mono block">Monto</span>
+                  <span className="font-extrabold text-white text-base font-mono">
+                    ${p.amount.toFixed(2)} USD
+                  </span>
+                  <span className="block text-[10px] text-cyan-400 font-mono">
+                    {p.type === 'ANTICIPO_30' ? 'Anticipo 30%' : 'Saldo Final 70%'}
+                  </span>
+                </div>
+              </div>
+
+              <div className="flex justify-between items-center text-xs pt-1 border-t border-admin-border/30">
+                <div className="min-w-0 pr-2">
+                  <span className="text-gray-300 font-semibold block text-[11px] truncate">
+                    {p.method}
+                  </span>
+                  <span className="text-[10px] text-gray-500 font-mono truncate block">
+                    {p.referenceNumber}
+                  </span>
+                </div>
+
+                {p.status === 'PENDING' ? (
+                  <div className="inline-flex items-center gap-2 shrink-0">
+                    <button
+                      onClick={() => handleApprove(p.id)}
+                      className="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 text-xs font-bold border border-emerald-500/40 active:scale-95 transition-all"
+                    >
+                      <Check className="w-3.5 h-3.5" />
+                      <span>Aprobar</span>
+                    </button>
+                    <button
+                      onClick={() => handleReject(p.id)}
+                      className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-red-500/20 hover:bg-red-500/30 text-red-300 text-xs font-bold border border-red-500/40 active:scale-95 transition-all"
+                    >
+                      <X className="w-3.5 h-3.5" />
+                      <span>Rechazar</span>
+                    </button>
+                  </div>
+                ) : (
+                  <span className="text-[11px] text-gray-500 italic shrink-0">Auditado</span>
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Desktop Table */}
+        <div className="hidden md:block overflow-x-auto">
           <table className="w-full text-left text-xs">
             <thead>
               <tr className="border-b border-admin-border text-gray-400 font-mono uppercase text-[10px] bg-admin-sidebar/60">

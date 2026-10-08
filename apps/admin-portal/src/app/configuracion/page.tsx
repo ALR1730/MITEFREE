@@ -444,7 +444,7 @@ export default function ConfiguracionPage() {
                 RD$ {simTotal.toLocaleString('es-DO')} DOP
               </span>
             </div>
-            <div className="flex justify-between items-center pt-1 text-[11px] text-gray-400">
+            <div className="flex flex-col sm:flex-row sm:justify-between items-start sm:items-center gap-1 pt-1 text-[11px] text-gray-400">
               <span className="text-emerald-400 font-bold">
                 ✓ 0% Anticipo (Pago 100% al finalizar)
               </span>

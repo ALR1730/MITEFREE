@@ -266,7 +266,56 @@ export default function DashboardPage() {
           <span className="text-xs text-gray-500 font-mono">Actualizado en vivo</span>
         </div>
 
-        <div className="overflow-x-auto">
+        {/* Mobile Cards View */}
+        <div className="block md:hidden space-y-3 font-mono">
+          {recentOrders.map((ord) => (
+            <div
+              key={ord.id}
+              className="p-4 rounded-xl bg-admin-sidebar/80 border border-admin-border space-y-2.5 text-xs"
+            >
+              <div className="flex justify-between items-center">
+                <span className="font-bold text-indigo-400">{ord.id}</span>
+                <span
+                  className={`px-2 py-0.5 rounded text-[10px] font-bold ${
+                    ord.status === 'Completada'
+                      ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'
+                      : ord.status === 'En Ruta'
+                        ? 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 animate-pulse'
+                        : ord.status === 'Confirmada'
+                          ? 'bg-indigo-500/10 text-indigo-400 border border-indigo-500/20'
+                          : 'bg-amber-500/10 text-amber-400 border border-amber-500/20'
+                  }`}
+                >
+                  {ord.status}
+                </span>
+              </div>
+
+              <div>
+                <span className="font-bold text-white font-sans text-sm block">{ord.client}</span>
+                <span className="text-[11px] text-gray-400 font-sans block">{ord.zone}</span>
+                <p className="text-[11px] text-gray-400 font-sans mt-0.5">{ord.items}</p>
+              </div>
+
+              <div className="flex justify-between items-center pt-2 border-t border-admin-border/50">
+                <div>
+                  <span className="text-[10px] text-emerald-400 font-sans block">Sin Anticipo</span>
+                  <span className="text-sm font-bold text-white">
+                    RD$ {ord.total.toLocaleString('es-DO')}
+                  </span>
+                </div>
+                <div className="text-right">
+                  <span className="text-[10px] text-gray-500 font-sans block">Cuadrilla</span>
+                  <span className="text-[11px] text-gray-300 font-sans font-medium">
+                    {ord.technician}
+                  </span>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Desktop Table View */}
+        <div className="hidden md:block overflow-x-auto">
           <table className="w-full text-left text-xs">
             <thead>
               <tr className="border-b border-admin-border text-gray-400 font-mono uppercase text-[10px]">

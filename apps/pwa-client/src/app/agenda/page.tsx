@@ -249,13 +249,13 @@ function AgendaContent() {
 
           {/* 3. Time slot selector */}
           <div className="glass-card rounded-2xl p-6 border border-dark-border">
-            <div className="flex items-center justify-between mb-4">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4">
               <h2 className="text-sm font-bold uppercase tracking-wider text-gray-300 flex items-center gap-2">
                 <Clock className="w-4 h-4 text-indigo-400" />
                 <span>3. Bloque Horario de 3 Horas</span>
               </h2>
               {hasRoutePromo && (
-                <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-emerald-500/15 text-emerald-400 text-xs font-bold border border-emerald-500/30">
+                <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-emerald-500/15 text-emerald-400 text-xs font-bold border border-emerald-500/30 self-start sm:self-auto">
                   <Tag className="w-3.5 h-3.5" />
                   <span>15% OFF de Ruta Activo</span>
                 </span>

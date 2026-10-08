@@ -113,34 +113,32 @@ export default function TecnicosPage() {
             className="admin-card rounded-2xl p-6 border border-admin-border admin-card-hover transition-all space-y-4"
           >
             {/* Top row */}
-            <div className="flex justify-between items-start">
-              <div className="flex items-center gap-3">
-                <div className="w-12 h-12 rounded-xl bg-gradient-to-tr from-indigo-600 to-cyan-500 text-white font-extrabold text-base flex items-center justify-center shadow-md">
+            <div className="flex justify-between items-start gap-3">
+              <div className="flex items-center gap-3 min-w-0 flex-1">
+                <div className="w-12 h-12 rounded-xl bg-gradient-to-tr from-indigo-600 to-cyan-500 text-white font-extrabold text-base flex items-center justify-center shadow-md shrink-0">
                   {sq.name
                     .split(' ')
                     .map((n) => n[0])
                     .slice(0, 2)
                     .join('')}
                 </div>
-                <div>
-                  <div className="flex items-center gap-2">
-                    <h3 className="font-bold text-white text-base">{sq.name}</h3>
-                    <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-indigo-500/15 text-indigo-300 border border-indigo-500/30">
+                <div className="min-w-0 flex-1">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <h3 className="font-bold text-white text-base truncate">{sq.name}</h3>
+                    <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-indigo-500/15 text-indigo-300 border border-indigo-500/30 shrink-0">
                       {sq.squadNumber}
                     </span>
                   </div>
                   <div className="flex items-center gap-1.5 text-xs text-amber-400 mt-0.5">
-                    <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
+                    <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400 shrink-0" />
                     <span className="font-bold">{sq.rating}</span>
-                    <span className="text-gray-500">
-                      ({sq.completedJobs} servicios completados)
-                    </span>
+                    <span className="text-gray-500 truncate">({sq.completedJobs} completados)</span>
                   </div>
                 </div>
               </div>
 
               <span
-                className={`px-2.5 py-1 rounded-full text-[10px] font-bold ${
+                className={`px-2.5 py-1 rounded-full text-[10px] font-bold shrink-0 ${
                   sq.status === 'ON_ROUTE'
                     ? 'bg-cyan-500/15 text-cyan-400 border border-cyan-500/30 animate-pulse'
                     : sq.status === 'ACTIVE'

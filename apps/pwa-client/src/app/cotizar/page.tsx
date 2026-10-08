@@ -793,11 +793,11 @@ Por favor confírmenme disponibilidad para mi zona (San Pedro / La Romana / Sant
                     key={item.cartId}
                     className="py-3 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs"
                   >
-                    <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-3 min-w-0 flex-1">
                       <span className="text-xl shrink-0">{item.iconText}</span>
-                      <div>
+                      <div className="min-w-0 flex-1 pr-2">
                         <div className="font-bold text-white text-sm flex flex-wrap items-center gap-2">
-                          <span>{item.name}</span>
+                          <span className="truncate">{item.name}</span>
                           {item.bothSides && (
                             <span className="px-1.5 py-0.5 rounded text-[10px] bg-brand-500/20 text-brand-300 border border-brand-500/40">
                               Ambos Lados
@@ -1378,18 +1378,18 @@ Por favor confírmenme disponibilidad para mi zona (San Pedro / La Romana / Sant
                 {selectedItems.map((item) => (
                   <div
                     key={item.cartId}
-                    className="flex justify-between items-center py-1.5 px-3 rounded-lg bg-dark-surface/50 border border-dark-border/40"
+                    className="flex justify-between items-center py-1.5 px-3 rounded-lg bg-dark-surface/50 border border-dark-border/40 gap-2"
                   >
-                    <div className="flex items-center gap-2">
-                      <span className="text-base">{item.iconText}</span>
-                      <span className="text-white font-medium">
+                    <div className="flex items-center gap-2 min-w-0 flex-1 pr-2">
+                      <span className="text-base shrink-0">{item.iconText}</span>
+                      <span className="text-white font-medium truncate">
                         {item.quantity}x {item.name}
                         {item.bothSides && ' (Ambos Lados)'}
                         {item.extraSeats > 0 && ` (+${item.extraSeats} plazas extra)`}
                         {item.rugDimensions && ` [${item.rugDimensions}]`}
                       </span>
                     </div>
-                    <span className="font-mono text-cyan-300 font-bold">
+                    <span className="font-mono text-cyan-300 font-bold shrink-0">
                       {formatRD(item.itemTotal)}
                     </span>
                   </div>
