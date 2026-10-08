@@ -24,8 +24,8 @@ export function TopBar() {
         </div>
 
         {/* Active Squads */}
-        <div className="hidden md:flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 text-xs font-semibold">
-          <Activity className="w-3.5 h-3.5" />
+        <div className="hidden md:flex items-center gap-2 px-3 py-1 rounded-full bg-brand-500/10 border border-brand-500/20 text-brand-400 text-xs font-semibold">
+          <Activity className="w-3.5 h-3.5 text-brand-400" />
           <span>4 Cuadrillas en Ruta</span>
         </div>
 

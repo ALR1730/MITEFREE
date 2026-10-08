@@ -22,7 +22,7 @@ interface KanbanAppointment {
   client: string;
   phone: string;
   zone: string;
-  zoneCode: 'ZONE-DN' | 'ZONE-SDE' | 'ZONE-SDO' | 'ZONE-SDN';
+  zoneCode: 'ZONE-SPM' | 'ZONE-LR' | 'ZONE-SDE' | 'ZONE-DN';
   address: string;
   timeSlot: string;
   service: string;
@@ -33,10 +33,10 @@ interface KanbanAppointment {
 }
 
 const TECHNICIAN_CREWS = [
-  'Ing. Kelvin Rosario (Cuadrilla #01 - DN)',
-  'Marcos Santana (Cuadrilla #02 - SDE)',
-  'Darío Tavárez (Cuadrilla #03 - SDO)',
-  'Junior Polanco (Cuadrilla #04 - SDN)',
+  'Ing. Kelvin Rosario (Cuadrilla #01 - San Pedro)',
+  'Marcos Santana (Cuadrilla #02 - Santo Domingo Este)',
+  'Darío Tavárez (Cuadrilla #03 - La Romana)',
+  'Junior Polanco (Cuadrilla #04 - SPM / Consuelo)',
 ];
 
 const INITIAL_APPOINTMENTS: KanbanAppointment[] = [
@@ -44,15 +44,15 @@ const INITIAL_APPOINTMENTS: KanbanAppointment[] = [
     id: 'APT-101',
     client: 'Laura Mercedes',
     phone: '+1 809-555-0123',
-    zone: 'Distrito Nacional',
-    zoneCode: 'ZONE-DN',
-    address: 'Piantini, Calle Geraldino #45',
+    zone: 'San Pedro de Macorís',
+    zoneCode: 'ZONE-SPM',
+    address: 'Consuelo, C/ Principal #45',
     timeSlot: '08:30 – 11:30 AM',
-    service: 'Sofá L 5 Puestos (Terciopelo) + Mancha Crítica',
-    total: 259.0,
-    deposit: 77.7,
+    service: 'Mueble 5 Plazas (Modular) + Mancha Crítica',
+    total: 4000.0,
+    deposit: 1200.0,
     status: 'IN_ROUTE',
-    technician: 'Ing. Kelvin Rosario (Cuadrilla #01 - DN)',
+    technician: 'Ing. Kelvin Rosario (Cuadrilla #01 - San Pedro)',
   },
   {
     id: 'APT-102',
@@ -62,52 +62,52 @@ const INITIAL_APPOINTMENTS: KanbanAppointment[] = [
     zoneCode: 'ZONE-SDE',
     address: 'Alma Rosa, C/ Costa Rica #12',
     timeSlot: '01:00 – 04:00 PM',
-    service: '2 Colchones Queen + Sillón Individual',
-    total: 205.0,
-    deposit: 61.5,
+    service: 'Colchón Queen (Ambos Lados) + 4 Sillas Comedor',
+    total: 4700.0,
+    deposit: 1410.0,
     status: 'CONFIRMED',
-    technician: 'Marcos Santana (Cuadrilla #02 - SDE)',
+    technician: 'Marcos Santana (Cuadrilla #02 - Santo Domingo Este)',
   },
   {
     id: 'APT-103',
     client: 'Dra. Patricia Gómez',
     phone: '+1 809-555-0944',
-    zone: 'Distrito Nacional',
-    zoneCode: 'ZONE-DN',
-    address: 'Bella Vista, Av. Sarasota #108',
+    zone: 'La Romana',
+    zoneCode: 'ZONE-LR',
+    address: 'Villa Hermosa, C/ Central #8',
     timeSlot: '04:30 – 07:30 PM',
-    service: 'Juego de Sala 3+2 Puestos (Lino)',
-    total: 180.0,
-    deposit: 54.0,
+    service: 'Colchón King Size (Ambos Lados)',
+    total: 4000.0,
+    deposit: 1200.0,
     status: 'CONFIRMED',
-    technician: 'Ing. Kelvin Rosario (Cuadrilla #01 - DN)',
+    technician: 'Darío Tavárez (Cuadrilla #03 - La Romana)',
   },
   {
     id: 'APT-104',
     client: 'Miguelina Valenzuela',
     phone: '+1 809-555-0612',
-    zone: 'Santo Domingo Oeste',
-    zoneCode: 'ZONE-SDO',
-    address: 'Alameda, C/ Manzanos #3',
+    zone: 'Santo Domingo Este',
+    zoneCode: 'ZONE-SDE',
+    address: 'Los Frailes, C/ Duarte #99',
     timeSlot: '08:30 – 11:30 AM',
-    service: 'Colchón King Size + Tratamiento UV-C',
-    total: 115.0,
-    deposit: 34.5,
+    service: 'Mueble 3 Plazas + 2 Sillas Comedor',
+    total: 3100.0,
+    deposit: 930.0,
     status: 'PENDING_DEPOSIT',
   },
   {
     id: 'APT-105',
     client: 'Roberto Salcedo',
     phone: '+1 809-555-0777',
-    zone: 'Distrito Nacional',
-    zoneCode: 'ZONE-DN',
-    address: 'Naco, C/ Fantino Falco #18',
+    zone: 'San Pedro de Macorís',
+    zoneCode: 'ZONE-SPM',
+    address: 'Guayacanes, C/ Mella #18',
     timeSlot: '08:30 – 11:30 AM',
-    service: 'Sofá 3 Puestos (Microfibra) + 4 Sillas Comedor',
-    total: 187.0,
-    deposit: 56.1,
+    service: 'Mueble 2 Plazas (Love Seat)',
+    total: 2000.0,
+    deposit: 600.0,
     status: 'COMPLETED',
-    technician: 'Ing. Kelvin Rosario (Cuadrilla #01 - DN)',
+    technician: 'Ing. Kelvin Rosario (Cuadrilla #01 - San Pedro)',
   },
 ];
 
@@ -117,20 +117,44 @@ const COLUMNS: Array<{
   color: string;
   border: string;
 }> = [
-  { id: 'PENDING_DEPOSIT', title: 'Pendiente Anticipo (30%)', color: 'text-amber-400', border: 'border-amber-500/30' },
-  { id: 'CONFIRMED', title: 'Confirmadas / En Agenda', color: 'text-cyan-400', border: 'border-cyan-500/30' },
-  { id: 'IN_ROUTE', title: 'Cuadrilla en Ruta', color: 'text-indigo-400', border: 'border-indigo-500/30' },
-  { id: 'IN_SERVICE', title: 'Servicio en Proceso', color: 'text-brand-400', border: 'border-brand-500/30' },
-  { id: 'COMPLETED', title: 'Completado y Liquidado', color: 'text-emerald-400', border: 'border-emerald-500/30' },
+  {
+    id: 'PENDING_DEPOSIT',
+    title: 'Por Confirmar (Sin Anticipo)',
+    color: 'text-amber-400',
+    border: 'border-amber-500/30',
+  },
+  {
+    id: 'CONFIRMED',
+    title: 'Confirmadas / En Agenda',
+    color: 'text-cyan-400',
+    border: 'border-cyan-500/30',
+  },
+  {
+    id: 'IN_ROUTE',
+    title: 'Cuadrilla en Ruta',
+    color: 'text-indigo-400',
+    border: 'border-indigo-500/30',
+  },
+  {
+    id: 'IN_SERVICE',
+    title: 'Servicio en Proceso',
+    color: 'text-brand-400',
+    border: 'border-brand-500/30',
+  },
+  {
+    id: 'COMPLETED',
+    title: 'Completado y Liquidado',
+    color: 'text-emerald-400',
+    border: 'border-emerald-500/30',
+  },
 ];
 
 export default function CitasPage() {
   const [appointments, setAppointments] = useState<KanbanAppointment[]>(INITIAL_APPOINTMENTS);
   const [filterZone, setFilterZone] = useState<string>('ALL');
 
-  const filteredAppointments = filterZone === 'ALL'
-    ? appointments
-    : appointments.filter((a) => a.zoneCode === filterZone);
+  const filteredAppointments =
+    filterZone === 'ALL' ? appointments : appointments.filter((a) => a.zoneCode === filterZone);
 
   const moveStatus = (id: string, nextStatus: KanbanAppointment['status']) => {
     setAppointments((prev) =>
@@ -170,10 +194,9 @@ export default function CitasPage() {
             className="px-3 py-1.5 rounded-lg bg-admin-sidebar border border-admin-border text-xs text-white focus:outline-none focus:border-cyan-500 font-medium"
           >
             <option value="ALL">Todas las Zonas</option>
-            <option value="ZONE-DN">Distrito Nacional (DN)</option>
-            <option value="ZONE-SDE">Santo Domingo Este (SDE)</option>
-            <option value="ZONE-SDO">Santo Domingo Oeste (SDO)</option>
-            <option value="ZONE-SDN">Santo Domingo Norte (SDN)</option>
+            <option value="ZONE-SPM">San Pedro de Macorís (y municipios)</option>
+            <option value="ZONE-LR">La Romana (y municipios)</option>
+            <option value="ZONE-SDE">Santo Domingo Este</option>
           </select>
         </div>
       </div>
@@ -251,7 +274,7 @@ export default function CitasPage() {
                     {/* Status Advance Buttons */}
                     <div className="flex items-center justify-between pt-2 border-t border-admin-border/40 text-[10px]">
                       <span className="font-mono font-bold text-white">
-                        ${apt.total.toFixed(2)} USD
+                        RD$ {apt.total.toLocaleString('es-DO')}
                       </span>
 
                       {col.id === 'PENDING_DEPOSIT' && (

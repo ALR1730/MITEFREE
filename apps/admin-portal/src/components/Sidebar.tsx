@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import {
@@ -28,23 +29,19 @@ export function Sidebar() {
     <aside className="w-64 bg-admin-sidebar border-r border-admin-border flex flex-col justify-between shrink-0 h-screen sticky top-0 z-40">
       <div>
         {/* Brand */}
-        <div className="h-16 px-6 flex items-center gap-3 border-b border-admin-border">
-          <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-indigo-500 to-cyan-400 flex items-center justify-center text-dark-bg font-extrabold shadow-md">
-            <Sparkles className="w-5 h-5 text-white" />
+        <div className="h-20 px-5 flex items-center justify-between border-b border-admin-border">
+          <div className="relative h-12 w-32 drop-shadow-[0_0_12px_rgba(0,196,255,0.35)]">
+            <Image
+              src="/logo-mitefree.png"
+              alt="Mitefree Logo"
+              fill
+              priority
+              className="object-contain object-left"
+            />
           </div>
-          <div>
-            <div className="flex items-center gap-1.5">
-              <span className="font-extrabold text-base tracking-tight text-white">
-                MITE<span className="text-cyan-400">FREE</span>
-              </span>
-              <span className="text-[9px] uppercase font-bold px-1.5 py-0.5 rounded bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">
-                Ops
-              </span>
-            </div>
-            <p className="text-[10px] text-gray-400 font-mono tracking-tight">
-              ALR COMPANY EXECUTIVE
-            </p>
-          </div>
+          <span className="text-[9px] uppercase font-bold px-1.5 py-0.5 rounded bg-brand-500/15 text-brand-400 border border-brand-500/30">
+            Ops
+          </span>
         </div>
 
         {/* Navigation list */}
@@ -62,7 +59,7 @@ export function Sidebar() {
                 href={item.href}
                 className={`flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all ${
                   isActive
-                    ? 'bg-indigo-600/20 text-indigo-400 border border-indigo-500/30 shadow-sm'
+                    ? 'bg-brand-500/15 text-brand-400 border border-brand-500/30 shadow-sm'
                     : 'text-gray-400 hover:text-gray-200 hover:bg-admin-hover'
                 }`}
               >
@@ -90,7 +87,7 @@ export function Sidebar() {
         </a>
 
         <div className="flex items-center gap-3 px-2">
-          <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-indigo-500 to-emerald-400 flex items-center justify-center font-bold text-xs text-dark-bg">
+          <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-brand-700 to-brand-500 flex items-center justify-center font-bold text-xs text-dark-bg">
             AR
           </div>
           <div className="overflow-hidden">

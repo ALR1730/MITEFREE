@@ -101,15 +101,11 @@ export default function PagosPage() {
   });
 
   const handleApprove = (id: string) => {
-    setPayments((prev) =>
-      prev.map((p) => (p.id === id ? { ...p, status: 'RECONCILED' } : p)),
-    );
+    setPayments((prev) => prev.map((p) => (p.id === id ? { ...p, status: 'RECONCILED' } : p)));
   };
 
   const handleReject = (id: string) => {
-    setPayments((prev) =>
-      prev.map((p) => (p.id === id ? { ...p, status: 'REJECTED' } : p)),
-    );
+    setPayments((prev) => prev.map((p) => (p.id === id ? { ...p, status: 'REJECTED' } : p)));
   };
 
   // Metrics
@@ -136,7 +132,8 @@ export default function PagosPage() {
             Conciliación de Pagos & Anticipos (30%)
           </h1>
           <p className="text-xs text-gray-400">
-            Auditoría de pasarela Stripe, depósitos bancarios verificados y liquidación de servicios.
+            Auditoría de pasarela Stripe, depósitos bancarios verificados y liquidación de
+            servicios.
           </p>
         </div>
 

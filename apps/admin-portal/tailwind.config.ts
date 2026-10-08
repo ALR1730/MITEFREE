@@ -11,16 +11,26 @@ const config: Config = {
     extend: {
       colors: {
         admin: {
-          bg: '#080C14',
-          sidebar: '#0D1322',
-          card: '#121A2E',
-          border: '#1E2B48',
-          hover: '#18233C',
-          accent: '#6366F1',
-          cyan: '#06B6D4',
+          bg: '#0A0E17',
+          sidebar: '#0E1524',
+          card: '#131B2E',
+          border: '#1D2A45',
+          hover: '#1A253D',
+          accent: '#00C4FF', // Cyan Primario
+          cobalt: '#0077D8', // Azul Cobalto
+          navy: '#004B99', // Azul Marino Profundo
+          red: '#E51922', // Rojo Alerta Prohibición
+          ochre: '#C59B63', // Ocre Ácaro
+          cyan: '#00C4FF',
           emerald: '#10B981',
           amber: '#F59E0B',
-          rose: '#F43F5E',
+          rose: '#E51922',
+        },
+        brand: {
+          500: '#00C4FF',
+          600: '#009FE0',
+          700: '#0077D8',
+          800: '#004B99',
         },
       },
       fontFamily: {

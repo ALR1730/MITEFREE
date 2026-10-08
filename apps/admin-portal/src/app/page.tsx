@@ -24,14 +24,14 @@ export default function DashboardPage() {
       bg: 'bg-emerald-500/10 border-emerald-500/20',
     },
     {
-      title: 'Citas Hoy en Santo Domingo',
+      title: 'Citas Hoy (SPM, LR, SDE)',
       value: '14 Servicios',
       change: '100% Cuadrillas',
       isPositive: true,
       sub: '4 en curso · 2 completadas',
       icon: CalendarCheck,
-      color: 'text-cyan-400',
-      bg: 'bg-cyan-500/10 border-cyan-500/20',
+      color: 'text-brand-400',
+      bg: 'bg-brand-500/10 border-brand-500/20',
     },
     {
       title: 'Conversión de Cotizador',
@@ -45,7 +45,7 @@ export default function DashboardPage() {
     },
     {
       title: 'Cashback Acreditado',
-      value: '$921.00',
+      value: 'RD$ 9,210',
       change: '5% Canónico',
       isPositive: true,
       sub: 'Billetera digital fidelizada',
@@ -59,10 +59,10 @@ export default function DashboardPage() {
     {
       id: 'ORD-9821',
       client: 'Laura Mercedes',
-      zone: 'Piantini (DN)',
-      items: 'Sofá L 5 Puestos (Terciopelo) + Mancha Crítica',
-      total: 259.0,
-      deposit: 77.7,
+      zone: 'San Pedro (SPM)',
+      items: 'Sofá Modular 5 Plazas + Mancha Crítica',
+      total: 4000.0,
+      deposit: 1200.0,
       status: 'En Ruta',
       technician: 'Ing. Kelvin Rosario',
     },
@@ -70,30 +70,30 @@ export default function DashboardPage() {
       id: 'ORD-9820',
       client: 'Carlos Méndez',
       zone: 'Alma Rosa (SDE)',
-      items: '2 Colchones Queen + Sillón Individual',
-      total: 205.0,
-      deposit: 61.5,
+      items: 'Colchón Queen (Ambos Lados) + 4 Sillas',
+      total: 4700.0,
+      deposit: 1410.0,
       status: 'Confirmada',
       technician: 'Cuadrilla #02',
     },
     {
       id: 'ORD-9819',
       client: 'Dra. Patricia Gómez',
-      zone: 'Naco (DN)',
-      items: 'Juego de Sala Completo (Lino Natural)',
-      total: 340.0,
-      deposit: 102.0,
+      zone: 'La Romana (LR)',
+      items: 'Colchón King (Ambos Lados)',
+      total: 4000.0,
+      deposit: 0,
       status: 'Completada',
       technician: 'Cuadrilla #01',
     },
     {
       id: 'ORD-9818',
       client: 'Manuel Tavárez',
-      zone: 'Alameda (SDO)',
-      items: 'Sofá 3 Puestos (Microfibra)',
-      total: 110.0,
-      deposit: 33.0,
-      status: 'Pendiente Anticipo',
+      zone: 'Los Frailes (SDE)',
+      items: 'Mueble 3 Plazas',
+      total: 2500.0,
+      deposit: 0,
+      status: 'Agendada (Sin Anticipo)',
       technician: 'Por asignar',
     },
   ];
@@ -151,33 +151,27 @@ export default function DashboardPage() {
         {/* Territory dispatch */}
         <div className="admin-card rounded-2xl p-6 border border-admin-border space-y-4">
           <h3 className="text-sm font-bold uppercase tracking-wider text-gray-300">
-            Despacho por Zonas (Santo Domingo)
+            Despacho por Zonas Exclusivas
           </h3>
           <div className="space-y-3">
             {[
               {
-                zone: 'Distrito Nacional',
-                share: '55%',
-                count: '28 citas / sem',
+                zone: 'San Pedro de Macorís (y municipios)',
+                share: '45%',
+                count: '32 citas / sem',
                 color: 'bg-cyan-500',
               },
               {
-                zone: 'Santo Domingo Este',
-                share: '25%',
-                count: '13 citas / sem',
+                zone: 'La Romana (y municipios)',
+                share: '32%',
+                count: '23 citas / sem',
                 color: 'bg-indigo-500',
               },
               {
-                zone: 'Santo Domingo Oeste',
-                share: '12%',
-                count: '6 citas / sem',
+                zone: 'Santo Domingo Este',
+                share: '23%',
+                count: '16 citas / sem',
                 color: 'bg-emerald-500',
-              },
-              {
-                zone: 'Santo Domingo Norte',
-                share: '8%',
-                count: '4 citas / sem',
-                color: 'bg-amber-500',
               },
             ].map((z, idx) => (
               <div key={idx} className="space-y-1">
@@ -206,9 +200,9 @@ export default function DashboardPage() {
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2">
             <div className="p-4 rounded-xl bg-admin-sidebar border border-admin-border">
-              <span className="text-xs text-gray-400 block">Anticipo Promedio</span>
-              <span className="text-lg font-bold text-white font-mono">$64.20 USD</span>
-              <span className="text-[10px] text-emerald-400 block mt-1">30% regla canónica</span>
+              <span className="text-xs text-gray-400 block">Condición de Cobro</span>
+              <span className="text-lg font-bold text-emerald-400 font-mono">0% Anticipo</span>
+              <span className="text-[10px] text-gray-400 block mt-1">100% contra entrega</span>
             </div>
             <div className="p-4 rounded-xl bg-admin-sidebar border border-admin-border">
               <span className="text-xs text-gray-400 block">Tiempo Promedio Cita</span>
@@ -280,8 +274,8 @@ export default function DashboardPage() {
                 <th className="pb-3">Cliente</th>
                 <th className="pb-3">Zona</th>
                 <th className="pb-3">Detalle Muebles</th>
-                <th className="pb-3 text-right">Total</th>
-                <th className="pb-3 text-right">Anticipo (30%)</th>
+                <th className="pb-3 text-right">Total (RD$)</th>
+                <th className="pb-3 text-center">Modalidad</th>
                 <th className="pb-3 text-center">Estado</th>
                 <th className="pb-3">Cuadrilla Asignada</th>
               </tr>
@@ -293,11 +287,11 @@ export default function DashboardPage() {
                   <td className="py-3.5 text-white font-sans font-semibold">{ord.client}</td>
                   <td className="py-3.5 text-gray-300 font-sans">{ord.zone}</td>
                   <td className="py-3.5 text-gray-400 font-sans max-w-xs truncate">{ord.items}</td>
-                  <td className="py-3.5 text-right font-bold text-white">
-                    ${ord.total.toFixed(2)}
+                  <td className="py-3.5 text-right font-bold text-white font-mono">
+                    RD$ {ord.total.toLocaleString('es-DO')}
                   </td>
-                  <td className="py-3.5 text-right font-bold text-emerald-400">
-                    ${ord.deposit.toFixed(2)}
+                  <td className="py-3.5 text-center text-[10px] text-emerald-400 font-sans">
+                    Sin Anticipo
                   </td>
                   <td className="py-3.5 text-center">
                     <span

@@ -13,6 +13,9 @@ export const metadata: Metadata = {
   title: 'MITEFREE Ops — Centro de Despacho & Control Operativo',
   description:
     'Panel de operaciones, despacho de cuadrillas y métricas de ALR COMPANY para la plataforma MITEFREE.',
+  icons: {
+    icon: '/logo-mitefree.png',
+  },
 };
 
 export default function RootLayout({
