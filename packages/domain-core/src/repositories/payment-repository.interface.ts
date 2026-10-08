@@ -4,6 +4,7 @@ export interface IPaymentRepository {
   findById(id: string): Promise<Payment | null>;
   findByIdempotencyKey(idempotencyKey: string): Promise<Payment | null>;
   findByAppointmentId(appointmentId: string): Promise<Payment[]>;
+  findAll(): Promise<Payment[]>;
   save(payment: Payment): Promise<void>;
   update(payment: Payment): Promise<void>;
 }

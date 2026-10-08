@@ -12,6 +12,8 @@ export interface ProblemDetails {
   timestamp: string;
 }
 
+export type ProblemDetailsDto = ProblemDetails;
+
 export const createProblemDetails = (params: {
   status: number;
   title: string;

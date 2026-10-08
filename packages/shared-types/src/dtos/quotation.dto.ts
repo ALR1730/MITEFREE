@@ -8,8 +8,10 @@ export const FabricTypeEnum = z.enum([
   'LEATHER',
   'SILK',
 ]);
+export type FabricType = z.infer<typeof FabricTypeEnum>;
 
 export const StainSeverityEnum = z.enum(['LIGHT', 'MODERATE', 'CRITICAL']);
+export type StainSeverity = z.infer<typeof StainSeverityEnum>;
 
 export const CreateQuotationItemSchema = z.object({
   furnitureType: z.string().min(2, 'Furniture type must be at least 2 characters'),
