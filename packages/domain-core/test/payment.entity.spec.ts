@@ -2,11 +2,7 @@ import { describe, it, expect } from 'vitest';
 import { Payment } from '../src/entities/payment.entity.js';
 import { DepositPolicy } from '../src/engines/deposit-policy.engine.js';
 import { Money } from '../src/value-objects/money.vo.js';
-import {
-  PaymentType,
-  PaymentMethod,
-  PaymentStatus,
-} from '../src/enums/payment-type.enum.js';
+import { PaymentType, PaymentMethod, PaymentStatus } from '../src/enums/payment-type.enum.js';
 
 describe('Payment Aggregate & DepositPolicy — TDD Suite (≥95% Cobertura)', () => {
   const sampleAppointmentId = '11111111-1111-1111-1111-111111111111';

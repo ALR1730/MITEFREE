@@ -8,7 +8,7 @@ import {
   PaymentMethod,
   PaymentStatus,
 } from '@mitefree/domain-core';
-import { payments as paymentsTable } from '@mitefree/database';
+import { payments as paymentsTable, type DatabaseClient } from '@mitefree/database';
 import { DRIZZLE_DB } from '../database/database.tokens.js';
 
 @Injectable()
@@ -18,7 +18,7 @@ export class DrizzlePaymentRepository implements IPaymentRepository {
   constructor(
     @Optional()
     @Inject(DRIZZLE_DB)
-    private readonly db: any | null,
+    private readonly db: DatabaseClient | null,
   ) {}
 
   async findById(id: string): Promise<Payment | null> {
@@ -33,8 +33,9 @@ export class DrizzlePaymentRepository implements IPaymentRepository {
         .where(eq(paymentsTable.id, id))
         .limit(1);
 
-      if (records.length === 0) return null;
-      return this.mapToDomain(records[0]);
+      const record = records[0];
+      if (!record) return null;
+      return this.mapToDomain(record);
     } catch {
       return this.inMemoryStorage.get(id) ?? null;
     }
@@ -55,8 +56,9 @@ export class DrizzlePaymentRepository implements IPaymentRepository {
         .where(eq(paymentsTable.idempotencyKey, idempotencyKey))
         .limit(1);
 
-      if (records.length === 0) return null;
-      return this.mapToDomain(records[0]);
+      const record = records[0];
+      if (!record) return null;
+      return this.mapToDomain(record);
     } catch {
       for (const p of this.inMemoryStorage.values()) {
         if (p.idempotencyKey === idempotencyKey) return p;
@@ -78,7 +80,7 @@ export class DrizzlePaymentRepository implements IPaymentRepository {
         .from(paymentsTable)
         .where(eq(paymentsTable.appointmentId, appointmentId));
 
-      return records.map((r: any) => this.mapToDomain(r));
+      return records.map((r) => this.mapToDomain(r));
     } catch {
       return Array.from(this.inMemoryStorage.values()).filter(
         (p) => p.appointmentId === appointmentId,
@@ -127,11 +129,8 @@ export class DrizzlePaymentRepository implements IPaymentRepository {
     }
   }
 
-  private mapToDomain(record: any): Payment {
-    const amount = Money.create(
-      parseFloat(record.amount),
-      record.currency || 'USD',
-    ).unwrap();
+  private mapToDomain(record: typeof paymentsTable.$inferSelect): Payment {
+    const amount = Money.create(parseFloat(record.amount), record.currency || 'USD').unwrap();
 
     return new Payment({
       id: record.id,
@@ -140,7 +139,7 @@ export class DrizzlePaymentRepository implements IPaymentRepository {
       type: record.type as PaymentType,
       method: record.method as PaymentMethod,
       status: record.status as PaymentStatus,
-      idempotencyKey: record.idempotencyKey,
+      idempotencyKey: record.idempotencyKey ?? record.id,
       externalReference: record.externalReference || undefined,
       createdAt: new Date(record.createdAt),
       updatedAt: new Date(record.createdAt),

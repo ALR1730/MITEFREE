@@ -53,7 +53,7 @@ export interface QuotationPriceBreakdown {
 
 /**
  * QuotationPricingEngine — Motor Algorítmico Puro de Cotización (DDD)
- * 
+ *
  * Reglas de Negocio Inmutables:
  * 1. line_total = (basePrice * fabricMultiplier) + stainSurcharge + additionalServices
  * 2. subtotal = Σ(line_total)

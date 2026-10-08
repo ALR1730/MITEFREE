@@ -26,10 +26,7 @@ export class LoyaltyPolicyEngine {
   /**
    * Calcula el cashback inmutable ganado por un cliente tras pagar un servicio.
    */
-  static calculateCashback(
-    paidAmount: Money,
-    rate: number = DEFAULT_CASHBACK_RATE,
-  ): Money {
+  static calculateCashback(paidAmount: Money, rate: number = DEFAULT_CASHBACK_RATE): Money {
     if (paidAmount.amount <= 0 || rate <= 0) {
       return Money.zero(paidAmount.currency);
     }
@@ -80,8 +77,7 @@ export class LoyaltyPolicyEngine {
     if (
       input.referrerEmail &&
       input.refereeEmail &&
-      input.referrerEmail.trim().toLowerCase() ===
-        input.refereeEmail.trim().toLowerCase()
+      input.referrerEmail.trim().toLowerCase() === input.refereeEmail.trim().toLowerCase()
     ) {
       return fail(
         'Anti-fraud violation: Referrer and referee cannot share the same email address.',

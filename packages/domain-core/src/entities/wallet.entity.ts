@@ -202,9 +202,7 @@ export class Wallet {
       return fail('Adjustment amount must be positive');
     }
 
-    const newBalanceResult = isPositive
-      ? this.balance.add(amount)
-      : this.balance.subtract(amount);
+    const newBalanceResult = isPositive ? this.balance.add(amount) : this.balance.subtract(amount);
 
     if (newBalanceResult.isFailure) {
       return fail(newBalanceResult.error);
@@ -232,4 +230,3 @@ export class Wallet {
     );
   }
 }
-

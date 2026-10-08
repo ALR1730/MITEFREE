@@ -1,12 +1,6 @@
 import { z } from 'zod';
 
-export const ZoneCodeEnum = z.enum([
-  'ZONE-DN',
-  'ZONE-SDE',
-  'ZONE-SDO',
-  'ZONE-SDN',
-  'ZONE-C',
-]);
+export const ZoneCodeEnum = z.enum(['ZONE-DN', 'ZONE-SDE', 'ZONE-SDO', 'ZONE-SDN', 'ZONE-C']);
 
 export const TimeSlotCodeEnum = z.enum(['MORNING', 'AFTERNOON', 'EVENING']);
 

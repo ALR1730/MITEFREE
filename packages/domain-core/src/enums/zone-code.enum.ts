@@ -1,15 +1,18 @@
 export enum ZoneCode {
-  DistritoNacional = 'ZONE-DN',
   SantoDomingoEste = 'ZONE-SDE',
-  SantoDomingoOeste = 'ZONE-SDO',
-  SantoDomingoNorte = 'ZONE-SDN',
+  SanPedroDeMacoris = 'ZONE-SPM',
+  LaRomana = 'ZONE-LR',
+  DistritoNacional = 'ZONE-DN',
   Central = 'ZONE-C',
 }
 
 export const ZONE_NAMES: Record<ZoneCode, string> = {
-  [ZoneCode.DistritoNacional]: 'Distrito Nacional (Piantini, Naco, Bella Vista, Gazcue)',
-  [ZoneCode.SantoDomingoEste]: 'Santo Domingo Este (Alma Rosa, Ozama, San Isidro)',
-  [ZoneCode.SantoDomingoOeste]: 'Santo Domingo Oeste (Herrera, Alameda, Los Ríos)',
-  [ZoneCode.SantoDomingoNorte]: 'Santo Domingo Norte (Villa Mella, Mirador Norte)',
-  [ZoneCode.Central]: 'Cuadrante Central Metropolitano',
+  [ZoneCode.SantoDomingoEste]:
+    'Santo Domingo Este (Alma Rosa, Ozama, San Isidro, Los Frailes, Las Américas)',
+  [ZoneCode.SanPedroDeMacoris]:
+    'San Pedro de Macorís y todos sus municipios (Consuelo, Quisqueya, Guayacanes, Ramón Santana)',
+  [ZoneCode.LaRomana]:
+    'La Romana y todos sus municipios (Villa Hermosa, Guaymate, Cumayasa, Caleta)',
+  [ZoneCode.DistritoNacional]: 'Distrito Nacional (Zona Metropolitana Extendida)',
+  [ZoneCode.Central]: 'Región Este / Metropolitano',
 };

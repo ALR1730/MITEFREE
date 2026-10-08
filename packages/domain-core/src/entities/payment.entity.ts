@@ -1,10 +1,6 @@
 import { Result, ok, fail } from '../common/result.js';
 import { Money } from '../value-objects/money.vo.js';
-import {
-  PaymentType,
-  PaymentMethod,
-  PaymentStatus,
-} from '../enums/payment-type.enum.js';
+import { PaymentType, PaymentMethod, PaymentStatus } from '../enums/payment-type.enum.js';
 
 export interface PaymentProps {
   id: string;

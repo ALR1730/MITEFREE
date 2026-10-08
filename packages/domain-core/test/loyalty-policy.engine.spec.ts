@@ -1,10 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import {
-  LoyaltyPolicyEngine,
-  Money,
-  Wallet,
-  WalletTransactionType,
-} from '../src/index.js';
+import { LoyaltyPolicyEngine, Money, Wallet, WalletTransactionType } from '../src/index.js';
 
 describe('LoyaltyPolicyEngine & Wallet Domain Specs', () => {
   describe('Cashback Calculation', () => {

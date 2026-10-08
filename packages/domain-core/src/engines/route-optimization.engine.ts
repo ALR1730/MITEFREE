@@ -48,7 +48,7 @@ export interface AvailableSlotEvaluation {
 
 /**
  * RouteOptimizationEngine — Motor Algorítmico Puro de Agenda, Logística y Rutas
- * 
+ *
  * Reglas de Negocio Inmutables:
  * 1. Anti-Double Booking: Un técnico no puede tener 2 citas activas en el mismo timeSlot y fecha.
  * 2. Citas canceladas no bloquean horarios.

@@ -11,7 +11,7 @@ export interface WebhookIdempotencyEvaluation {
 
 /**
  * DepositPolicy — Motor de Dominio Puro para Políticas de Anticipos y Liquidación (DDD)
- * 
+ *
  * Reglas de Negocio Inmutables:
  * 1. Anticipo Obligatorio: Mínimo 30% del total de la cotización para congelar la cuadrilla.
  * 2. Idempotencia Financiera: Llave única obligatoria por transacción. Eventos repetidos se ignoran.

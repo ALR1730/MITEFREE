@@ -2,12 +2,7 @@ import { z } from 'zod';
 
 export const PaymentTypeEnum = z.enum(['DEPOSIT', 'SETTLEMENT', 'FULL', 'REFUND']);
 
-export const PaymentMethodEnum = z.enum([
-  'STRIPE',
-  'BANK_TRANSFER',
-  'CASH',
-  'WALLET',
-]);
+export const PaymentMethodEnum = z.enum(['STRIPE', 'BANK_TRANSFER', 'CASH', 'WALLET']);
 
 export const PaymentStatusEnum = z.enum([
   'PENDING',
@@ -69,9 +64,7 @@ export const PaymentRecordResponseSchema = z.object({
   updatedAt: z.string(),
 });
 
-export type CreatePaymentIntentRequestDto = z.infer<
-  typeof CreatePaymentIntentRequestSchema
->;
+export type CreatePaymentIntentRequestDto = z.infer<typeof CreatePaymentIntentRequestSchema>;
 export type PaymentIntentResponseDto = z.infer<typeof PaymentIntentResponseSchema>;
 export type SubmitBankTransferProofDto = z.infer<typeof SubmitBankTransferProofSchema>;
 export type ReviewPaymentDto = z.infer<typeof ReviewPaymentSchema>;
