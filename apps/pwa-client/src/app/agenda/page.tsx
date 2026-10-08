@@ -19,28 +19,24 @@ import {
 
 const COVERAGE_ZONES = [
   {
-    id: 'ZONE-DN',
-    name: 'Distrito Nacional',
-    areas: 'Piantini, Naco, Bella Vista, Gazcue, Evaristo',
+    id: 'ZONE-SPM',
+    name: 'San Pedro de Macorís',
+    areas:
+      'San Pedro (Centro), Consuelo, Quisqueya, Ramón Santana, Guayacanes, Juan Dolio, El Puerto',
+    hasCluster: true,
+  },
+  {
+    id: 'ZONE-LR',
+    name: 'La Romana',
+    areas: 'La Romana (Centro), Villa Hermosa, Guaymate, Cumayasa, Caleta',
     hasCluster: true,
   },
   {
     id: 'ZONE-SDE',
     name: 'Santo Domingo Este',
-    areas: 'Alma Rosa, Ensanche Ozama, Autopista San Isidro',
-    hasCluster: false,
-  },
-  {
-    id: 'ZONE-SDO',
-    name: 'Santo Domingo Oeste',
-    areas: 'Herrera, Alameda, Manoguayabo, Los Ríos',
+    areas:
+      'Alma Rosa, Ensanche Ozama, Autopista San Isidro, Los Frailes, Autopista Las Américas, Invivienda, Lucerna',
     hasCluster: true,
-  },
-  {
-    id: 'ZONE-SDN',
-    name: 'Santo Domingo Norte',
-    areas: 'Villa Mella, El Edén, Mirador Norte',
-    hasCluster: false,
   },
 ];
 
@@ -115,7 +111,8 @@ export default function AgendaPage() {
           Agendamiento de Cuadrilla Técnica
         </h1>
         <p className="text-xs sm:text-sm text-gray-400 mt-1">
-          Asignamos especialistas con equipamiento hospitalario UV-C optimizando desplazamientos por zona.
+          Asignamos especialistas con equipamiento hospitalario UV-C optimizando desplazamientos por
+          zona.
         </p>
       </div>
 
@@ -293,7 +290,8 @@ export default function AgendaPage() {
                 <span>Garantía de Puntualidad y Sanidad Certificada</span>
               </div>
               <p className="text-xs text-gray-400 mt-0.5">
-                {selectedDateObj.dayName} {selectedDateObj.dayNum} de {selectedDateObj.month} · {currentSlotObj.time} · {currentZoneObj.name}
+                {selectedDateObj.dayName} {selectedDateObj.dayNum} de {selectedDateObj.month} ·{' '}
+                {currentSlotObj.time} · {currentZoneObj.name}
               </p>
             </div>
 

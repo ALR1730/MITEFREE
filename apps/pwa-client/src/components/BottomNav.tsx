@@ -29,8 +29,8 @@ export function BottomNav() {
                 href={item.href}
                 className="flex flex-col items-center -mt-6 group"
               >
-                <div className="w-12 h-12 rounded-full bg-gradient-to-tr from-brand-600 to-cyan-400 text-dark-bg flex items-center justify-center tech-glow shadow-lg transition-transform group-active:scale-95">
-                  <Icon className="w-6 h-6" />
+                <div className="w-12 h-12 rounded-full bg-gradient-to-tr from-brand-700 via-brand-600 to-brand-500 text-dark-bg flex items-center justify-center tech-glow shadow-lg transition-transform group-active:scale-95">
+                  <Icon className="w-6 h-6 text-white drop-shadow-sm" />
                 </div>
                 <span className="text-[11px] font-semibold text-brand-400 mt-1">{item.label}</span>
               </Link>

@@ -1,13 +1,7 @@
-// MITEFREE Service Worker v1.0.0 — Offline Caching
-const CACHE_NAME = 'mitefree-cache-v1';
-const PRECACHE_ASSETS = ['/', '/cotizar', '/agenda', '/wallet', '/mis-citas'];
+// MITEFREE Service Worker v2.0.0 — Network First with Offline Fallback
+const CACHE_NAME = 'mitefree-cache-v2';
 
 self.addEventListener('install', (event) => {
-  event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => {
-      return cache.addAll(PRECACHE_ASSETS);
-    }),
-  );
   self.skipWaiting();
 });
 
@@ -26,16 +20,25 @@ self.addEventListener('activate', (event) => {
   self.clients.claim();
 });
 
+// Network-First strategy: Always prioritize live server response
 self.addEventListener('fetch', (event) => {
   if (event.request.method !== 'GET') return;
+
   event.respondWith(
-    caches.match(event.request).then((cachedResponse) => {
-      return (
-        cachedResponse ||
-        fetch(event.request).catch(() => {
-          return caches.match('/');
-        })
-      );
-    }),
+    fetch(event.request)
+      .then((networkResponse) => {
+        if (networkResponse && networkResponse.status === 200) {
+          const responseToCache = networkResponse.clone();
+          caches.open(CACHE_NAME).then((cache) => {
+            cache.put(event.request, responseToCache);
+          });
+        }
+        return networkResponse;
+      })
+      .catch(() => {
+        return caches.match(event.request).then((cached) => {
+          return cached || caches.match('/');
+        });
+      }),
   );
 });

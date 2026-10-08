@@ -16,14 +16,14 @@ export const metadata: Metadata = {
     'Plataforma enterprise para cotización inteligente en 60 segundos, desinfección de ácaros con tecnología hospitalaria, gestión de citas y programa de fidelización cashback.',
   manifest: '/manifest.json',
   icons: {
-    icon: '/icon-192.png',
-    apple: '/icon-192.png',
+    icon: '/logo-mitefree.png',
+    apple: '/logo-mitefree.png',
   },
   authors: [{ name: 'Angel Luis Rosario', url: 'https://github.com/ALR1730' }],
 };
 
 export const viewport: Viewport = {
-  themeColor: '#00D4B2',
+  themeColor: '#00C4FF',
   width: 'device-width',
   initialScale: 1,
   maximumScale: 1,
@@ -48,16 +48,27 @@ export default function RootLayout({
         <Footer />
         <BottomNav />
 
-        {/* PWA Service Worker Registration */}
+        {/* PWA Service Worker: Limpieza en dev y activación en producción */}
         <script
           dangerouslySetInnerHTML={{
             __html: `
               if ('serviceWorker' in navigator) {
-                window.addEventListener('load', function() {
-                  navigator.serviceWorker.register('/sw.js').catch(function(err) {
-                    console.log('ServiceWorker registration skipped:', err);
+                if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+                  navigator.serviceWorker.getRegistrations().then(function(registrations) {
+                    for (var r of registrations) { r.unregister(); }
                   });
-                });
+                  if ('caches' in window) {
+                    caches.keys().then(function(names) {
+                      for (var n of names) caches.delete(n);
+                    });
+                  }
+                } else {
+                  window.addEventListener('load', function() {
+                    navigator.serviceWorker.register('/sw.js').catch(function(err) {
+                      console.error('SW registration error:', err);
+                    });
+                  });
+                }
               }
             `,
           }}

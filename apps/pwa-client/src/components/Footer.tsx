@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import Link from 'next/link';
 import { Sparkles, ShieldCheck, HeartHandshake, Award } from 'lucide-react';
 
@@ -7,13 +8,13 @@ export function Footer() {
       <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-8">
         {/* Brand */}
         <div className="space-y-4">
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-brand-600 to-cyan-400 flex items-center justify-center text-dark-bg">
-              <Sparkles className="w-4 h-4" />
-            </div>
-            <span className="text-lg font-bold text-white tracking-tight">
-              MITE<span className="text-brand-500">FREE</span>
-            </span>
+          <div className="relative h-12 w-36 drop-shadow-[0_0_12px_rgba(0,196,255,0.3)]">
+            <Image
+              src="/logo-mitefree.png"
+              alt="Mitefree"
+              fill
+              className="object-contain object-left"
+            />
           </div>
           <p className="text-sm text-gray-400 leading-relaxed">
             Plataforma enterprise de desinfección profunda de ácaros y alérgenos con tecnología
@@ -54,17 +55,36 @@ export function Footer() {
           </ul>
         </div>
 
-        {/* Cobertura */}
+        {/* Cobertura Oficial */}
         <div>
           <h4 className="text-sm font-semibold uppercase tracking-wider text-gray-300 mb-3">
-            Zonas de Cobertura
+            Zonas de Cobertura Oficial
           </h4>
           <ul className="space-y-2 text-sm text-gray-400">
-            <li>Distrito Nacional (Piantini, Naco, Bella Vista)</li>
-            <li>Santo Domingo Este (Alma Rosa, San Isidro)</li>
-            <li>Santo Domingo Oeste (Herrera, Alameda)</li>
-            <li>Santo Domingo Norte (Villa Mella, El Edén)</li>
+            <li className="flex items-center gap-1.5 text-white font-medium">
+              <span className="w-1.5 h-1.5 rounded-full bg-brand-500" />
+              <span>San Pedro de Macorís (Todos sus municipios)</span>
+            </li>
+            <li className="flex items-center gap-1.5 text-white font-medium">
+              <span className="w-1.5 h-1.5 rounded-full bg-brand-500" />
+              <span>La Romana (Todos sus municipios)</span>
+            </li>
+            <li className="flex items-center gap-1.5 text-white font-medium">
+              <span className="w-1.5 h-1.5 rounded-full bg-brand-500" />
+              <span>Santo Domingo Este (Alma Rosa, Los Frailes, San Isidro)</span>
+            </li>
           </ul>
+
+          <div className="mt-4 pt-3 border-t border-dark-border/40">
+            <a
+              href="https://wa.me/18095134773"
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-center gap-2 text-xs font-semibold text-emerald-400 hover:text-emerald-300 transition-colors bg-emerald-500/10 px-3 py-1.5 rounded-lg border border-emerald-500/20"
+            >
+              <span>WhatsApp: (809) 513-4773</span>
+            </a>
+          </div>
         </div>
 
         {/* Garantías */}
@@ -81,9 +101,9 @@ export function Footer() {
             <span>Técnicos certificados con protocolo Zero-Residue.</span>
           </div>
           <div className="flex items-start gap-2.5 text-xs text-gray-400">
-            <HeartHandshake className="w-4 h-4 text-brand-400 mt-0.5 shrink-0" />
+            <HeartHandshake className="w-4 h-4 text-emerald-400 mt-0.5 shrink-0" />
             <span>
-              30% de anticipo seguro con devolución garantizada ante cancelaciones oportunas.
+              0% de anticipo: pagas el 100% únicamente al finalizar y verificar el trabajo.
             </span>
           </div>
         </div>

@@ -21,7 +21,7 @@ export default function MisCitasPage() {
 
   const steps = [
     { label: 'Cita Agendada', done: true, time: '10:00 AM' },
-    { label: 'Anticipo 30% Confirmado', done: true, time: '10:05 AM' },
+    { label: 'Cita Confirmada (Sin Anticipo)', done: true, time: '10:05 AM' },
     { label: 'Técnico en Ruta (ETA: 18 min)', current: true, time: '11:15 AM' },
     { label: 'Desinfección Quirúrgica UV-C', pending: true, time: 'Estimado 11:45 AM' },
     { label: 'Inspección & Aprobación', pending: true, time: 'Final' },
@@ -154,7 +154,7 @@ export default function MisCitasPage() {
 
           <div className="flex items-center gap-2 w-full sm:w-auto">
             <a
-              href="https://wa.me/18095550123"
+              href="https://wa.me/18095134773"
               target="_blank"
               rel="noreferrer"
               className="flex-1 sm:flex-initial flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-dark-hover hover:bg-dark-border border border-dark-border text-xs font-semibold text-white transition-colors"
@@ -163,7 +163,7 @@ export default function MisCitasPage() {
               <span>WhatsApp</span>
             </a>
             <a
-              href="tel:+18095550123"
+              href="tel:+18095134773"
               className="flex-1 sm:flex-initial flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-dark-hover hover:bg-dark-border border border-dark-border text-xs font-semibold text-white transition-colors"
             >
               <Phone className="w-4 h-4 text-cyan-400" />

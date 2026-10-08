@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import Link from 'next/link';
 import {
   Sparkles,
@@ -10,6 +11,7 @@ import {
   Calendar,
   Layers,
   Star,
+  Ban,
 } from 'lucide-react';
 
 export default function HomePage() {
@@ -23,7 +25,7 @@ export default function HomePage() {
     {
       num: '02',
       title: 'Agenda tu Bloque Horario',
-      desc: 'Elige tu fecha y zona geográfica en Santo Domingo. Cuadrillas técnicas con seguimiento GPS en tiempo real.',
+      desc: 'Elige tu fecha en San Pedro de Macorís, La Romana o Santo Domingo Este. Cuadrillas técnicas con seguimiento GPS.',
       icon: Calendar,
     },
     {
@@ -37,27 +39,38 @@ export default function HomePage() {
   const highlights = [
     { label: 'Reducción de Ácaros', val: '99.9%', sub: 'Certificación de Laboratorio' },
     { label: 'Tiempo de Secado', val: '2 Horas', sub: 'Extracción Hidrocinética' },
-    { label: 'Clientes Satisfechos', val: '4,850+', sub: 'En Gran Santo Domingo' },
+    { label: 'Clientes Satisfechos', val: '4,850+', sub: 'San Pedro · La Romana · SDE' },
     { label: 'Calificación Promedio', val: '4.95 ★', sub: 'De 5 estrellas en reseñas' },
   ];
 
   return (
     <div className="flex flex-col items-center">
       {/* Hero Section */}
-      <section className="relative w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 pb-20 md:pt-20 md:pb-28 flex flex-col items-center text-center">
-        {/* Glow ambient background */}
-        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[550px] h-[300px] bg-brand-500/15 blur-[120px] rounded-full pointer-events-none -z-10" />
+      <section className="relative w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-10 pb-20 md:pt-16 md:pb-28 flex flex-col items-center text-center">
+        {/* Glow ambient background in Navy & Cyan */}
+        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[340px] bg-gradient-to-r from-brand-800/25 via-brand-500/20 to-brand-700/25 blur-[130px] rounded-full pointer-events-none -z-10" />
+
+        {/* Official 3D Logo Showcase */}
+        <div className="relative w-64 h-32 sm:w-80 sm:h-36 md:w-96 md:h-44 mb-4 drop-shadow-[0_0_35px_rgba(0,196,255,0.45)] transition-transform hover:scale-105 duration-300">
+          <Image
+            src="/logo-mitefree.png"
+            alt="Mitefree Logo Oficial"
+            fill
+            priority
+            className="object-contain"
+          />
+        </div>
 
         {/* Badge */}
         <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full glass-card text-brand-400 text-xs font-semibold mb-6 border border-brand-500/30 tech-glow">
-          <Sparkles className="w-3.5 h-3.5 text-brand-400" />
+          <span className="w-2 h-2 rounded-full bg-alert-500 animate-pulse" />
           <span>Tecnología Hospitalaria Anti-Ácaros de Nivel Quirúrgico</span>
         </div>
 
         {/* Main Heading */}
         <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold tracking-tight text-white max-w-4xl leading-[1.15]">
           Desinfección profunda para tus muebles,{' '}
-          <span className="bg-gradient-to-r from-brand-400 via-cyan-400 to-emerald-300 bg-clip-text text-transparent">
+          <span className="bg-gradient-to-r from-brand-400 via-brand-500 to-white bg-clip-text text-transparent">
             sin ácaros ni alérgenos.
           </span>
         </h1>
@@ -87,18 +100,18 @@ export default function HomePage() {
         </div>
 
         {/* Trust Badges */}
-        <div className="mt-8 flex flex-wrap items-center justify-center gap-6 text-xs text-gray-400">
-          <div className="flex items-center gap-1.5">
-            <CheckCircle2 className="w-4 h-4 text-brand-400" />
-            <span>30% de anticipo seguro</span>
+        <div className="mt-8 flex flex-wrap items-center justify-center gap-4 text-xs text-gray-300">
+          <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/30">
+            <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+            <span>0% Anticipo · Pagas al Finalizar</span>
           </div>
-          <div className="flex items-center gap-1.5">
-            <CheckCircle2 className="w-4 h-4 text-brand-400" />
-            <span>Desinfección con luz UV-C</span>
+          <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-alert-500/10 border border-alert-500/30">
+            <ShieldCheck className="w-4 h-4 text-alert-500" />
+            <span>99.9% Erradicación de Ácaros UV-C</span>
           </div>
-          <div className="flex items-center gap-1.5">
-            <CheckCircle2 className="w-4 h-4 text-brand-400" />
-            <span>Cashback 5% garantizado</span>
+          <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-ochre-500/10 border border-ochre-500/30">
+            <Sparkles className="w-4 h-4 text-ochre-400" />
+            <span>Cashback 5% en Billetera</span>
           </div>
         </div>
       </section>

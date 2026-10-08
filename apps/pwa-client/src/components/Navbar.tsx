@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Sparkles, Calendar, ShieldCheck, Wallet, ArrowRight } from 'lucide-react';
@@ -19,23 +20,19 @@ export function Navbar() {
     <header className="sticky top-0 z-50 w-full glass-panel border-b border-dark-border/60">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
         {/* Brand Logo */}
-        <Link href="/" className="flex items-center gap-2.5 group">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-600 to-cyan-400 flex items-center justify-center tech-glow transition-transform group-hover:scale-105">
-            <Sparkles className="w-5 h-5 text-dark-bg" />
+        <Link href="/" className="flex items-center gap-3 group">
+          <div className="relative h-11 w-32 sm:w-36 flex items-center justify-center transition-transform group-hover:scale-105 drop-shadow-[0_0_14px_rgba(0,196,255,0.4)]">
+            <Image
+              src="/logo-mitefree.png"
+              alt="Mitefree"
+              fill
+              priority
+              className="object-contain object-left"
+            />
           </div>
-          <div>
-            <div className="flex items-center gap-1.5">
-              <span className="text-xl font-bold tracking-tight text-white">
-                MITE<span className="text-brand-500">FREE</span>
-              </span>
-              <span className="px-1.5 py-0.5 text-[10px] uppercase font-semibold tracking-wider rounded bg-brand-500/10 text-brand-400 border border-brand-500/20">
-                Pro
-              </span>
-            </div>
-            <p className="text-[10px] text-gray-400 -mt-1 font-mono tracking-tight">
-              ALR COMPANY TECH
-            </p>
-          </div>
+          <span className="hidden sm:inline-flex px-1.5 py-0.5 text-[10px] uppercase font-semibold tracking-wider rounded bg-brand-500/10 text-brand-400 border border-brand-500/25">
+            Pro
+          </span>
         </Link>
 
         {/* Desktop Navigation Links */}
@@ -58,8 +55,16 @@ export function Navbar() {
           })}
         </nav>
 
-        {/* CTA Button */}
-        <div className="flex items-center gap-3">
+        {/* CTA & WhatsApp Button */}
+        <div className="flex items-center gap-2.5">
+          <a
+            href="https://wa.me/18095134773"
+            target="_blank"
+            rel="noreferrer"
+            className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-semibold hover:bg-emerald-500/20 transition-colors"
+          >
+            <span>(809) 513-4773</span>
+          </a>
           <Link
             href="/cotizar"
             className="flex items-center gap-2 px-4 py-2 text-sm font-semibold rounded-lg bg-gradient-to-r from-brand-500 to-cyan-500 text-dark-bg tech-glow hover:opacity-95 transition-all shadow-md active:scale-95"
