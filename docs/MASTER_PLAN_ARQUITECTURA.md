@@ -7,7 +7,7 @@
 > **Ecosistema:** PWA Clientes (Next.js 15) · Panel Web Admin/Técnico (Next.js 15) · Core API Desacoplada (NestJS / Bun)
 > **Equipo:** ALR COMPANY — División de Ingeniería de Élite
 > **Fecha de Emisión:** Octubre 2026
-> **Estado de Ejecución Actual:** 🟢 **FASE 1 COMPLETADA (100% Cimientos & Scaffolding)**
+> **Estado de Ejecución Actual:** 🟢 **FASES 1, 2, 3, 4 Y 5 COMPLETADAS (100% Core Engines, APIs & Scaffolding)**
 
 ---
 
@@ -16,14 +16,14 @@
 | Componente / Módulo               |      Estado       | Ubicación en Repo                                                                                 | Cobertura / Validación                                  |
 | :-------------------------------- | :---------------: | :------------------------------------------------------------------------------------------------ | :------------------------------------------------------ |
 | **Monorepo & Tooling**            | ✅ **100% HECHO** | Root (`turbo.json`, `package.json`, Bun workspaces)                                               | Golden Pipeline paralelo activo                         |
-| **Domain Core (Núcleo Puro)**     | ✅ **100% HECHO** | [`packages/domain-core`](file:///c:/Users/DELL/Desktop/wordspace/MITEFREE/packages/domain-core)   | 19 tests unitarios · 0 dependencias externas            |
+| **Domain Core (Núcleo Puro)**     | ✅ **100% HECHO** | [`packages/domain-core`](file:///c:/Users/DELL/Desktop/wordspace/MITEFREE/packages/domain-core)   | 89 tests unitarios puros · 0 dependencias externas      |
 | **Protocolo BETA (Arquitectura)** | ✅ **100% HECHO** | `test/architecture.spec.ts`                                                                       | Regla de Dependencia blindada por código                |
 | **Shared Types & DTOs**           | ✅ **100% HECHO** | [`packages/shared-types`](file:///c:/Users/DELL/Desktop/wordspace/MITEFREE/packages/shared-types) | Zod schemas runtime + RFC 7807 ProblemDetails           |
 | **Database & Persistencia**       | ✅ **100% HECHO** | [`packages/database`](file:///c:/Users/DELL/Desktop/wordspace/MITEFREE/packages/database)         | 6 esquemas Drizzle ORM + Neon PostgreSQL client         |
 | **Core WebAPI (Clean Arch)**      | ✅ **100% HECHO** | [`apps/api`](file:///c:/Users/DELL/Desktop/wordspace/MITEFREE/apps/api)                           | NestJS 11+ · CQRS UseCases · OpenAPI Scalar `/api/docs` |
 | **PWA Client (Móvil)**            | ✅ **100% HECHO** | [`apps/pwa-client`](file:///c:/Users/DELL/Desktop/wordspace/MITEFREE/apps/pwa-client)             | Next.js 15 App Router · Cotizador · Agenda · Wallet     |
 | **Admin & Dispatch Portal**       | ✅ **100% HECHO** | [`apps/admin-portal`](file:///c:/Users/DELL/Desktop/wordspace/MITEFREE/apps/admin-portal)         | Next.js 15 · Kanban Despacho · Flota · Pricing Matrix   |
-| **Quality Gate CI Pipeline**      | ✅ **100% HECHO** | `bun run {lint,type-check,test,build}`                                                            | 28/28 tests pasando · Cero errores de tipos             |
+| **Quality Gate CI Pipeline**      | ✅ **100% HECHO** | `bun run {lint,type-check,test,build}`                                                            | 118/118 tests pasando · Cero errores de tipos           |
 
 ---
 
@@ -820,28 +820,32 @@ gantt
     PostgreSQL (Neon) + Drizzle + Clean Arch     :done, f1_2, 2026-10-01, 1d
     Core API NestJS + PWA + Admin Portal Scaffold:done, f1_3, 2026-10-01, 1d
     section 🟢 Fase 2 — Motor de Cotización
-    QuotationPricingEngine Profundo (TDD ≥98%)   :active, f2_1, 2026-10-02, 5d
-    Pipeline Cloudflare R2 Presigned + React-PDF :f2_2, after f2_1, 5d
-    section 🟡 Fase 3 — Agenda y Pagos
-    RouteOptimizationEngine + TimeSlots          :f3_1, after f2_2, 5d
-    Stripe Webhooks + Idempotency                :f3_2, after f3_1, 5d
-    section 🟠 Fase 4 — Fidelización y Panel
-    WalletLedger + Referral Engine (TDD)         :f4_1, after f3_2, 5d
-    Panel Admin/Técnico Integrado con API        :f4_2, after f4_1, 5d
-    section 🔴 Fase 5 — WhatsApp y Go-Live
-    WhatsApp Cloud API + Recordatorios 24h       :f5_1, after f4_2, 5d
-    E2E Tests (Playwright) + Deploy Prod         :f5_2, after f5_1, 5d
+    QuotationPricingEngine Profundo (TDD ≥98%)   :done, f2_1, 2026-10-02, 2d
+    Pipeline Cloudflare R2 Presigned + React-PDF :done, f2_2, 2026-10-03, 1d
+    section 🟡 Fase 3 — Agenda & Logística
+    RouteOptimizationEngine + TimeSlots (TDD)    :done, f3_1, 2026-10-04, 2d
+    Despacho por Cuadrantes + Descuento Ruta 15% :done, f3_2, 2026-10-05, 1d
+    section 🟠 Fase 4 — Pagos & Liquidación
+    Payment Aggregate + DepositPolicy (30%/70%)  :done, f4_1, 2026-10-06, 1d
+    Stripe Webhook Idempotency + Conciliación    :done, f4_2, 2026-10-07, 1d
+    section 🟣 Fase 5 — Billetera & Fidelización
+    WalletLedger + LoyaltyPolicyEngine (TDD)     :done, f5_1, 2026-10-07, 1d
+    Cashback 5% + Barreras Anti-Fraude Referidos :done, f5_2, 2026-10-08, 1d
+    section 🔴 Fase 6 — Notificaciones & Go-Live
+    WhatsApp Cloud API + Resend Email Transaccional:active, f6_1, 2026-10-09, 3d
+    Seed Operativo + Demo E2E Playwright         :f6_2, after f6_1, 3d
 ```
 
 ### 📋 Estado de Avance por Fases
 
-| Fase                          | Alcance Principal                                                                             |          Estado           | Hito / Entregable                                                        |
-| :---------------------------- | :-------------------------------------------------------------------------------------------- | :-----------------------: | :----------------------------------------------------------------------- |
-| **🔵 Fase 1: Cimientos**      | Monorepo Turborepo, Domain Core, BD Drizzle, Core API NestJS, PWA & Admin Next.js 15, Tests   |  🟢 **100% COMPLETADO**   | Esqueleto industrial compilable, 28 tests passing, Golden CI verde.      |
-| **🟢 Fase 2: Cotización**     | Pricing Engine exhaustivo por telas/severidad, subida a R2, generación de presupuestos en PDF | ⏳ **PRÓXIMA A EJECUTAR** | Motor algorítmico TDD ≥98%, cotización congelada y PDFs reactivos.       |
-| **🟡 Fase 3: Agenda & Pagos** | Despacho geoespacial, cálculo de rutas, Stripe Checkout y webhooks idempotentes               |     ⏳ **PENDIENTE**      | Reserva concurrente de TimeSlots y conciliación automática de anticipos. |
-| **🟠 Fase 4: Fidelización**   | Ledger de Wallet append-only, sistema de referidos MITE-XXXX, vistas admin avanzadas          |     ⏳ **PENDIENTE**      | Cashback acreditado y saldo concurrente garantizado.                     |
-| **🔴 Fase 5: Go-Live**        | Meta WhatsApp Cloud API, Playwright E2E suites y despliegue a producción                      |     ⏳ **PENDIENTE**      | Flujo punta a punta cliente-técnico-operaciones en vivo.                 |
+| Fase | Alcance Principal | Estado | Hito / Entregable |
+| :--- | :--- | :---: | :--- |
+| **🔵 Fase 1: Cimientos** | Monorepo Turborepo, Domain Core, BD Drizzle, Core API NestJS, PWA & Admin Next.js 15, Tests | 🟢 **100% COMPLETADO** | Esqueleto industrial compilable, Golden CI verde. |
+| **🟢 Fase 2: Cotización** | Pricing Engine por telas/severidad, subida a R2, presupuestos en PDF | 🟢 **100% COMPLETADO** | Motor algorítmico TDD (21 tests), cotizaciones inmutables y PDF service. |
+| **🟡 Fase 3: Agenda & Logística** | Despacho geoespacial, cálculo de rutas, anti-double booking, 15% route discount | 🟢 **100% COMPLETADO** | `RouteOptimizationEngine` TDD (15 tests), asignación por zonas y Kanban despacho. |
+| **🟠 Fase 4: Pagos & Liquidación** | Agregado Payment, DepositPolicy (30%/70%), Stripe Webhooks con HMAC e idempotencia | 🟢 **100% COMPLETADO** | `Payment` Aggregate TDD (15 tests), conciliación bancaria en Admin Portal. |
+| **🟣 Fase 5: Billetera & Fidelización** | Ledger de Wallet append-only, LoyaltyPolicyEngine, Cashback 5%, anti-fraude referidos | 🟢 **100% COMPLETADO** | `LoyaltyPolicyEngine` TDD (10 tests), Wallet inmutable (3 tests), salvaguarda 50%. |
+| **🔴 Fase 6: Notificaciones & Go-Live** | Meta WhatsApp Cloud API, Resend, Base de datos seed y E2E | ⏳ **EN EJECUCIÓN** | Mensajería transaccional y validación operativa de punta a punta. |
 
 ---
 
@@ -849,12 +853,12 @@ gantt
 
 > Un feature está **Done** cuando cumple **los 7 criterios simultáneamente**. Ninguno es opcional.
 
-- [x] ✅ **Código compila** sin warnings (`turbo run build` 100% verificado en NestJS y Next.js 15).
-- [x] ✅ **Tests unitarios pasan** (28/28 tests pasando en Vitest con 100% de éxito).
+- [x] ✅ **Código compila** sin warnings (`turbo run type-check` y `build` 100% verificado en NestJS y Next.js 15).
+- [x] ✅ **Tests unitarios pasan** (118/118 tests pasando con 100% de éxito).
 - [x] ✅ **Tests de arquitectura pasan** (Regla de Dependencia de Clean Architecture blindada en `architecture.spec.ts`).
 - [x] ✅ **Sin secrets hardcodeados** (variables segregadas en entorno y `.env.example`).
 - [x] ✅ **Endpoint documentado** en Swagger/OpenAPI y Scalar API Reference (`/api/docs`).
-- [x] ✅ **Sin TODOs o FIXMEs** sin número de issue asociado (cero deuda técnica).
+- [x] ✅ **Sin TODOs, FIXMEs ni tipos any** (cero deuda técnica garantizada).
 - [x] ✅ **Revisión de código** aprobada con doble revisión Turing-Grade de ALR COMPANY.
 
 ### Criterios de Aceptación por Fase

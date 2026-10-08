@@ -47,6 +47,7 @@ graph TD
 ## 📋 Detalle Quirúrgico de Cada Paso
 
 ### 🔹 Paso 1: Motor Algorítmico Puro en Domain Core (`RouteOptimizationEngine`)
+
 - **Capa:** `packages/domain-core` (Núcleo Puro — Cero dependencias externas).
 - **Zonas Canónicas:**
   - `ZONE-DN`: Distrito Nacional (Piantini, Naco, Bella Vista, Gazcue).
@@ -67,6 +68,7 @@ graph TD
 ---
 
 ### 🔹 Paso 2: Contratos de Transferencia y Schemas Zod (`packages/shared-types`)
+
 - **Archivos:** `packages/shared-types/src/dtos/appointment-schedule.dto.ts`.
 - **Schemas:**
   - `TimeSlotAvailabilitySchema`: id, code, startTime, endTime, zoneCode, isAvailable, hasRoutePromotion.
@@ -78,6 +80,7 @@ graph TD
 ---
 
 ### 🔹 Paso 3: Persistencia y Repositorios en `packages/database` y `apps/api`
+
 - Asegurar que `DrizzleAppointmentRepository` soporte:
   - Búsqueda por rango de fechas y zona.
   - Búsqueda de disponibilidad por técnico y timeSlot.
@@ -86,6 +89,7 @@ graph TD
 ---
 
 ### 🔹 Paso 4: Casos de Uso CQRS y Endpoints en Core WebAPI (`apps/api`)
+
 - `GetAvailableTimeSlotsUseCase`: Retorna slots calculando dinámicamente si tienen descuento de ruta.
 - `ScheduleAppointmentUseCase`: Valida que la cotización existe, no esté expirada y reserva el horario.
 - `TransitionAppointmentStatusUseCase`: Valida máquina de estados de cita.
@@ -100,6 +104,7 @@ graph TD
 ---
 
 ### 🔹 Paso 5: Frontends PWA y Admin Portal
+
 - **PWA (`apps/pwa-client/src/app/agenda`):**
   - Conectar selector interactivo de fechas, zonas y bloques horarios con la insignia de **"15% Descuento de Ruta Activo"**.
   - Formulario de dirección y contacto con confirmación de reserva directa.
@@ -110,6 +115,7 @@ graph TD
 ---
 
 ### 🔹 Paso 6: Quality Gate, Cobertura y Push a GitHub
+
 1. `bun run type-check`
 2. `bun run test` (Vitest ≥95% cobertura en agenda)
 3. `bun run build`

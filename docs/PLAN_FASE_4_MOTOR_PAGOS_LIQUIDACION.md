@@ -44,6 +44,7 @@ graph TD
 ## 📋 Detalle Quirúrgico de Cada Paso
 
 ### 🔹 Paso 1: Agregado `Payment` y `DepositPolicy` en `packages/domain-core`
+
 - **Entidad:** `Payment` en `packages/domain-core/src/entities/payment.entity.ts`.
   - Propiedades: `id`, `appointmentId`, `amount: Money`, `type: PaymentType`, `method: PaymentMethod`, `status: PaymentStatus`, `idempotencyKey: string`, `externalReference?: string`.
   - Transiciones de Estado: `Pending → Completed`, `Pending → UnderReview → Completed / Failed`.
@@ -52,15 +53,18 @@ graph TD
   - Previene doble cobro si el saldo ya ha sido pagado.
 
 ### 🔹 Paso 2: Contratos de Transferencia y Schemas Zod en `packages/shared-types`
+
 - `CreatePaymentIntentRequestSchema`, `PaymentIntentResponseSchema`.
 - `SubmitBankTransferProofSchema`, `ReviewPaymentSchema`.
 - `StripeWebhookPayloadSchema`.
 
 ### 🔹 Paso 3: Persistencia Relacional y Repositorio en `apps/api`
+
 - `DrizzlePaymentRepository` en `apps/api/src/infrastructure/repositories/drizzle-payment.repository.ts`.
 - Búsqueda por `idempotencyKey`, por `appointmentId` y actualización atómica.
 
 ### 🔹 Paso 4: Casos de Uso CQRS y Endpoints en `apps/api`
+
 - `CreatePaymentIntentUseCase`
 - `SubmitBankTransferProofUseCase`
 - `ProcessStripeWebhookUseCase` (Verifica firma e idempotencia; confirma automáticamente `Appointment`)
@@ -68,8 +72,10 @@ graph TD
 - Endpoints en `PaymentsController` y `WebhooksController`.
 
 ### 🔹 Paso 5: Frontends PWA y Admin Portal
+
 - **PWA:** Pantalla/modal de liquidación de anticipo con opciones de tarjeta (Stripe) y transferencia bancaria.
 - **Admin Portal (`apps/admin-portal/pagos`):** Tabla interactiva de cobros con conciliación de comprobantes y aprobación en 1 clic.
 
 ### 🔹 Paso 6: Quality Gate & Push GitHub
+
 - `bun run type-check`, `bun run test`, `bun run build`, push a `main`.
