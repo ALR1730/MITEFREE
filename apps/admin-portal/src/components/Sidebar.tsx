@@ -36,6 +36,7 @@ export function Sidebar() {
               alt="Mitefree Logo"
               fill
               priority
+              sizes="128px"
               className="object-contain object-left"
             />
           </div>

@@ -13,6 +13,7 @@ export function Footer() {
               src="/logo-mitefree.png"
               alt="Mitefree"
               fill
+              sizes="144px"
               className="object-contain object-left"
             />
           </div>

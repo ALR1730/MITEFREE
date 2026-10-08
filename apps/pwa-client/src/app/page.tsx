@@ -57,6 +57,7 @@ export default function HomePage() {
             alt="Mitefree Logo Oficial"
             fill
             priority
+            sizes="(max-width: 640px) 256px, (max-width: 768px) 320px, 384px"
             className="object-contain"
           />
         </div>

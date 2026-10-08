@@ -27,6 +27,7 @@ export function Navbar() {
               alt="Mitefree"
               fill
               priority
+              sizes="144px"
               className="object-contain object-left"
             />
           </div>
