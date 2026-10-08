@@ -137,9 +137,7 @@ export class WalletsController {
   @ApiOperation({ summary: 'Acreditar automáticamente 5% de cashback por servicio completado' })
   @ApiResponse({ status: 200, description: 'Cashback acreditado exitosamente.' })
   @UsePipes(new ZodValidationPipe(ProcessAppointmentCashbackSchema))
-  async processCashback(
-    @Body() body: ProcessAppointmentCashbackDto,
-  ): Promise<WalletResponseDto> {
+  async processCashback(@Body() body: ProcessAppointmentCashbackDto): Promise<WalletResponseDto> {
     const result = await this.processCashbackUseCase.execute(body);
 
     if (result.isFailure) {
@@ -151,12 +149,12 @@ export class WalletsController {
 
   @Post('referrals/reward')
   @HttpCode(HttpStatus.OK)
-  @ApiOperation({ summary: 'Liquidar bono de $20 USD para el patrocinador tras orden del referido' })
+  @ApiOperation({
+    summary: 'Liquidar bono de $20 USD para el patrocinador tras orden del referido',
+  })
   @ApiResponse({ status: 200, description: 'Bono acreditado al patrocinador.' })
   @UsePipes(new ZodValidationPipe(ProcessReferralRewardSchema))
-  async rewardReferral(
-    @Body() body: ProcessReferralRewardDto,
-  ): Promise<WalletResponseDto> {
+  async rewardReferral(@Body() body: ProcessReferralRewardDto): Promise<WalletResponseDto> {
     const result = await this.processReferralBonusUseCase.execute(body);
 
     if (result.isFailure) {

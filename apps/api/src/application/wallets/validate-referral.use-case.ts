@@ -14,9 +14,10 @@ import { IUseCase } from '../common/use-case.interface.js';
 import { WALLET_REPOSITORY } from '../../infrastructure/database/database.tokens.js';
 
 @Injectable()
-export class ValidateReferralUseCase
-  implements IUseCase<ValidateReferralCodeDto, Result<ReferralValidationResponseDto, string>>
-{
+export class ValidateReferralUseCase implements IUseCase<
+  ValidateReferralCodeDto,
+  Result<ReferralValidationResponseDto, string>
+> {
   private readonly logger = new Logger(ValidateReferralUseCase.name);
 
   // Mapeo o resolución de embajadores fundadores / usuarios
@@ -41,7 +42,9 @@ export class ValidateReferralUseCase
       this.codeToUserMap.get(normalizedCode) || '99999999-9999-9999-9999-999999999999';
 
     if (!normalizedCode.startsWith('MITE-')) {
-      return fail(`El código "${dto.referralCode}" no es un código de embajador válido de MITEFREE.`);
+      return fail(
+        `El código "${dto.referralCode}" no es un código de embajador válido de MITEFREE.`,
+      );
     }
 
     // 2. Consultar historial del referee para verificar si es cliente recurrente

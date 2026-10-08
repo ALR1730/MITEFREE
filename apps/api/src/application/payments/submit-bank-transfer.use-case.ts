@@ -12,10 +12,7 @@ import {
   ok,
   fail,
 } from '@mitefree/domain-core';
-import type {
-  SubmitBankTransferProofDto,
-  PaymentRecordResponseDto,
-} from '@mitefree/shared-types';
+import type { SubmitBankTransferProofDto, PaymentRecordResponseDto } from '@mitefree/shared-types';
 import { IUseCase } from '../common/use-case.interface.js';
 import {
   PAYMENT_REPOSITORY,
@@ -23,13 +20,10 @@ import {
 } from '../../infrastructure/database/database.tokens.js';
 
 @Injectable()
-export class SubmitBankTransferProofUseCase
-  implements
-    IUseCase<
-      SubmitBankTransferProofDto,
-      Result<PaymentRecordResponseDto, string>
-    >
-{
+export class SubmitBankTransferProofUseCase implements IUseCase<
+  SubmitBankTransferProofDto,
+  Result<PaymentRecordResponseDto, string>
+> {
   constructor(
     @Inject(PAYMENT_REPOSITORY)
     private readonly paymentRepo: IPaymentRepository,

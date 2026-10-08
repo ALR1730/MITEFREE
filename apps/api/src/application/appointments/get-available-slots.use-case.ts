@@ -8,17 +8,15 @@ import {
   Result,
   ok,
 } from '@mitefree/domain-core';
-import type {
-  GetAvailableSlotsQueryDto,
-  TimeSlotAvailabilityDto,
-} from '@mitefree/shared-types';
+import type { GetAvailableSlotsQueryDto, TimeSlotAvailabilityDto } from '@mitefree/shared-types';
 import { IUseCase } from '../common/use-case.interface.js';
 import { APPOINTMENT_REPOSITORY } from '../../infrastructure/database/database.tokens.js';
 
 @Injectable()
-export class GetAvailableSlotsUseCase
-  implements IUseCase<GetAvailableSlotsQueryDto, Result<TimeSlotAvailabilityDto[], string>>
-{
+export class GetAvailableSlotsUseCase implements IUseCase<
+  GetAvailableSlotsQueryDto,
+  Result<TimeSlotAvailabilityDto[], string>
+> {
   constructor(
     @Inject(APPOINTMENT_REPOSITORY)
     private readonly appointmentRepo: IAppointmentRepository,

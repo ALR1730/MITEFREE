@@ -16,9 +16,10 @@ export interface TransitionStatusInput {
 }
 
 @Injectable()
-export class TransitionAppointmentStatusUseCase
-  implements IUseCase<TransitionStatusInput, Result<AppointmentResponseDto, string>>
-{
+export class TransitionAppointmentStatusUseCase implements IUseCase<
+  TransitionStatusInput,
+  Result<AppointmentResponseDto, string>
+> {
   constructor(
     @Inject(APPOINTMENT_REPOSITORY)
     private readonly appointmentRepo: IAppointmentRepository,

@@ -54,13 +54,13 @@ export class QuotationsController {
 
   @Post('preview')
   @HttpCode(HttpStatus.OK)
-  @ApiOperation({ summary: 'Calculate reactive real-time price preview using pure QuotationPricingEngine' })
+  @ApiOperation({
+    summary: 'Calculate reactive real-time price preview using pure QuotationPricingEngine',
+  })
   @ApiResponse({ status: 200, description: 'Price preview calculated with canonical math.' })
   @ApiResponse({ status: 400, description: 'Validation failed or domain invariant broken.' })
   @UsePipes(new ZodValidationPipe(PricePreviewRequestSchema))
-  async calculatePreview(
-    @Body() body: PricePreviewRequestDto,
-  ): Promise<PricePreviewResponseDto> {
+  async calculatePreview(@Body() body: PricePreviewRequestDto): Promise<PricePreviewResponseDto> {
     const result = await this.calculatePricePreviewUseCase.execute(body);
 
     if (result.isFailure) {
@@ -72,7 +72,9 @@ export class QuotationsController {
 
   @Post('photos/upload-intent')
   @HttpCode(HttpStatus.OK)
-  @ApiOperation({ summary: 'Request Cloudflare R2 Presigned PUT URL for evidence photos (TTL 15 min, $0 egress)' })
+  @ApiOperation({
+    summary: 'Request Cloudflare R2 Presigned PUT URL for evidence photos (TTL 15 min, $0 egress)',
+  })
   @ApiResponse({ status: 200, description: 'Presigned upload URL generated.' })
   @ApiResponse({ status: 400, description: 'Invalid photo metadata.' })
   @UsePipes(new ZodValidationPipe(PhotoUploadIntentSchema))
@@ -94,9 +96,7 @@ export class QuotationsController {
   @ApiResponse({ status: 201, description: 'Photo verified and linked.' })
   @ApiResponse({ status: 400, description: 'Failed to verify photo object.' })
   @UsePipes(new ZodValidationPipe(PhotoConfirmSchema))
-  async confirmPhoto(
-    @Body() body: PhotoConfirmDto,
-  ): Promise<PhotoConfirmResponseDto> {
+  async confirmPhoto(@Body() body: PhotoConfirmDto): Promise<PhotoConfirmResponseDto> {
     const result = await this.confirmPhotoUseCase.execute(body);
 
     if (result.isFailure) {

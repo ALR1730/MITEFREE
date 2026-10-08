@@ -14,8 +14,7 @@ export class CloudflareR2StorageAdapter implements IStorageService {
 
   constructor() {
     this.bucketName = process.env.R2_BUCKET_NAME || 'mitefree-evidence';
-    this.publicDomain =
-      process.env.R2_PUBLIC_DOMAIN || 'https://evidence.mitefree.com';
+    this.publicDomain = process.env.R2_PUBLIC_DOMAIN || 'https://evidence.mitefree.com';
   }
 
   async generatePresignedUploadUrl(

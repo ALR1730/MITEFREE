@@ -6,7 +6,13 @@ import { TransitionAppointmentStatusUseCase } from '../src/application/appointme
 import { AssignTechnicianUseCase } from '../src/application/appointments/assign-technician.use-case.js';
 import { DrizzleAppointmentRepository } from '../src/infrastructure/repositories/drizzle-appointment.repository.js';
 import { DrizzleQuotationRepository } from '../src/infrastructure/repositories/drizzle-quotation.repository.js';
-import { Quotation, QuotationItem, FabricType, StainSeverity, AppointmentStatus } from '@mitefree/domain-core';
+import {
+  Quotation,
+  QuotationItem,
+  FabricType,
+  StainSeverity,
+  AppointmentStatus,
+} from '@mitefree/domain-core';
 
 describe('Appointments Use Cases (Unit Tests & Phase 3 Services)', () => {
   let appointmentRepo: DrizzleAppointmentRepository;

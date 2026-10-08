@@ -29,10 +29,10 @@ export interface WebhookProcessingResult {
 }
 
 @Injectable()
-export class ProcessStripeWebhookUseCase
-  implements
-    IUseCase<StripeWebhookPayloadDto, Result<WebhookProcessingResult, string>>
-{
+export class ProcessStripeWebhookUseCase implements IUseCase<
+  StripeWebhookPayloadDto,
+  Result<WebhookProcessingResult, string>
+> {
   private readonly logger = new Logger(ProcessStripeWebhookUseCase.name);
 
   constructor(
@@ -42,9 +42,7 @@ export class ProcessStripeWebhookUseCase
     private readonly appointmentRepo: IAppointmentRepository,
   ) {}
 
-  async execute(
-    event: StripeWebhookPayloadDto,
-  ): Promise<Result<WebhookProcessingResult, string>> {
+  async execute(event: StripeWebhookPayloadDto): Promise<Result<WebhookProcessingResult, string>> {
     const eventId = event.id;
     const eventType = event.type;
 
@@ -62,15 +60,10 @@ export class ProcessStripeWebhookUseCase
     const idempotencyKey = eventId;
     const existing = await this.paymentRepo.findByIdempotencyKey(idempotencyKey);
 
-    const idempotencyEval = DepositPolicy.evaluateWebhookIdempotency(
-      existing,
-      idempotencyKey,
-    );
+    const idempotencyEval = DepositPolicy.evaluateWebhookIdempotency(existing, idempotencyKey);
 
     if (idempotencyEval.isDuplicate && !idempotencyEval.canProcess) {
-      this.logger.warn(
-        `Duplicate webhook event detected and skipped: ${eventId}`,
-      );
+      this.logger.warn(`Duplicate webhook event detected and skipped: ${eventId}`);
       return ok({
         processed: false,
         isDuplicate: true,

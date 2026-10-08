@@ -20,9 +20,10 @@ export interface ReviewPaymentInput {
 }
 
 @Injectable()
-export class ReviewPaymentUseCase
-  implements IUseCase<ReviewPaymentInput, Result<PaymentRecordResponseDto, string>>
-{
+export class ReviewPaymentUseCase implements IUseCase<
+  ReviewPaymentInput,
+  Result<PaymentRecordResponseDto, string>
+> {
   constructor(
     @Inject(PAYMENT_REPOSITORY)
     private readonly paymentRepo: IPaymentRepository,

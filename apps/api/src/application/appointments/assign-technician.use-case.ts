@@ -18,9 +18,10 @@ export interface AssignTechnicianInput {
 }
 
 @Injectable()
-export class AssignTechnicianUseCase
-  implements IUseCase<AssignTechnicianInput, Result<AppointmentResponseDto, string>>
-{
+export class AssignTechnicianUseCase implements IUseCase<
+  AssignTechnicianInput,
+  Result<AppointmentResponseDto, string>
+> {
   constructor(
     @Inject(APPOINTMENT_REPOSITORY)
     private readonly appointmentRepo: IAppointmentRepository,

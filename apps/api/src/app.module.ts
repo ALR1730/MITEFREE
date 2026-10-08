@@ -17,4 +17,3 @@ import { PaymentsModule } from './modules/payments.module.js';
   ],
 })
 export class AppModule {}
-

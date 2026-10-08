@@ -9,9 +9,10 @@ import {
 } from '../../infrastructure/storage/storage.interface.js';
 
 @Injectable()
-export class ConfirmPhotoUseCase
-  implements IUseCase<PhotoConfirmDto, Result<PhotoConfirmResponseDto, string>>
-{
+export class ConfirmPhotoUseCase implements IUseCase<
+  PhotoConfirmDto,
+  Result<PhotoConfirmResponseDto, string>
+> {
   constructor(
     @Inject(STORAGE_SERVICE)
     private readonly storageService: IStorageService,

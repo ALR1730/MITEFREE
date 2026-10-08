@@ -8,17 +8,15 @@ import {
   ok,
   fail,
 } from '@mitefree/domain-core';
-import type {
-  ProcessReferralRewardDto,
-  WalletResponseDto,
-} from '@mitefree/shared-types';
+import type { ProcessReferralRewardDto, WalletResponseDto } from '@mitefree/shared-types';
 import { IUseCase } from '../common/use-case.interface.js';
 import { WALLET_REPOSITORY } from '../../infrastructure/database/database.tokens.js';
 
 @Injectable()
-export class ProcessReferralBonusUseCase
-  implements IUseCase<ProcessReferralRewardDto, Result<WalletResponseDto, string>>
-{
+export class ProcessReferralBonusUseCase implements IUseCase<
+  ProcessReferralRewardDto,
+  Result<WalletResponseDto, string>
+> {
   private readonly logger = new Logger(ProcessReferralBonusUseCase.name);
 
   constructor(
@@ -26,9 +24,7 @@ export class ProcessReferralBonusUseCase
     private readonly walletRepo: IWalletRepository,
   ) {}
 
-  async execute(
-    dto: ProcessReferralRewardDto,
-  ): Promise<Result<WalletResponseDto, string>> {
+  async execute(dto: ProcessReferralRewardDto): Promise<Result<WalletResponseDto, string>> {
     // 1. Validar anti-auto-referido
     const eligibility = LoyaltyPolicyEngine.validateReferralEligibility({
       referrerUserId: dto.referrerUserId,
@@ -53,11 +49,7 @@ export class ProcessReferralBonusUseCase
     const sourceRef = `REFERRAL_BONUS:REFEREE:${dto.refereeUserId}:APT:${dto.appointmentId}`;
 
     // 3. Acreditar bono de referido en el dominio
-    const creditResult = referrerWallet.creditReferralBonus(
-      txId,
-      bonusAmount,
-      sourceRef,
-    );
+    const creditResult = referrerWallet.creditReferralBonus(txId, bonusAmount, sourceRef);
 
     if (creditResult.isFailure) {
       return fail(creditResult.error);

@@ -22,13 +22,10 @@ import {
 } from '../../infrastructure/database/database.tokens.js';
 
 @Injectable()
-export class CreatePaymentIntentUseCase
-  implements
-    IUseCase<
-      CreatePaymentIntentRequestDto,
-      Result<PaymentIntentResponseDto, string>
-    >
-{
+export class CreatePaymentIntentUseCase implements IUseCase<
+  CreatePaymentIntentRequestDto,
+  Result<PaymentIntentResponseDto, string>
+> {
   constructor(
     @Inject(PAYMENT_REPOSITORY)
     private readonly paymentRepo: IPaymentRepository,

@@ -59,7 +59,9 @@ export class AppointmentsController {
   }
 
   @Get('slots')
-  @ApiOperation({ summary: 'Get active dispatch time slots with dynamic Route Promotion detection' })
+  @ApiOperation({
+    summary: 'Get active dispatch time slots with dynamic Route Promotion detection',
+  })
   @ApiQuery({ name: 'zoneCode', required: false, example: 'ZONE-DN' })
   @ApiQuery({ name: 'date', required: false, example: '2026-10-15' })
   @ApiResponse({ status: 200, description: 'List of evaluated time slots.' })
@@ -85,7 +87,9 @@ export class AppointmentsController {
   }
 
   @Patch(':id/status')
-  @ApiOperation({ summary: 'Transition appointment state (Confirmed -> EnRoute -> InProgress -> Completed)' })
+  @ApiOperation({
+    summary: 'Transition appointment state (Confirmed -> EnRoute -> InProgress -> Completed)',
+  })
   @ApiParam({ name: 'id', description: 'UUID of the appointment' })
   @ApiResponse({ status: 200, description: 'Appointment status transitioned.' })
   @ApiResponse({ status: 400, description: 'Invalid status transition invariant.' })

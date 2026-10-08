@@ -9,18 +9,15 @@ import {
   ok,
   fail,
 } from '@mitefree/domain-core';
-import type {
-  ProcessAppointmentCashbackDto,
-  WalletResponseDto,
-} from '@mitefree/shared-types';
+import type { ProcessAppointmentCashbackDto, WalletResponseDto } from '@mitefree/shared-types';
 import { IUseCase } from '../common/use-case.interface.js';
 import { WALLET_REPOSITORY } from '../../infrastructure/database/database.tokens.js';
 
 @Injectable()
-export class ProcessCashbackUseCase
-  implements
-    IUseCase<ProcessAppointmentCashbackDto, Result<WalletResponseDto, string>>
-{
+export class ProcessCashbackUseCase implements IUseCase<
+  ProcessAppointmentCashbackDto,
+  Result<WalletResponseDto, string>
+> {
   private readonly logger = new Logger(ProcessCashbackUseCase.name);
 
   constructor(
@@ -28,9 +25,7 @@ export class ProcessCashbackUseCase
     private readonly walletRepo: IWalletRepository,
   ) {}
 
-  async execute(
-    dto: ProcessAppointmentCashbackDto,
-  ): Promise<Result<WalletResponseDto, string>> {
+  async execute(dto: ProcessAppointmentCashbackDto): Promise<Result<WalletResponseDto, string>> {
     let wallet = await this.walletRepo.findByUserId(dto.userId);
     if (!wallet) {
       wallet = Wallet.create(randomUUID(), dto.userId);

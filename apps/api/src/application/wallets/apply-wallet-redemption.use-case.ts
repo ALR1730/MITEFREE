@@ -8,18 +8,15 @@ import {
   ok,
   fail,
 } from '@mitefree/domain-core';
-import type {
-  ApplyWalletRedemptionDto,
-  WalletRedemptionResponseDto,
-} from '@mitefree/shared-types';
+import type { ApplyWalletRedemptionDto, WalletRedemptionResponseDto } from '@mitefree/shared-types';
 import { IUseCase } from '../common/use-case.interface.js';
 import { WALLET_REPOSITORY } from '../../infrastructure/database/database.tokens.js';
 
 @Injectable()
-export class ApplyWalletRedemptionUseCase
-  implements
-    IUseCase<ApplyWalletRedemptionDto, Result<WalletRedemptionResponseDto, string>>
-{
+export class ApplyWalletRedemptionUseCase implements IUseCase<
+  ApplyWalletRedemptionDto,
+  Result<WalletRedemptionResponseDto, string>
+> {
   private readonly logger = new Logger(ApplyWalletRedemptionUseCase.name);
 
   constructor(

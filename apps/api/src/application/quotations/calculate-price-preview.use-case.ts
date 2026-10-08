@@ -16,9 +16,10 @@ import type {
 import { IUseCase } from '../common/use-case.interface.js';
 
 @Injectable()
-export class CalculatePricePreviewUseCase
-  implements IUseCase<PricePreviewRequestDto, Result<PricePreviewResponseDto, string>>
-{
+export class CalculatePricePreviewUseCase implements IUseCase<
+  PricePreviewRequestDto,
+  Result<PricePreviewResponseDto, string>
+> {
   async execute(dto: PricePreviewRequestDto): Promise<Result<PricePreviewResponseDto, string>> {
     const currency = dto.currency ?? 'USD';
 
