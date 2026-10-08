@@ -44,7 +44,7 @@ export default function RootLayout({
         className={`${inter.variable} min-h-screen bg-dark-bg text-gray-100 antialiased selection:bg-brand-500/30 selection:text-brand-300`}
       >
         <Navbar />
-        <main className="min-h-[calc(100vh-4rem)]">{children}</main>
+        <main className="min-h-[calc(100vh-4rem)] pb-24 md:pb-0">{children}</main>
         <Footer />
         <BottomNav />
 

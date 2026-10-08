@@ -227,8 +227,10 @@ export default function WalletPage() {
                     <ArrowUpRight className="w-4 h-4" />
                   )}
                 </div>
-                <div>
-                  <div className="text-xs font-semibold text-white">{tx.description}</div>
+                <div className="min-w-0 flex-1">
+                  <div className="text-xs font-semibold text-white line-clamp-2 pr-2">
+                    {tx.description}
+                  </div>
                   <span className="text-[10px] text-gray-500 font-mono">{tx.date}</span>
                 </div>
               </div>

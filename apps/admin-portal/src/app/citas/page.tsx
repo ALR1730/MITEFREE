@@ -153,6 +153,9 @@ const COLUMNS: Array<{
 export default function CitasPage() {
   const [appointments, setAppointments] = useState<KanbanAppointment[]>(INITIAL_APPOINTMENTS);
   const [filterZone, setFilterZone] = useState<string>('ALL');
+  const [activeMobileCol, setActiveMobileCol] = useState<'ALL' | KanbanAppointment['status']>(
+    'ALL',
+  );
 
   useEffect(() => {
     async function loadAppointments() {
@@ -275,15 +278,59 @@ export default function CitasPage() {
         </div>
       </div>
 
-      {/* Kanban Board Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4 overflow-x-auto pb-4">
+      {/* Mobile Column Selector Tabs */}
+      <div className="lg:hidden flex items-center gap-1.5 overflow-x-auto pb-2 scrollbar-none w-full">
+        <button
+          type="button"
+          onClick={() => setActiveMobileCol('ALL')}
+          className={`px-3 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all ${
+            activeMobileCol === 'ALL'
+              ? 'bg-cyan-500 text-dark-bg tech-glow shadow'
+              : 'bg-admin-sidebar border border-admin-border text-gray-400 hover:text-white'
+          }`}
+        >
+          Todas las Columnas ({filteredAppointments.length})
+        </button>
+        {COLUMNS.map((col) => {
+          const count = filteredAppointments.filter((a) => a.status === col.id).length;
+          return (
+            <button
+              type="button"
+              key={col.id}
+              onClick={() => setActiveMobileCol(col.id)}
+              className={`px-3 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all flex items-center gap-1.5 ${
+                activeMobileCol === col.id
+                  ? 'bg-cyan-500 text-dark-bg tech-glow shadow'
+                  : 'bg-admin-sidebar border border-admin-border text-gray-400 hover:text-white'
+              }`}
+            >
+              <span>{col.title.split('(')[0]?.split('/')[0]?.trim()}</span>
+              <span
+                className={`px-1.5 py-0.2 rounded-full text-[10px] font-bold ${
+                  activeMobileCol === col.id
+                    ? 'bg-dark-bg/25 text-dark-bg'
+                    : 'bg-admin-card text-gray-300'
+                }`}
+              >
+                {count}
+              </span>
+            </button>
+          );
+        })}
+      </div>
+
+      {/* Kanban Board Container (Flex scroll, NEVER overlaps) */}
+      <div className="flex gap-4 overflow-x-auto pb-6 pt-1 snap-x scrollbar-thin w-full min-w-0">
         {COLUMNS.map((col) => {
           const colAppointments = filteredAppointments.filter((a) => a.status === col.id);
+          const isHiddenOnMobile = activeMobileCol !== 'ALL' && activeMobileCol !== col.id;
 
           return (
             <div
               key={col.id}
-              className="flex flex-col min-w-[260px] rounded-2xl bg-admin-sidebar/80 border border-admin-border p-3.5 space-y-3"
+              className={`flex-col w-full sm:w-[310px] lg:w-[300px] xl:w-[320px] shrink-0 snap-start rounded-2xl bg-admin-sidebar/90 border border-admin-border p-3.5 space-y-3 ${
+                isHiddenOnMobile ? 'hidden lg:flex' : 'flex'
+              }`}
             >
               <div className="flex items-center justify-between pb-2 border-b border-admin-border/60">
                 <span className={`text-xs font-extrabold uppercase tracking-wider ${col.color}`}>

@@ -647,29 +647,38 @@ Por favor confírmenme disponibilidad para mi zona (San Pedro / La Romana / Sant
       </div>
 
       {/* Stepper Indicator */}
-      <div className="flex items-center justify-between mb-8 max-w-md mx-auto">
+      <div className="flex items-center justify-between mb-8 max-w-sm mx-auto px-2">
         {[
-          { num: 1, label: 'Piezas & Cantidades' },
+          { num: 1, label: 'Piezas' },
           { num: 2, label: 'Tejido & Manchas' },
-          { num: 3, label: 'Presupuesto' },
-        ].map((s) => (
-          <div key={s.num} className="flex flex-col items-center">
-            <div
-              className={`w-9 h-9 rounded-full flex items-center justify-center font-bold text-xs transition-colors ${
-                currentStep >= s.num
-                  ? 'bg-brand-500 text-dark-bg tech-glow'
-                  : 'bg-dark-surface border border-dark-border text-gray-500'
-              }`}
-            >
-              {s.num}
+          { num: 3, label: 'Resumen' },
+        ].map((s, idx) => (
+          <div key={s.num} className="flex items-center flex-1 last:flex-initial">
+            <div className="flex flex-col items-center">
+              <div
+                className={`w-8 h-8 sm:w-9 sm:h-9 rounded-full flex items-center justify-center font-bold text-xs transition-colors shrink-0 ${
+                  currentStep >= s.num
+                    ? 'bg-brand-500 text-dark-bg tech-glow'
+                    : 'bg-dark-surface border border-dark-border text-gray-500'
+                }`}
+              >
+                {s.num}
+              </div>
+              <span
+                className={`text-[10px] sm:text-[11px] font-medium mt-1 text-center whitespace-nowrap ${
+                  currentStep >= s.num ? 'text-brand-400 font-bold' : 'text-gray-500'
+                }`}
+              >
+                {s.label}
+              </span>
             </div>
-            <span
-              className={`text-[11px] font-medium mt-1.5 ${
-                currentStep >= s.num ? 'text-brand-400' : 'text-gray-500'
-              }`}
-            >
-              {s.label}
-            </span>
+            {idx < 2 && (
+              <div
+                className={`h-0.5 flex-1 mx-2 -mt-4 transition-colors ${
+                  currentStep > s.num ? 'bg-brand-500' : 'bg-dark-border'
+                }`}
+              />
+            )}
           </div>
         ))}
       </div>
@@ -854,8 +863,8 @@ Por favor confírmenme disponibilidad para mi zona (San Pedro / La Romana / Sant
             </div>
           )}
 
-          {/* Catalog Tabs */}
-          <div className="flex flex-wrap items-center gap-2 pt-2">
+          {/* Catalog Tabs (Mobile app swipeable pills) */}
+          <div className="flex items-center gap-2 pt-2 overflow-x-auto pb-1 scrollbar-none flex-nowrap sm:flex-wrap w-full">
             {(
               ['TODOS', 'Colchones', 'Muebles de Sala', 'Sillas de Comedor', 'Alfombras'] as const
             ).map((tab) => (
@@ -863,7 +872,7 @@ Por favor confírmenme disponibilidad para mi zona (San Pedro / La Romana / Sant
                 key={tab}
                 type="button"
                 onClick={() => setActiveCategoryTab(tab)}
-                className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all ${
+                className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all whitespace-nowrap shrink-0 ${
                   activeCategoryTab === tab
                     ? 'bg-brand-500 text-dark-bg tech-glow'
                     : 'bg-dark-surface border border-dark-border text-gray-400 hover:text-white hover:bg-dark-hover'

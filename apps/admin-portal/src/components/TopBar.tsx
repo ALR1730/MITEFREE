@@ -1,18 +1,30 @@
 'use client';
 
-import { Search, Bell, Activity, ShieldCheck, HelpCircle } from 'lucide-react';
+import { Search, Bell, Activity, ShieldCheck, HelpCircle, Menu } from 'lucide-react';
 
-export function TopBar() {
+export function TopBar({ onOpenMenu }: { onOpenMenu?: () => void } = {}) {
   return (
-    <header className="h-16 bg-admin-sidebar/80 backdrop-blur-md border-b border-admin-border px-6 flex items-center justify-between sticky top-0 z-30">
-      {/* Search Input */}
-      <div className="relative w-72">
-        <Search className="w-4 h-4 text-gray-500 absolute left-3 top-1/2 -translate-y-1/2" />
-        <input
-          type="text"
-          placeholder="Buscar orden, cliente o placa..."
-          className="w-full pl-9 pr-3.5 py-1.5 rounded-lg bg-admin-card border border-admin-border text-xs text-white placeholder-gray-500 focus:outline-none focus:border-indigo-500"
-        />
+    <header className="h-16 bg-admin-sidebar/80 backdrop-blur-md border-b border-admin-border px-4 sm:px-6 flex items-center justify-between sticky top-0 z-30">
+      <div className="flex items-center gap-3">
+        {onOpenMenu && (
+          <button
+            onClick={onOpenMenu}
+            className="p-2 rounded-lg bg-admin-card border border-admin-border text-gray-300 hover:text-white lg:hidden"
+            aria-label="Abrir menú de navegación"
+          >
+            <Menu className="w-5 h-5" />
+          </button>
+        )}
+
+        {/* Search Input */}
+        <div className="relative w-48 sm:w-72">
+          <Search className="w-4 h-4 text-gray-500 absolute left-3 top-1/2 -translate-y-1/2" />
+          <input
+            type="text"
+            placeholder="Buscar orden o cliente..."
+            className="w-full pl-9 pr-3.5 py-1.5 rounded-lg bg-admin-card border border-admin-border text-xs text-white placeholder-gray-500 focus:outline-none focus:border-cyan-500"
+          />
+        </div>
       </div>
 
       {/* Operational Indicators */}

@@ -12,9 +12,10 @@ import {
   Sparkles,
   ShieldCheck,
   ExternalLink,
+  X,
 } from 'lucide-react';
 
-export function Sidebar() {
+export function Sidebar({ onClose }: { onClose?: () => void } = {}) {
   const pathname = usePathname();
 
   const navigation = [
@@ -26,7 +27,7 @@ export function Sidebar() {
   ];
 
   return (
-    <aside className="w-64 bg-admin-sidebar border-r border-admin-border flex flex-col justify-between shrink-0 h-screen sticky top-0 z-40">
+    <aside className="w-full lg:w-64 bg-admin-sidebar border-r border-admin-border flex flex-col justify-between shrink-0 h-screen sticky top-0 z-40">
       <div>
         {/* Brand */}
         <div className="h-20 px-5 flex items-center justify-between border-b border-admin-border">
@@ -40,9 +41,20 @@ export function Sidebar() {
               className="object-contain object-left"
             />
           </div>
-          <span className="text-[9px] uppercase font-bold px-1.5 py-0.5 rounded bg-brand-500/15 text-brand-400 border border-brand-500/30">
-            Ops
-          </span>
+          <div className="flex items-center gap-2">
+            <span className="text-[9px] uppercase font-bold px-1.5 py-0.5 rounded bg-brand-500/15 text-brand-400 border border-brand-500/30">
+              Ops
+            </span>
+            {onClose && (
+              <button
+                onClick={onClose}
+                className="p-1 rounded-lg text-gray-400 hover:text-white hover:bg-admin-card lg:hidden"
+                aria-label="Cerrar menú"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            )}
+          </div>
         </div>
 
         {/* Navigation list */}
@@ -58,6 +70,7 @@ export function Sidebar() {
               <Link
                 key={item.name}
                 href={item.href}
+                onClick={onClose}
                 className={`flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all ${
                   isActive
                     ? 'bg-brand-500/15 text-brand-400 border border-brand-500/30 shadow-sm'
