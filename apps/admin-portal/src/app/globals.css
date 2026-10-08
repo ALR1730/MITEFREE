@@ -10,11 +10,79 @@
   --navy: #004b99;
 }
 
+/* Enterprise Admin Ergonomics: Suppress accidental I-beam typing cursor & text selection across dashboard */
+*,
+*::before,
+*::after {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+}
+
 body {
   background-color: var(--background);
   color: var(--foreground);
-  font-family: var(--font-inter), system-ui, -apple-system, sans-serif;
+  font-family:
+    var(--font-inter),
+    system-ui,
+    -apple-system,
+    sans-serif;
   overflow-x: hidden;
+  cursor: default;
+}
+
+/* Allow text typing cursor and text selection ONLY on legitimate form fields */
+input:not([type='button']):not([type='submit']):not([type='reset']):not([type='checkbox']):not(
+    [type='radio']
+  ):not([type='file']),
+textarea,
+[contenteditable='true'] {
+  -webkit-user-select: text;
+  -moz-user-select: text;
+  -ms-user-select: text;
+  user-select: text;
+  cursor: text;
+}
+
+/* Readonly fields must NOT show a typing cursor */
+input[readonly],
+textarea[readonly] {
+  cursor: default;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+/* Interactive elements always show pointer and prevent text selection */
+button,
+a,
+[role='button'],
+input[type='button'],
+input[type='submit'],
+input[type='reset'],
+input[type='checkbox'],
+input[type='radio'],
+select,
+label,
+summary {
+  cursor: pointer;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+/* Disabled elements */
+[disabled],
+.disabled {
+  cursor: not-allowed;
+}
+
+/* Selectable text areas (e.g. tracking codes, client IDs) */
+.selectable-text,
+.select-text {
+  -webkit-user-select: text;
+  user-select: text;
+  cursor: text;
 }
 
 /* Glass & Glow utilities for Admin */

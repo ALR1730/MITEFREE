@@ -186,12 +186,9 @@ export default function ConfiguracionPage() {
             </label>
             <div className="flex items-center gap-2">
               <span className="text-xs font-bold text-gray-400">RD$</span>
-              <input
-                type="number"
-                value={1500}
-                readOnly
-                className="w-20 px-3 py-1.5 rounded-lg bg-admin-card border border-admin-border text-white font-mono font-bold text-sm focus:outline-none"
-              />
+              <div className="w-20 px-3 py-1.5 rounded-lg bg-admin-card border border-admin-border text-white font-mono font-bold text-sm text-center">
+                1,500
+              </div>
             </div>
             <span className="text-[10px] text-emerald-400 block font-medium">
               Rentabilidad Van & UV-C
