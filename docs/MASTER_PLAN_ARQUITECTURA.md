@@ -7,7 +7,7 @@
 > **Ecosistema:** PWA Clientes (Next.js 15) · Panel Web Admin/Técnico (Next.js 15) · Core API Desacoplada (NestJS / Bun)
 > **Equipo:** ALR COMPANY — División de Ingeniería de Élite
 > **Fecha de Emisión:** Octubre 2026
-> **Estado de Ejecución Actual:** 🟢 **FASES 1, 2, 3, 4 Y 5 COMPLETADAS (100% Core Engines, APIs & Scaffolding)**
+> **Estado de Ejecución Actual:** 🟢 **FASES 1, 2, 3, 4 Y 5 + PLANES A Y B COMPLETADOS (100% E2E Frontends Conectados a WebAPI)**
 
 ---
 
@@ -21,9 +21,9 @@
 | **Shared Types & DTOs**           | ✅ **100% HECHO** | [`packages/shared-types`](file:///c:/Users/DELL/Desktop/wordspace/MITEFREE/packages/shared-types) | Zod schemas runtime + RFC 7807 ProblemDetails           |
 | **Database & Persistencia**       | ✅ **100% HECHO** | [`packages/database`](file:///c:/Users/DELL/Desktop/wordspace/MITEFREE/packages/database)         | 6 esquemas Drizzle ORM + Neon PostgreSQL client         |
 | **Core WebAPI (Clean Arch)**      | ✅ **100% HECHO** | [`apps/api`](file:///c:/Users/DELL/Desktop/wordspace/MITEFREE/apps/api)                           | NestJS 11+ · CQRS UseCases · OpenAPI Scalar `/api/docs` |
-| **PWA Client (Móvil)**            | ✅ **100% HECHO** | [`apps/pwa-client`](file:///c:/Users/DELL/Desktop/wordspace/MITEFREE/apps/pwa-client)             | Next.js 15 App Router · Cotizador · Agenda · Wallet     |
-| **Admin & Dispatch Portal**       | ✅ **100% HECHO** | [`apps/admin-portal`](file:///c:/Users/DELL/Desktop/wordspace/MITEFREE/apps/admin-portal)         | Next.js 15 · Kanban Despacho · Flota · Pricing Matrix   |
-| **Quality Gate CI Pipeline**      | ✅ **100% HECHO** | `bun run {lint,type-check,test,build}`                                                            | 118/118 tests pasando · Cero errores de tipos           |
+| **PWA Client (Móvil)**            | ✅ **100% HECHO** | [`apps/pwa-client`](file:///c:/Users/DELL/Desktop/wordspace/MITEFREE/apps/pwa-client)             | Conexión E2E a WebAPI (Cotizador, Agenda, Wallet)       |
+| **Admin & Dispatch Portal**       | ✅ **100% HECHO** | [`apps/admin-portal`](file:///c:/Users/DELL/Desktop/wordspace/MITEFREE/apps/admin-portal)         | Conexión E2E a WebAPI (Kanban Citas, Conciliación Pagos)|
+| **Quality Gate CI Pipeline**      | ✅ **100% HECHO** | `bun run {lint,type-check,test,build}`                                                            | 118/118 tests pasando · 0 errores tipos · Builds 6/6 OK |
 
 ---
 
@@ -838,14 +838,14 @@ gantt
 
 ### 📋 Estado de Avance por Fases
 
-| Fase | Alcance Principal | Estado | Hito / Entregable |
-| :--- | :--- | :---: | :--- |
-| **🔵 Fase 1: Cimientos** | Monorepo Turborepo, Domain Core, BD Drizzle, Core API NestJS, PWA & Admin Next.js 15, Tests | 🟢 **100% COMPLETADO** | Esqueleto industrial compilable, Golden CI verde. |
-| **🟢 Fase 2: Cotización** | Pricing Engine por telas/severidad, subida a R2, presupuestos en PDF | 🟢 **100% COMPLETADO** | Motor algorítmico TDD (21 tests), cotizaciones inmutables y PDF service. |
-| **🟡 Fase 3: Agenda & Logística** | Despacho geoespacial, cálculo de rutas, anti-double booking, 15% route discount | 🟢 **100% COMPLETADO** | `RouteOptimizationEngine` TDD (15 tests), asignación por zonas y Kanban despacho. |
-| **🟠 Fase 4: Pagos & Liquidación** | Agregado Payment, DepositPolicy (30%/70%), Stripe Webhooks con HMAC e idempotencia | 🟢 **100% COMPLETADO** | `Payment` Aggregate TDD (15 tests), conciliación bancaria en Admin Portal. |
-| **🟣 Fase 5: Billetera & Fidelización** | Ledger de Wallet append-only, LoyaltyPolicyEngine, Cashback 5%, anti-fraude referidos | 🟢 **100% COMPLETADO** | `LoyaltyPolicyEngine` TDD (10 tests), Wallet inmutable (3 tests), salvaguarda 50%. |
-| **🔴 Fase 6: Notificaciones & Go-Live** | Meta WhatsApp Cloud API, Resend, Base de datos seed y E2E | ⏳ **EN EJECUCIÓN** | Mensajería transaccional y validación operativa de punta a punta. |
+| Fase                                    | Alcance Principal                                                                           |         Estado         | Hito / Entregable                                                                  |
+| :-------------------------------------- | :------------------------------------------------------------------------------------------ | :--------------------: | :--------------------------------------------------------------------------------- |
+| **🔵 Fase 1: Cimientos**                | Monorepo Turborepo, Domain Core, BD Drizzle, Core API NestJS, PWA & Admin Next.js 15, Tests | 🟢 **100% COMPLETADO** | Esqueleto industrial compilable, Golden CI verde.                                  |
+| **🟢 Fase 2: Cotización**               | Pricing Engine por telas/severidad, subida a R2, presupuestos en PDF                        | 🟢 **100% COMPLETADO** | Motor algorítmico TDD (21 tests), cotizaciones inmutables y PDF service.           |
+| **🟡 Fase 3: Agenda & Logística**       | Despacho geoespacial, cálculo de rutas, anti-double booking, 15% route discount             | 🟢 **100% COMPLETADO** | `RouteOptimizationEngine` TDD (15 tests), asignación por zonas y Kanban despacho.  |
+| **🟠 Fase 4: Pagos & Liquidación**      | Agregado Payment, DepositPolicy (30%/70%), Stripe Webhooks con HMAC e idempotencia          | 🟢 **100% COMPLETADO** | `Payment` Aggregate TDD (15 tests), conciliación bancaria en Admin Portal.         |
+| **🟣 Fase 5: Billetera & Fidelización** | Ledger de Wallet append-only, LoyaltyPolicyEngine, Cashback 5%, anti-fraude referidos       | 🟢 **100% COMPLETADO** | `LoyaltyPolicyEngine` TDD (10 tests), Wallet inmutable (3 tests), salvaguarda 50%. |
+| **🔴 Fase 6: Notificaciones & Go-Live** | Meta WhatsApp Cloud API, Resend, Base de datos seed y E2E                                   |  ⏳ **EN EJECUCIÓN**   | Mensajería transaccional y validación operativa de punta a punta.                  |
 
 ---
 

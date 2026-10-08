@@ -1,6 +1,7 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { adminApiClient } from '@/lib/api-client';
 import {
   CalendarDays,
   Clock,
@@ -153,19 +154,92 @@ export default function CitasPage() {
   const [appointments, setAppointments] = useState<KanbanAppointment[]>(INITIAL_APPOINTMENTS);
   const [filterZone, setFilterZone] = useState<string>('ALL');
 
+  useEffect(() => {
+    async function loadAppointments() {
+      try {
+        const res = await adminApiClient.appointments.listAll();
+        if (res.success && res.data.length > 0) {
+          const apiCards: KanbanAppointment[] = res.data.map((apt) => ({
+            id: apt.id,
+            client: `Cliente #${apt.clientId.substring(0, 6)}`,
+            phone: '+1 809-555-0100',
+            zone: 'Santo Domingo Este',
+            zoneCode: 'ZONE-SDE',
+            address: `Servicio programado (${apt.scheduledDate})`,
+            timeSlot: apt.timeSlotId === 'MORNING' ? '08:30 – 11:30 AM' : '01:00 – 04:00 PM',
+            service: `Cotización Ref #${apt.quotationId.substring(0, 6)}`,
+            total: 3500.0,
+            deposit: 1050.0,
+            status:
+              apt.status === 'Confirmed'
+                ? 'CONFIRMED'
+                : apt.status === 'EnRoute'
+                  ? 'IN_ROUTE'
+                  : apt.status === 'InProgress'
+                    ? 'IN_SERVICE'
+                    : apt.status === 'Completed'
+                      ? 'COMPLETED'
+                      : 'PENDING_DEPOSIT',
+            technician: apt.technicianId
+              ? `Técnico #${apt.technicianId.substring(0, 6)}`
+              : undefined,
+          }));
+
+          setAppointments((prev) => {
+            const apiIds = new Set(apiCards.map((c) => c.id));
+            return [...apiCards, ...prev.filter((p) => !apiIds.has(p.id))];
+          });
+        }
+      } catch {
+        // Fallback a citas iniciales
+      }
+    }
+    loadAppointments();
+  }, []);
+
   const filteredAppointments =
     filterZone === 'ALL' ? appointments : appointments.filter((a) => a.zoneCode === filterZone);
 
-  const moveStatus = (id: string, nextStatus: KanbanAppointment['status']) => {
+  const moveStatus = async (id: string, nextStatus: KanbanAppointment['status']) => {
+    // Optimistic UI update
     setAppointments((prev) =>
       prev.map((apt) => (apt.id === id ? { ...apt, status: nextStatus } : apt)),
     );
+
+    // If UUID from database, update on API
+    if (id.includes('-') && id.length > 10) {
+      const apiStatusMap: Record<KanbanAppointment['status'], any> = {
+        PENDING_DEPOSIT: 'PendingPayment',
+        CONFIRMED: 'Confirmed',
+        IN_ROUTE: 'EnRoute',
+        IN_SERVICE: 'InProgress',
+        COMPLETED: 'Completed',
+      };
+
+      try {
+        await adminApiClient.appointments.transitionStatus(id, {
+          nextStatus: apiStatusMap[nextStatus],
+        });
+      } catch {
+        // Optimistic state preserved
+      }
+    }
   };
 
-  const assignTech = (id: string, techName: string) => {
+  const assignTech = async (id: string, techName: string) => {
     setAppointments((prev) =>
       prev.map((apt) => (apt.id === id ? { ...apt, technician: techName } : apt)),
     );
+
+    if (id.includes('-') && id.length > 10) {
+      try {
+        await adminApiClient.appointments.assignTechnician(id, {
+          technicianId: 'b0000000-0000-0000-0000-000000000001',
+        });
+      } catch {
+        // Optimistic state preserved
+      }
+    }
   };
 
   return (

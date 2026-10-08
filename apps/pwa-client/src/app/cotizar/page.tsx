@@ -2,6 +2,9 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { apiClient } from '@/lib/api-client';
+import type { FabricType, StainSeverity } from '@mitefree/shared-types';
 import {
   Sparkles,
   ArrowRight,
@@ -254,7 +257,10 @@ const STAIN_OPTIONS = [
 ];
 
 export default function CotizadorPage() {
+  const router = useRouter();
   const [currentStep, setCurrentStep] = useState<number>(1);
+  const [isSubmittingQuotation, setIsSubmittingQuotation] = useState<boolean>(false);
+  const [persistedQuotationId, setPersistedQuotationId] = useState<string | null>(null);
   const [activeCategoryTab, setActiveCategoryTab] = useState<
     'TODOS' | 'Colchones' | 'Muebles de Sala' | 'Sillas de Comedor' | 'Alfombras'
   >('TODOS');
@@ -468,8 +474,7 @@ export default function CotizadorPage() {
     setUploadedPhotos((prev) => prev.filter((p) => p.id !== id));
   };
 
-  // Construcción del presupuesto en texto para descarga
-  const handleDownloadPdf = () => {
+  const downloadFallbackTxt = () => {
     const itemsLines = selectedItems
       .map(
         (it) =>
@@ -513,6 +518,82 @@ ALR COMPANY — División de Ingeniería de Software`;
     a.download = `Presupuesto-Mitefree-MultiItem.txt`;
     a.click();
     URL.revokeObjectURL(url);
+  };
+
+  // Construcción del presupuesto oficial en PDF vía Core WebAPI (con fallback local)
+  const handleDownloadPdf = async () => {
+    if (persistedQuotationId) {
+      window.open(apiClient.quotations.getPdfUrl(persistedQuotationId), '_blank');
+      return;
+    }
+
+    try {
+      const quotationPayload = {
+        clientId: 'a0000000-0000-0000-0000-000000000001',
+        items: selectedItems.map((item) => ({
+          furnitureType: item.name,
+          fabricType: selectedFabric.id as FabricType,
+          stainSeverity: selectedStain.id as StainSeverity,
+          basePriceAmount: item.unitPrice,
+          photoUrls: [],
+          additionalServices: [],
+        })),
+        routeDiscountAmount: 0,
+        couponCode: couponApplied ? promoCode : undefined,
+        couponDiscountAmount: couponDiscount,
+        walletBalanceAvailable: useWalletCashback ? walletCreditApplied : 0,
+        currency: 'DOP',
+      };
+
+      const res = await apiClient.quotations.create(quotationPayload);
+      if (res.success) {
+        setPersistedQuotationId(res.data.id);
+        window.open(apiClient.quotations.getPdfUrl(res.data.id), '_blank');
+        return;
+      }
+    } catch {
+      // Fallback a descarga de texto plano
+    }
+
+    downloadFallbackTxt();
+  };
+
+  // Enviar cotización al Core API y navegar a Agenda con quotationId
+  const handleProceedToSchedule = async () => {
+    setIsSubmittingQuotation(true);
+    try {
+      const quotationPayload = {
+        clientId: 'a0000000-0000-0000-0000-000000000001',
+        items: selectedItems.map((item) => ({
+          furnitureType: item.name,
+          fabricType: selectedFabric.id as FabricType,
+          stainSeverity: selectedStain.id as StainSeverity,
+          basePriceAmount: item.unitPrice,
+          photoUrls: [],
+          additionalServices: [],
+        })),
+        routeDiscountAmount: 0,
+        couponCode: couponApplied ? promoCode : undefined,
+        couponDiscountAmount: couponDiscount,
+        walletBalanceAvailable: useWalletCashback ? walletCreditApplied : 0,
+        currency: 'DOP',
+      };
+
+      const res = await apiClient.quotations.create(quotationPayload);
+      if (res.success) {
+        setPersistedQuotationId(res.data.id);
+        router.push(
+          `/agenda?quotationId=${res.data.id}&total=${res.data.total}&deposit=${res.data.depositRequired}`,
+        );
+        return;
+      }
+    } catch {
+      // Fallback a navegación con parámetros query
+    } finally {
+      setIsSubmittingQuotation(false);
+    }
+
+    router.push(`/agenda?total=${total}&deposit=${Math.round(total * 0.3)}`);
   };
 
   // Generador de mensaje de WhatsApp con desglose multi-item y alfombras
@@ -1454,13 +1535,17 @@ Por favor confírmenme disponibilidad para mi zona (San Pedro / La Romana / Sant
               <span>Pedir por WhatsApp (809-513-4773)</span>
             </a>
 
-            <Link
-              href="/agenda"
-              className="flex-1 flex items-center justify-center gap-2.5 py-3.5 px-6 rounded-xl bg-gradient-to-r from-brand-500 to-cyan-500 text-dark-bg font-bold text-sm tech-glow shadow-lg active:scale-95 transition-transform text-center"
+            <button
+              type="button"
+              onClick={handleProceedToSchedule}
+              disabled={isSubmittingQuotation}
+              className="flex-1 flex items-center justify-center gap-2.5 py-3.5 px-6 rounded-xl bg-gradient-to-r from-brand-500 to-cyan-500 text-dark-bg font-bold text-sm tech-glow shadow-lg active:scale-95 transition-transform text-center disabled:opacity-50"
             >
-              <span>Agendar Cuadrilla Online</span>
+              <span>
+                {isSubmittingQuotation ? 'Guardando Cotización...' : 'Agendar Cuadrilla Online'}
+              </span>
               <ArrowRight className="w-4 h-4" />
-            </Link>
+            </button>
           </div>
         </div>
       )}

@@ -1,6 +1,7 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { adminApiClient } from '@/lib/api-client';
 import {
   CreditCard,
   CheckCircle,
@@ -95,17 +96,81 @@ export default function PagosPage() {
   const [payments, setPayments] = useState<PaymentRecord[]>(INITIAL_PAYMENTS);
   const [filter, setFilter] = useState<'ALL' | 'PENDING' | 'RECONCILED' | 'REJECTED'>('ALL');
 
+  useEffect(() => {
+    async function loadPayments() {
+      try {
+        const res = await adminApiClient.payments.listAll();
+        if (res.success && res.data.length > 0) {
+          const apiRecords: PaymentRecord[] = res.data.map((p) => ({
+            id: p.id,
+            orderId: `ORD-${p.appointmentId.substring(0, 6).toUpperCase()}`,
+            client: `Cliente Ref (${p.appointmentId.substring(0, 8)})`,
+            amount: p.amount,
+            type: p.type === 'DEPOSIT' ? 'ANTICIPO_30' : 'FINAL_70',
+            method:
+              p.method === 'STRIPE'
+                ? 'STRIPE_CARD'
+                : p.method === 'CASH'
+                  ? 'TRANSFER_BANRESERVAS'
+                  : 'TRANSFER_POPULAR',
+            referenceNumber: p.externalReference || p.idempotencyKey || 'REF-EXT',
+            idempotencyKey: p.idempotencyKey || p.id,
+            status:
+              p.status === 'COMPLETED'
+                ? 'RECONCILED'
+                : p.status === 'FAILED'
+                  ? 'REJECTED'
+                  : 'PENDING',
+            date: new Date(p.createdAt).toLocaleDateString('es-DO', {
+              hour: '2-digit',
+              minute: '2-digit',
+            }),
+          }));
+
+          setPayments((prev) => {
+            const apiIds = new Set(apiRecords.map((r) => r.id));
+            return [...apiRecords, ...prev.filter((p) => !apiIds.has(p.id))];
+          });
+        }
+      } catch {
+        // Fallback
+      }
+    }
+    loadPayments();
+  }, []);
+
   const filtered = payments.filter((p) => {
     if (filter === 'ALL') return true;
     return p.status === filter;
   });
 
-  const handleApprove = (id: string) => {
+  const handleApprove = async (id: string) => {
     setPayments((prev) => prev.map((p) => (p.id === id ? { ...p, status: 'RECONCILED' } : p)));
+
+    if (id.includes('-') && id.length > 10) {
+      try {
+        await adminApiClient.payments.review(id, {
+          decision: 'APPROVE',
+        });
+      } catch {
+        // Optimistic state preserved
+      }
+    }
   };
 
-  const handleReject = (id: string) => {
+  const handleReject = async (id: string) => {
     setPayments((prev) => prev.map((p) => (p.id === id ? { ...p, status: 'REJECTED' } : p)));
+
+    if (id.includes('-') && id.length > 10) {
+      try {
+        await adminApiClient.payments.review(id, {
+          decision: 'REJECT',
+          rejectionReason: 'Rechazado por comprobante ilegible o no verificado',
+        });
+      } catch {
+        // Optimistic state preserved
+      }
+    }
   };
 
   // Metrics

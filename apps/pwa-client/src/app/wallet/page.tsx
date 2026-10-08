@@ -1,7 +1,8 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { apiClient } from '@/lib/api-client';
 import {
   Wallet as WalletIcon,
   ArrowUpRight,
@@ -23,7 +24,7 @@ interface Transaction {
   date: string;
 }
 
-const TRANSACTIONS: Transaction[] = [
+const DEFAULT_TRANSACTIONS: Transaction[] = [
   {
     id: 'tx-01',
     type: 'EARNED',
@@ -56,10 +57,45 @@ const TRANSACTIONS: Transaction[] = [
 
 export default function WalletPage() {
   const [copied, setCopied] = useState<boolean>(false);
+  const [balance, setBalance] = useState<number>(42.5);
+  const [transactions, setTransactions] = useState<Transaction[]>(DEFAULT_TRANSACTIONS);
   const referralCode = 'MITE-ANGEL-2026';
 
-  const balance = 42.5;
   const balanceDop = Math.round(balance * 60.5);
+
+  useEffect(() => {
+    async function loadWallet() {
+      try {
+        const res = await apiClient.wallets.getByUserId('a0000000-0000-0000-0000-000000000001');
+        if (res.success && res.data) {
+          setBalance(res.data.balance);
+          if (res.data.transactions && res.data.transactions.length > 0) {
+            setTransactions(
+              res.data.transactions.map((tx) => ({
+                id: tx.id,
+                type:
+                  tx.type === 'DEPOSIT' || tx.type === 'CASHBACK'
+                    ? 'EARNED'
+                    : tx.type === 'REFERRAL'
+                      ? 'BONUS'
+                      : 'REDEEMED',
+                amount: tx.amount,
+                description: tx.sourceReference || 'Transacción de fidelización MITEFREE',
+                date: new Date(tx.createdAt).toLocaleDateString('es-DO', {
+                  day: '2-digit',
+                  month: 'short',
+                  year: 'numeric',
+                }),
+              })),
+            );
+          }
+        }
+      } catch {
+        // Fallback
+      }
+    }
+    loadWallet();
+  }, []);
 
   const handleCopy = () => {
     navigator.clipboard.writeText(referralCode);
@@ -169,11 +205,13 @@ export default function WalletPage() {
       <div className="glass-card rounded-2xl p-6 border border-dark-border space-y-4">
         <div className="flex justify-between items-center mb-2">
           <h3 className="text-base font-bold text-white">Libro Contable de Movimientos (Ledger)</h3>
-          <span className="text-xs text-gray-400 font-mono">Total 4 eventos</span>
+          <span className="text-xs text-gray-400 font-mono">
+            Total {transactions.length} eventos
+          </span>
         </div>
 
         <div className="divide-y divide-dark-border/40">
-          {TRANSACTIONS.map((tx) => (
+          {transactions.map((tx) => (
             <div key={tx.id} className="py-3.5 flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <div

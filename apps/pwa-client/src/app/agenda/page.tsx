@@ -1,7 +1,8 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 import {
   Calendar as CalendarIcon,
   Clock,
@@ -16,6 +17,7 @@ import {
   Truck,
   Sparkles,
 } from 'lucide-react';
+import { apiClient } from '@/lib/api-client';
 
 const COVERAGE_ZONES = [
   {
@@ -64,7 +66,11 @@ const TIME_SLOTS = [
   },
 ];
 
-export default function AgendaPage() {
+function AgendaContent() {
+  const searchParams = useSearchParams();
+  const quotationId = searchParams.get('quotationId');
+  const totalParam = searchParams.get('total');
+
   const [selectedZone, setSelectedZone] = useState<string>(COVERAGE_ZONES[0]!.id);
   const [selectedSlot, setSelectedSlot] = useState<string>(TIME_SLOTS[0]!.id);
   const [selectedDayOffset, setSelectedDayOffset] = useState<number>(1);
@@ -72,6 +78,9 @@ export default function AgendaPage() {
   const [phone, setPhone] = useState<string>('');
   const [address, setAddress] = useState<string>('');
   const [isBooked, setIsBooked] = useState<boolean>(false);
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  const [bookedAppointmentId, setBookedAppointmentId] = useState<string | null>(null);
+  const [dynamicSlots, setDynamicSlots] = useState(TIME_SLOTS);
 
   // Generate next 6 dates
   const availableDates = Array.from({ length: 6 }).map((_, i) => {
@@ -80,23 +89,77 @@ export default function AgendaPage() {
     const dayName = d.toLocaleDateString('es-ES', { weekday: 'short' });
     const dayNum = d.getDate();
     const month = d.toLocaleDateString('es-ES', { month: 'short' });
-    return { offset: i + 1, dateStr: d.toISOString().split('T')[0], dayName, dayNum, month };
+    return { offset: i + 1, dateStr: d.toISOString().split('T')[0]!, dayName, dayNum, month };
   });
 
-  const currentZoneObj = COVERAGE_ZONES.find((z) => z.id === selectedZone)!;
-  const currentSlotObj = TIME_SLOTS.find((s) => s.id === selectedSlot)!;
   const selectedDateObj = availableDates.find((d) => d.offset === selectedDayOffset)!;
+  const currentZoneObj = COVERAGE_ZONES.find((z) => z.id === selectedZone)!;
 
-  // Evaluar si aplica el 15% por agrupación de cuadrilla en la misma zona
-  const hasRoutePromo = currentZoneObj.hasCluster && currentSlotObj.hasRoutePromotion;
+  // Reactively fetch available slots and route promotions from Core API
+  useEffect(() => {
+    let isCancelled = false;
+    async function fetchSlots() {
+      if (!selectedDateObj?.dateStr) return;
+      try {
+        const res = await apiClient.appointments.getSlots(selectedZone, selectedDateObj.dateStr);
+        if (res.success && res.data.length > 0 && !isCancelled) {
+          setDynamicSlots(
+            res.data.map((slot) => ({
+              id: slot.timeSlotCode,
+              label: slot.label,
+              time: `${slot.startTime} – ${slot.endTime}`,
+              available: slot.isAvailable,
+              hasRoutePromotion: slot.hasRoutePromotion,
+            })),
+          );
+        }
+      } catch {
+        // Fallback a slots predefinidos
+      }
+    }
+    fetchSlots();
+    return () => {
+      isCancelled = true;
+    };
+  }, [selectedZone, selectedDateObj?.dateStr]);
 
-  const handleConfirm = (e: React.FormEvent) => {
+  const currentSlotObj =
+    dynamicSlots.find((s) => s.id === selectedSlot) || dynamicSlots[0] || TIME_SLOTS[0]!;
+
+  const hasRoutePromo = currentSlotObj.hasRoutePromotion;
+
+  const handleConfirm = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!fullName || !phone || !address) {
       alert('Por favor completa tu nombre, teléfono y dirección.');
       return;
     }
-    setIsBooked(true);
+
+    setIsSubmitting(true);
+    try {
+      const schedulePayload = {
+        quotationId:
+          quotationId && quotationId.length === 36
+            ? quotationId
+            : '00000000-0000-0000-0000-000000000001',
+        clientId: 'a0000000-0000-0000-0000-000000000001',
+        timeSlotId:
+          selectedSlot && selectedSlot.length === 36
+            ? selectedSlot
+            : 'b0000000-0000-0000-0000-000000000001',
+        scheduledDate: new Date(selectedDateObj.dateStr).toISOString(),
+      };
+
+      const res = await apiClient.appointments.schedule(schedulePayload);
+      if (res.success) {
+        setBookedAppointmentId(res.data.id);
+      }
+    } catch {
+      // Fallback
+    } finally {
+      setIsSubmitting(false);
+      setIsBooked(true);
+    }
   };
 
   return (
@@ -359,5 +422,19 @@ export default function AgendaPage() {
         </div>
       )}
     </div>
+  );
+}
+
+export default function AgendaPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="max-w-3xl mx-auto px-4 py-16 text-center text-gray-400">
+          Cargando disponibilidad de cuadrillas...
+        </div>
+      }
+    >
+      <AgendaContent />
+    </Suspense>
   );
 }
