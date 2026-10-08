@@ -13,17 +13,17 @@
 
 ## 📊 ESTADO ACTUAL DE IMPLEMENTACIÓN (OCTUBRE 2026)
 
-| Componente / Módulo               |      Estado       | Ubicación en Repo                                                                                 | Cobertura / Validación                                  |
-| :-------------------------------- | :---------------: | :------------------------------------------------------------------------------------------------ | :------------------------------------------------------ |
-| **Monorepo & Tooling**            | ✅ **100% HECHO** | Root (`turbo.json`, `package.json`, Bun workspaces)                                               | Golden Pipeline paralelo activo                         |
-| **Domain Core (Núcleo Puro)**     | ✅ **100% HECHO** | [`packages/domain-core`](file:///c:/Users/DELL/Desktop/wordspace/MITEFREE/packages/domain-core)   | 89 tests unitarios puros · 0 dependencias externas      |
-| **Protocolo BETA (Arquitectura)** | ✅ **100% HECHO** | `test/architecture.spec.ts`                                                                       | Regla de Dependencia blindada por código                |
-| **Shared Types & DTOs**           | ✅ **100% HECHO** | [`packages/shared-types`](file:///c:/Users/DELL/Desktop/wordspace/MITEFREE/packages/shared-types) | Zod schemas runtime + RFC 7807 ProblemDetails           |
-| **Database & Persistencia**       | ✅ **100% HECHO** | [`packages/database`](file:///c:/Users/DELL/Desktop/wordspace/MITEFREE/packages/database)         | 6 esquemas Drizzle ORM + Neon PostgreSQL client         |
-| **Core WebAPI (Clean Arch)**      | ✅ **100% HECHO** | [`apps/api`](file:///c:/Users/DELL/Desktop/wordspace/MITEFREE/apps/api)                           | NestJS 11+ · CQRS UseCases · OpenAPI Scalar `/api/docs` |
-| **PWA Client (Móvil)**            | ✅ **100% HECHO** | [`apps/pwa-client`](file:///c:/Users/DELL/Desktop/wordspace/MITEFREE/apps/pwa-client)             | Conexión E2E a WebAPI (Cotizador, Agenda, Wallet)       |
-| **Admin & Dispatch Portal**       | ✅ **100% HECHO** | [`apps/admin-portal`](file:///c:/Users/DELL/Desktop/wordspace/MITEFREE/apps/admin-portal)         | Conexión E2E a WebAPI (Kanban Citas, Conciliación Pagos)|
-| **Quality Gate CI Pipeline**      | ✅ **100% HECHO** | `bun run {lint,type-check,test,build}`                                                            | 118/118 tests pasando · 0 errores tipos · Builds 6/6 OK |
+| Componente / Módulo               |      Estado       | Ubicación en Repo                                                                                 | Cobertura / Validación                                   |
+| :-------------------------------- | :---------------: | :------------------------------------------------------------------------------------------------ | :------------------------------------------------------- |
+| **Monorepo & Tooling**            | ✅ **100% HECHO** | Root (`turbo.json`, `package.json`, Bun workspaces)                                               | Golden Pipeline paralelo activo                          |
+| **Domain Core (Núcleo Puro)**     | ✅ **100% HECHO** | [`packages/domain-core`](file:///c:/Users/DELL/Desktop/wordspace/MITEFREE/packages/domain-core)   | 89 tests unitarios puros · 0 dependencias externas       |
+| **Protocolo BETA (Arquitectura)** | ✅ **100% HECHO** | `test/architecture.spec.ts`                                                                       | Regla de Dependencia blindada por código                 |
+| **Shared Types & DTOs**           | ✅ **100% HECHO** | [`packages/shared-types`](file:///c:/Users/DELL/Desktop/wordspace/MITEFREE/packages/shared-types) | Zod schemas runtime + RFC 7807 ProblemDetails            |
+| **Database & Persistencia**       | ✅ **100% HECHO** | [`packages/database`](file:///c:/Users/DELL/Desktop/wordspace/MITEFREE/packages/database)         | 6 esquemas Drizzle ORM + Neon PostgreSQL client          |
+| **Core WebAPI (Clean Arch)**      | ✅ **100% HECHO** | [`apps/api`](file:///c:/Users/DELL/Desktop/wordspace/MITEFREE/apps/api)                           | NestJS 11+ · CQRS UseCases · OpenAPI Scalar `/api/docs`  |
+| **PWA Client (Móvil)**            | ✅ **100% HECHO** | [`apps/pwa-client`](file:///c:/Users/DELL/Desktop/wordspace/MITEFREE/apps/pwa-client)             | Conexión E2E a WebAPI (Cotizador, Agenda, Wallet)        |
+| **Admin & Dispatch Portal**       | ✅ **100% HECHO** | [`apps/admin-portal`](file:///c:/Users/DELL/Desktop/wordspace/MITEFREE/apps/admin-portal)         | Conexión E2E a WebAPI (Kanban Citas, Conciliación Pagos) |
+| **Quality Gate CI Pipeline**      | ✅ **100% HECHO** | `bun run {lint,type-check,test,build}`                                                            | 118/118 tests pasando · 0 errores tipos · Builds 6/6 OK  |
 
 ---
 
