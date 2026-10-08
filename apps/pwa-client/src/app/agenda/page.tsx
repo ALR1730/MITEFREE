@@ -18,6 +18,7 @@ import {
   Sparkles,
 } from 'lucide-react';
 import { apiClient } from '@/lib/api-client';
+import { DEFAULT_DISCOUNT_POLICY, type DiscountPolicyConfig } from '@mitefree/shared-types';
 
 const COVERAGE_ZONES = [
   {
@@ -25,20 +26,22 @@ const COVERAGE_ZONES = [
     name: 'San Pedro de Macorís',
     areas:
       'San Pedro (Centro), Consuelo, Quisqueya, Ramón Santana, Guayacanes, Juan Dolio, El Puerto',
-    hasCluster: true,
   },
   {
     id: 'ZONE-LR',
     name: 'La Romana',
     areas: 'La Romana (Centro), Villa Hermosa, Guaymate, Cumayasa, Caleta',
-    hasCluster: true,
   },
   {
     id: 'ZONE-SDE',
     name: 'Santo Domingo Este',
     areas:
       'Alma Rosa, Ensanche Ozama, Autopista San Isidro, Los Frailes, Autopista Las Américas, Invivienda, Lucerna',
-    hasCluster: true,
+  },
+  {
+    id: 'ZONE-DN',
+    name: 'Distrito Nacional',
+    areas: 'Piantini, Naco, Bella Vista, Gazcue, Zona Colonial, Evaristo Morales',
   },
 ];
 
@@ -48,21 +51,18 @@ const TIME_SLOTS = [
     label: 'Bloque Mañana',
     time: '08:30 AM – 11:30 AM',
     available: true,
-    hasRoutePromotion: true,
   },
   {
     id: 'AFTERNOON',
     label: 'Bloque Tarde',
     time: '01:00 PM – 04:00 PM',
     available: true,
-    hasRoutePromotion: false,
   },
   {
     id: 'EVENING',
     label: 'Bloque Vespertino',
     time: '04:30 PM – 07:30 PM',
     available: true,
-    hasRoutePromotion: false,
   },
 ];
 
@@ -82,6 +82,37 @@ function AgendaContent() {
   const [bookedAppointmentId, setBookedAppointmentId] = useState<string | null>(null);
   const [dynamicSlots, setDynamicSlots] = useState(TIME_SLOTS);
 
+  // Política dinámica de descuentos configurada en el Admin Portal
+  const [discountPolicy, setDiscountPolicy] =
+    useState<DiscountPolicyConfig>(DEFAULT_DISCOUNT_POLICY);
+
+  // Cargar política de descuentos desde Core API / localStorage
+  useEffect(() => {
+    async function loadDiscounts() {
+      try {
+        const res = await apiClient.config.getDiscounts();
+        if (res.success && res.data) {
+          setDiscountPolicy(res.data);
+          return;
+        }
+      } catch {
+        // Fallback a localStorage
+      }
+
+      if (typeof window !== 'undefined') {
+        const local = localStorage.getItem('mitefree_discount_policy');
+        if (local) {
+          try {
+            setDiscountPolicy(JSON.parse(local));
+          } catch {
+            // Ignorar parse error
+          }
+        }
+      }
+    }
+    loadDiscounts();
+  }, []);
+
   // Generate next 6 dates
   const availableDates = Array.from({ length: 6 }).map((_, i) => {
     const d = new Date();
@@ -93,9 +124,9 @@ function AgendaContent() {
   });
 
   const selectedDateObj = availableDates.find((d) => d.offset === selectedDayOffset)!;
-  const currentZoneObj = COVERAGE_ZONES.find((z) => z.id === selectedZone)!;
+  const currentZoneObj = COVERAGE_ZONES.find((z) => z.id === selectedZone) || COVERAGE_ZONES[0]!;
 
-  // Reactively fetch available slots and route promotions from Core API
+  // Reactively fetch available slots from Core API
   useEffect(() => {
     let isCancelled = false;
     async function fetchSlots() {
@@ -109,7 +140,6 @@ function AgendaContent() {
               label: slot.label,
               time: `${slot.startTime} – ${slot.endTime}`,
               available: slot.isAvailable,
-              hasRoutePromotion: slot.hasRoutePromotion,
             })),
           );
         }
@@ -126,7 +156,14 @@ function AgendaContent() {
   const currentSlotObj =
     dynamicSlots.find((s) => s.id === selectedSlot) || dynamicSlots[0] || TIME_SLOTS[0]!;
 
-  const hasRoutePromo = currentSlotObj.hasRoutePromotion;
+  // Descuentos dinámicos activos para la selección actual
+  const currentZonePolicy = discountPolicy.zones.find((z) => z.zoneCode === selectedZone);
+  const zoneDiscountPct = currentZonePolicy?.enabled ? currentZonePolicy.discountPercentage : 0;
+
+  const currentSlotPolicy = discountPolicy.slots.find((s) => s.slotCode === selectedSlot);
+  const slotDiscountPct = currentSlotPolicy?.enabled ? currentSlotPolicy.discountPercentage : 0;
+
+  const totalPromoDiscountPct = zoneDiscountPct + slotDiscountPct;
 
   const handleConfirm = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -218,32 +255,38 @@ function AgendaContent() {
             </h2>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              {COVERAGE_ZONES.map((zone) => (
-                <button
-                  type="button"
-                  key={zone.id}
-                  onClick={() => setSelectedZone(zone.id)}
-                  className={`p-4 rounded-xl border text-left transition-all ${
-                    selectedZone === zone.id
-                      ? 'border-cyan-500 bg-cyan-500/10 tech-glow text-white'
-                      : 'border-dark-border bg-dark-surface/60 hover:bg-dark-hover text-gray-300'
-                  }`}
-                >
-                  <div className="flex justify-between items-center mb-1">
-                    <span className="font-bold text-sm text-white">{zone.name}</span>
-                    <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-dark-bg/80 text-cyan-400 border border-cyan-500/20">
-                      {zone.id}
-                    </span>
-                  </div>
-                  <p className="text-xs text-gray-400">{zone.areas}</p>
-                  {zone.hasCluster && (
-                    <div className="mt-2 inline-flex items-center gap-1 text-[11px] font-semibold text-emerald-400">
-                      <Zap className="w-3 h-3" />
-                      <span>Cuadrilla activa en zona (Aplica 15% Descuento)</span>
+              {COVERAGE_ZONES.map((zone) => {
+                const zPolicy = discountPolicy.zones.find((z) => z.zoneCode === zone.id);
+                const hasZoneDiscount =
+                  (zPolicy?.enabled ?? false) && (zPolicy?.discountPercentage ?? 0) > 0;
+
+                return (
+                  <button
+                    type="button"
+                    key={zone.id}
+                    onClick={() => setSelectedZone(zone.id)}
+                    className={`p-4 rounded-xl border text-left transition-all ${
+                      selectedZone === zone.id
+                        ? 'border-cyan-500 bg-cyan-500/10 tech-glow text-white'
+                        : 'border-dark-border bg-dark-surface/60 hover:bg-dark-hover text-gray-300'
+                    }`}
+                  >
+                    <div className="flex justify-between items-center mb-1">
+                      <span className="font-bold text-sm text-white">{zone.name}</span>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-dark-bg/80 text-cyan-400 border border-cyan-500/20">
+                        {zone.id}
+                      </span>
                     </div>
-                  )}
-                </button>
-              ))}
+                    <p className="text-xs text-gray-400">{zone.areas}</p>
+                    {hasZoneDiscount && (
+                      <div className="mt-2 inline-flex items-center gap-1 text-[11px] font-semibold text-emerald-400">
+                        <Zap className="w-3 h-3" />
+                        <span>Promoción de Zona ({zPolicy!.discountPercentage}% OFF)</span>
+                      </div>
+                    )}
+                  </button>
+                );
+              })}
             </div>
           </div>
 
@@ -254,17 +297,20 @@ function AgendaContent() {
                 <Clock className="w-4 h-4 text-indigo-400" />
                 <span>3. Bloque Horario de 3 Horas</span>
               </h2>
-              {hasRoutePromo && (
+              {totalPromoDiscountPct > 0 && (
                 <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-emerald-500/15 text-emerald-400 text-xs font-bold border border-emerald-500/30 self-start sm:self-auto">
                   <Tag className="w-3.5 h-3.5" />
-                  <span>15% OFF de Ruta Activo</span>
+                  <span>{totalPromoDiscountPct}% Descuento Promocional Activo</span>
                 </span>
               )}
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-              {TIME_SLOTS.map((slot) => {
-                const isPromo = currentZoneObj.hasCluster && slot.hasRoutePromotion;
+              {dynamicSlots.map((slot) => {
+                const sPolicy = discountPolicy.slots.find((s) => s.slotCode === slot.id);
+                const hasSlotDiscount =
+                  (sPolicy?.enabled ?? false) && (sPolicy?.discountPercentage ?? 0) > 0;
+
                 return (
                   <button
                     type="button"
@@ -278,9 +324,9 @@ function AgendaContent() {
                   >
                     <div className="font-bold text-sm text-white mb-1">{slot.label}</div>
                     <p className="text-xs text-gray-400 font-mono mb-2">{slot.time}</p>
-                    {isPromo ? (
+                    {hasSlotDiscount ? (
                       <span className="inline-block text-[10px] font-bold px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
-                        15% Descuento Ruta
+                        {sPolicy!.discountPercentage}% Descuento Horario
                       </span>
                     ) : (
                       <span className="inline-block text-[10px] text-gray-500">
@@ -402,10 +448,12 @@ function AgendaContent() {
               <span className="text-gray-400">Dirección:</span>
               <span className="font-mono text-gray-300">{address}</span>
             </div>
-            {hasRoutePromo && (
+            {totalPromoDiscountPct > 0 && (
               <div className="flex justify-between pt-1 text-emerald-400 font-bold">
                 <span>Bonificación Aplicada:</span>
-                <span>15% Descuento de Ruta</span>
+                <span>
+                  {totalPromoDiscountPct}% Descuento Promocional ({currentZoneObj.name})
+                </span>
               </div>
             )}
           </div>

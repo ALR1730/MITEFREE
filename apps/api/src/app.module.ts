@@ -5,6 +5,7 @@ import { QuotationsModule } from './modules/quotations.module.js';
 import { AppointmentsModule } from './modules/appointments.module.js';
 import { WalletsModule } from './modules/wallets.module.js';
 import { PaymentsModule } from './modules/payments.module.js';
+import { ConfigModule } from './modules/config.module.js';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { PaymentsModule } from './modules/payments.module.js';
     AppointmentsModule,
     WalletsModule,
     PaymentsModule,
+    ConfigModule,
   ],
 })
 export class AppModule {}

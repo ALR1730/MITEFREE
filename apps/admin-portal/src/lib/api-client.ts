@@ -11,6 +11,7 @@ import type {
   PaymentRecordResponseDto,
   ReviewPaymentDto,
   QuotationResponseDto,
+  DiscountPolicyConfig,
 } from '@mitefree/shared-types';
 
 export type ApiResult<T> =
@@ -112,5 +113,14 @@ export const adminApiClient = {
     getById: (id: string) => request<QuotationResponseDto>(`/quotations/${id}`),
 
     getPdfUrl: (id: string) => `${API_BASE_URL}/quotations/${id}/pdf`,
+  },
+
+  config: {
+    getDiscounts: () => request<DiscountPolicyConfig>('/config/discounts'),
+    updateDiscounts: (body: DiscountPolicyConfig) =>
+      request<DiscountPolicyConfig>('/config/discounts', {
+        method: 'PUT',
+        body: JSON.stringify(body),
+      }),
   },
 };

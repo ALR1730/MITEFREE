@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   Sliders,
   DollarSign,
@@ -11,7 +11,14 @@ import {
   ShieldAlert,
   Calculator,
   RefreshCw,
+  Tag,
+  Clock,
+  MapPin,
+  Percent,
+  Trash2,
 } from 'lucide-react';
+import { DEFAULT_DISCOUNT_POLICY, type DiscountPolicyConfig } from '@mitefree/shared-types';
+import { adminApiClient } from '@/lib/api-client';
 
 export default function ConfiguracionPage() {
   const [depositRate, setDepositRate] = useState<number>(0);
@@ -20,21 +27,121 @@ export default function ConfiguracionPage() {
   const [commissionRate, setCommissionRate] = useState<number>(15);
   const [saved, setSaved] = useState<boolean>(false);
 
+  // Política de Descuentos Personalizados por Zona y Horario (Admin Customizable)
+  const [discountPolicy, setDiscountPolicy] =
+    useState<DiscountPolicyConfig>(DEFAULT_DISCOUNT_POLICY);
+
+  // Carga inicial desde API / localStorage
+  useEffect(() => {
+    async function loadDiscounts() {
+      try {
+        const res = await adminApiClient.config.getDiscounts();
+        if (res.success && res.data) {
+          setDiscountPolicy(res.data);
+          return;
+        }
+      } catch {
+        // Fallback to localStorage
+      }
+
+      if (typeof window !== 'undefined') {
+        const savedLocal = localStorage.getItem('mitefree_discount_policy');
+        if (savedLocal) {
+          try {
+            setDiscountPolicy(JSON.parse(savedLocal));
+          } catch {
+            // Ignore parse errors
+          }
+        }
+      }
+    }
+    loadDiscounts();
+  }, []);
+
+  // Handlers para Zonas
+  const handleToggleZone = (zoneCode: string) => {
+    setDiscountPolicy((prev) => ({
+      ...prev,
+      zones: prev.zones.map((z) => (z.zoneCode === zoneCode ? { ...z, enabled: !z.enabled } : z)),
+    }));
+  };
+
+  const handleChangeZoneDiscount = (zoneCode: string, percentage: number) => {
+    const validRate = Math.max(0, Math.min(100, isNaN(percentage) ? 0 : percentage));
+    setDiscountPolicy((prev) => ({
+      ...prev,
+      zones: prev.zones.map((z) =>
+        z.zoneCode === zoneCode ? { ...z, discountPercentage: validRate } : z,
+      ),
+    }));
+  };
+
+  // Handlers para Horarios
+  const handleToggleSlot = (slotCode: string) => {
+    setDiscountPolicy((prev) => ({
+      ...prev,
+      slots: prev.slots.map((s) => (s.slotCode === slotCode ? { ...s, enabled: !s.enabled } : s)),
+    }));
+  };
+
+  const handleChangeSlotDiscount = (slotCode: string, percentage: number) => {
+    const validRate = Math.max(0, Math.min(100, isNaN(percentage) ? 0 : percentage));
+    setDiscountPolicy((prev) => ({
+      ...prev,
+      slots: prev.slots.map((s) =>
+        s.slotCode === slotCode ? { ...s, discountPercentage: validRate } : s,
+      ),
+    }));
+  };
+
+  // Restablecer / Eliminar todos los descuentos (0% para todos)
+  const handleResetDiscounts = () => {
+    const resetPolicy: DiscountPolicyConfig = {
+      zones: discountPolicy.zones.map((z) => ({ ...z, enabled: false, discountPercentage: 0 })),
+      slots: discountPolicy.slots.map((s) => ({ ...s, enabled: false, discountPercentage: 0 })),
+    };
+    setDiscountPolicy(resetPolicy);
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('mitefree_discount_policy', JSON.stringify(resetPolicy));
+    }
+  };
+
   // Simulador de Cotización en Vivo (Admin Testing Tool - Valores Canónicos en RD$)
   const [simBasePrice, setSimBasePrice] = useState<number>(2500); // Matrimonial 1 lado / Mueble 3 plazas
   const [simMultiplier, setSimMultiplier] = useState<number>(1.0); // Sintética estándar
   const [simSurcharge, setSimSurcharge] = useState<number>(500); // Ambos lados o Mancha
-  const [simDiscount, setSimDiscount] = useState<number>(300);
-  const [simWallet, setSimWallet] = useState<number>(200);
+  const [simCouponDiscount, setSimCouponDiscount] = useState<number>(0);
+  const [simWallet, setSimWallet] = useState<number>(0);
+  const [simSelectedZone, setSimSelectedZone] = useState<string>('ZONE-SPM');
+  const [simSelectedSlot, setSimSelectedSlot] = useState<string>('MORNING');
+
+  // Cálculo de descuento activo de Zona y Horario en el simulador
+  const activeZoneObj = discountPolicy.zones.find((z) => z.zoneCode === simSelectedZone);
+  const activeSlotObj = discountPolicy.slots.find((s) => s.slotCode === simSelectedSlot);
+
+  const zoneDiscountPct = activeZoneObj?.enabled ? activeZoneObj.discountPercentage : 0;
+  const slotDiscountPct = activeSlotObj?.enabled ? activeSlotObj.discountPercentage : 0;
+  const totalCustomDiscountPct = zoneDiscountPct + slotDiscountPct;
 
   const simSubtotal = Math.round((simBasePrice * simMultiplier + simSurcharge) * 100) / 100;
-  const simAfterDiscount = Math.max(0, simSubtotal - simDiscount);
+  const simPromoDiscountAmount =
+    Math.round(simSubtotal * (totalCustomDiscountPct / 100) * 100) / 100;
+  const simTotalDiscounts = simPromoDiscountAmount + simCouponDiscount;
+  const simAfterDiscount = Math.max(0, simSubtotal - simTotalDiscounts);
   const simTotal = Math.max(0, Math.round((simAfterDiscount - simWallet) * 100) / 100);
   const simDeposit = Math.round(simTotal * (depositRate / 100) * 100) / 100;
   const simRemaining = Math.round((simTotal - simDeposit) * 100) / 100;
 
-  const handleSave = (e: React.FormEvent) => {
+  const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
+    try {
+      await adminApiClient.config.updateDiscounts(discountPolicy);
+    } catch {
+      // Ignorar si API offline
+    }
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('mitefree_discount_policy', JSON.stringify(discountPolicy));
+    }
     setSaved(true);
     setTimeout(() => setSaved(false), 3000);
   };
@@ -357,6 +464,151 @@ export default function ConfiguracionPage() {
         </div>
       </div>
 
+      {/* Interactive Zone & Slot Discount Customization Matrix */}
+      <div className="admin-card rounded-2xl p-6 border border-brand-500/30 admin-glow-indigo space-y-6">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 pb-4 border-b border-admin-border">
+          <div>
+            <h3 className="text-sm font-bold uppercase tracking-wider text-white flex items-center gap-2">
+              <Tag className="w-4 h-4 text-emerald-400" />
+              <span>Personalización de Descuentos Dinámicos (Zonas y Horarios)</span>
+            </h3>
+            <p className="text-xs text-gray-400 mt-1">
+              Controla y personaliza las promociones por territorio y bloque horario. Por defecto
+              están en 0% (sin descuento).
+            </p>
+          </div>
+          <button
+            type="button"
+            onClick={handleResetDiscounts}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-rose-500/10 text-rose-300 border border-rose-500/30 hover:bg-rose-500/20 text-xs font-semibold transition-all active:scale-95"
+            title="Eliminar todos los descuentos y volver a 0%"
+          >
+            <Trash2 className="w-3.5 h-3.5" />
+            <span>Eliminar Todos los Descuentos (0%)</span>
+          </button>
+        </div>
+
+        {/* 1. Descuentos por Zona Territorial */}
+        <div className="space-y-3">
+          <div className="flex items-center gap-2 text-xs font-bold text-cyan-300 uppercase tracking-wider">
+            <MapPin className="w-3.5 h-3.5" />
+            <span>1. Promociones por Zona Territorial</span>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            {discountPolicy.zones.map((zone) => (
+              <div
+                key={zone.zoneCode}
+                className={`p-4 rounded-xl border transition-all ${
+                  zone.enabled && zone.discountPercentage > 0
+                    ? 'bg-admin-card border-emerald-500/50 shadow-sm'
+                    : 'bg-admin-sidebar border-admin-border opacity-90'
+                }`}
+              >
+                <div className="flex items-center justify-between mb-2">
+                  <span className="font-bold text-xs text-white">{zone.name}</span>
+                  <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-admin-sidebar text-gray-400 border border-admin-border">
+                    {zone.zoneCode}
+                  </span>
+                </div>
+
+                <div className="flex items-center justify-between gap-2 mt-3 pt-3 border-t border-admin-border/50">
+                  <label className="flex items-center gap-2 cursor-pointer select-none">
+                    <input
+                      type="checkbox"
+                      checked={zone.enabled}
+                      onChange={() => handleToggleZone(zone.zoneCode)}
+                      className="w-4 h-4 rounded text-emerald-500 bg-admin-sidebar border-admin-border focus:ring-emerald-500"
+                    />
+                    <span className="text-xs text-gray-300">
+                      {zone.enabled ? 'Activo' : 'Desactivado'}
+                    </span>
+                  </label>
+
+                  <div className="flex items-center gap-1.5">
+                    <input
+                      type="number"
+                      min={0}
+                      max={100}
+                      disabled={!zone.enabled}
+                      value={zone.discountPercentage}
+                      onChange={(e) =>
+                        handleChangeZoneDiscount(zone.zoneCode, Number(e.target.value))
+                      }
+                      className={`w-14 px-2 py-1 rounded text-right font-mono text-xs font-bold ${
+                        zone.enabled
+                          ? 'bg-admin-sidebar border border-emerald-500/50 text-emerald-300'
+                          : 'bg-admin-card border border-admin-border text-gray-500 cursor-not-allowed'
+                      }`}
+                    />
+                    <span className="text-xs font-bold text-gray-400">%</span>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* 2. Descuentos por Bloque Horario */}
+        <div className="space-y-3 pt-2">
+          <div className="flex items-center gap-2 text-xs font-bold text-indigo-300 uppercase tracking-wider">
+            <Clock className="w-3.5 h-3.5" />
+            <span>2. Promociones por Bloque Horario</span>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {discountPolicy.slots.map((slot) => (
+              <div
+                key={slot.slotCode}
+                className={`p-4 rounded-xl border transition-all ${
+                  slot.enabled && slot.discountPercentage > 0
+                    ? 'bg-admin-card border-indigo-500/50 shadow-sm'
+                    : 'bg-admin-sidebar border-admin-border opacity-90'
+                }`}
+              >
+                <div className="flex items-center justify-between mb-2">
+                  <span className="font-bold text-xs text-white">{slot.label}</span>
+                  <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-admin-sidebar text-gray-400 border border-admin-border">
+                    {slot.slotCode}
+                  </span>
+                </div>
+
+                <div className="flex items-center justify-between gap-2 mt-3 pt-3 border-t border-admin-border/50">
+                  <label className="flex items-center gap-2 cursor-pointer select-none">
+                    <input
+                      type="checkbox"
+                      checked={slot.enabled}
+                      onChange={() => handleToggleSlot(slot.slotCode)}
+                      className="w-4 h-4 rounded text-indigo-500 bg-admin-sidebar border-admin-border focus:ring-indigo-500"
+                    />
+                    <span className="text-xs text-gray-300">
+                      {slot.enabled ? 'Activo' : 'Desactivado'}
+                    </span>
+                  </label>
+
+                  <div className="flex items-center gap-1.5">
+                    <input
+                      type="number"
+                      min={0}
+                      max={100}
+                      disabled={!slot.enabled}
+                      value={slot.discountPercentage}
+                      onChange={(e) =>
+                        handleChangeSlotDiscount(slot.slotCode, Number(e.target.value))
+                      }
+                      className={`w-14 px-2 py-1 rounded text-right font-mono text-xs font-bold ${
+                        slot.enabled
+                          ? 'bg-admin-sidebar border border-indigo-500/50 text-indigo-300'
+                          : 'bg-admin-card border border-admin-border text-gray-500 cursor-not-allowed'
+                      }`}
+                    />
+                    <span className="text-xs font-bold text-gray-400">%</span>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
       {/* Stain Surcharge Table & Live Simulator */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div className="admin-card rounded-2xl p-6 border border-admin-border space-y-4">
@@ -397,7 +649,7 @@ export default function ConfiguracionPage() {
           </div>
         </div>
 
-        {/* Live Quotation Engine Simulator */}
+        {/* Live Quotation Engine Simulator with Dynamic Custom Discounts */}
         <div className="admin-card rounded-2xl p-6 border border-indigo-500/30 admin-glow-indigo space-y-4">
           <h3 className="text-sm font-bold uppercase tracking-wider text-white flex items-center gap-2">
             <Calculator className="w-4 h-4 text-indigo-400" />
@@ -405,6 +657,38 @@ export default function ConfiguracionPage() {
           </h3>
 
           <div className="space-y-2 text-xs">
+            {/* Simulator Zone & Slot Selection */}
+            <div className="grid grid-cols-2 gap-2 pb-2 border-b border-admin-border">
+              <div>
+                <label className="text-[10px] text-gray-400 block mb-1">Zona a Evaluar:</label>
+                <select
+                  value={simSelectedZone}
+                  onChange={(e) => setSimSelectedZone(e.target.value)}
+                  className="w-full px-2 py-1 rounded bg-admin-sidebar border border-admin-border text-white text-xs"
+                >
+                  {discountPolicy.zones.map((z) => (
+                    <option key={z.zoneCode} value={z.zoneCode}>
+                      {z.name} ({z.enabled ? `${z.discountPercentage}%` : '0%'})
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <label className="text-[10px] text-gray-400 block mb-1">Horario a Evaluar:</label>
+                <select
+                  value={simSelectedSlot}
+                  onChange={(e) => setSimSelectedSlot(e.target.value)}
+                  className="w-full px-2 py-1 rounded bg-admin-sidebar border border-admin-border text-white text-xs"
+                >
+                  {discountPolicy.slots.map((s) => (
+                    <option key={s.slotCode} value={s.slotCode}>
+                      {s.label} ({s.enabled ? `${s.discountPercentage}%` : '0%'})
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+
             <div className="flex justify-between items-center">
               <span className="text-gray-400">Precio Base (RD$):</span>
               <input
@@ -430,10 +714,29 @@ export default function ConfiguracionPage() {
                 RD$ {simSubtotal.toLocaleString('es-DO')}
               </span>
             </div>
+
+            {/* Dynamic Zone/Slot Promo Discount Line */}
             <div className="flex justify-between items-center text-emerald-400">
-              <span>Descuento Cupón:</span>
-              <span className="font-mono">-RD$ {simDiscount.toLocaleString('es-DO')}</span>
+              <span className="flex items-center gap-1">
+                <span>Descuento Promocional:</span>
+                <span className="text-[10px] font-mono px-1.5 py-0.2 rounded bg-emerald-500/20 text-emerald-300">
+                  {totalCustomDiscountPct}% OFF
+                </span>
+              </span>
+              <span className="font-mono">
+                {simPromoDiscountAmount > 0
+                  ? `-RD$ ${simPromoDiscountAmount.toLocaleString('es-DO')}`
+                  : 'RD$ 0'}
+              </span>
             </div>
+
+            {simCouponDiscount > 0 && (
+              <div className="flex justify-between items-center text-emerald-400">
+                <span>Descuento Cupón:</span>
+                <span className="font-mono">-RD$ {simCouponDiscount.toLocaleString('es-DO')}</span>
+              </div>
+            )}
+
             <div className="flex justify-between items-center text-cyan-400">
               <span>Canje Cashback Billetera:</span>
               <span className="font-mono">-RD$ {simWallet.toLocaleString('es-DO')}</span>

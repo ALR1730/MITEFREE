@@ -7,3 +7,4 @@ export * from './dtos/quotation-photo.dto.js';
 export * from './dtos/appointment-schedule.dto.js';
 export * from './dtos/payment-transaction.dto.js';
 export * from './dtos/loyalty-wallet.dto.js';
+export * from './dtos/discount-policy.dto.js';

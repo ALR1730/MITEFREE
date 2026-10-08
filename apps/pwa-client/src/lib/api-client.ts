@@ -21,6 +21,7 @@ import type {
   ReferralValidationResponseDto,
   ApplyWalletRedemptionDto,
   WalletRedemptionResponseDto,
+  DiscountPolicyConfig,
 } from '@mitefree/shared-types';
 
 export type ApiResult<T> =
@@ -150,5 +151,9 @@ export const apiClient = {
         method: 'POST',
         body: JSON.stringify(body),
       }),
+  },
+
+  config: {
+    getDiscounts: () => request<DiscountPolicyConfig>('/config/discounts'),
   },
 };
