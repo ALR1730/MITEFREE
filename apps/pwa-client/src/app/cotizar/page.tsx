@@ -680,76 +680,19 @@ Por favor confírmenme disponibilidad para mi zona (San Pedro / La Romana / Sant
   });
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-8 sm:py-12 pb-32">
-      {/* ================= HERO CARD (Inspirado en Foto 2) ================= */}
-      <div className="rounded-3xl glass-card border border-emerald-500/30 overflow-hidden mb-6 tech-glow">
-        <div className="p-4 sm:p-5 flex items-center justify-between border-b border-dark-border/60 bg-dark-card/50">
-          <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center border border-emerald-500/30">
-              <Sparkles className="w-5 h-5" />
-            </div>
-            <div>
-              <span className="font-extrabold text-white text-sm block">Mite Free Clean</span>
-              <span className="text-[11px] text-gray-400 block">Limpieza profesional a domicilio</span>
-            </div>
-          </div>
-          <span className="px-3 py-1 rounded-full bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 text-xs font-bold font-mono">
-            Reservas
-          </span>
+    <div className="max-w-4xl mx-auto px-4 py-6 sm:py-8 pb-32">
+      {/* Top Clean Header */}
+      <div className="text-center mb-6">
+        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-brand-500/10 text-brand-400 text-xs font-semibold mb-2 border border-brand-500/20">
+          <Sparkles className="w-3.5 h-3.5" />
+          <span>Mite Free Clean · Cotización Inmediata</span>
         </div>
-
-        <div className="relative w-full h-52 sm:h-72 bg-dark-bg">
-          <Image
-            src="/hero-service.jpg"
-            alt="Mite Free Clean Limpieza Profesional a Domicilio"
-            fill
-            priority
-            sizes="(max-width: 768px) 100vw, 850px"
-            className="object-cover"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-dark-card/95 via-transparent to-black/25" />
-          <span className="absolute bottom-3 left-4 px-3 py-1 rounded-xl bg-dark-bg/85 border border-dark-border text-[11px] font-mono text-gray-300 backdrop-blur-md shadow-md">
-            organicmattresscleaning
-          </span>
-        </div>
-
-        <div className="p-5 sm:p-6 space-y-4">
-          <div>
-            <h1 className="text-xl sm:text-2xl font-extrabold text-white leading-tight">
-              Tu hogar más limpio, sin salir de casa.
-            </h1>
-            <p className="text-xs sm:text-sm text-gray-300 mt-1">
-              Selecciona tu servicio y solicita tu cita en pocos pasos. Recuerda que la visita aplica desde <strong>RD$ 1,500</strong> y pagas al terminar.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-3 gap-2 pt-1">
-            <div className="py-2.5 px-2 rounded-2xl bg-dark-surface/90 border border-dark-border text-center flex flex-col sm:flex-row items-center justify-center gap-1.5 text-xs text-gray-300">
-              <MapPin className="w-3.5 h-3.5 text-brand-400" />
-              <span className="text-[11px] font-semibold">A domicilio</span>
-            </div>
-            <div className="py-2.5 px-2 rounded-2xl bg-dark-surface/90 border border-dark-border text-center flex flex-col sm:flex-row items-center justify-center gap-1.5 text-xs text-gray-300">
-              <Calendar className="w-3.5 h-3.5 text-cyan-400" />
-              <span className="text-[11px] font-semibold">Agenda tu cita</span>
-            </div>
-            <a
-              href="https://wa.me/18095134773?text=%C2%A1Hola%20Mite%20Free%20Clean!%20Deseo%20cotizar%20un%20servicio%20de%20limpieza%20a%20domicilio."
-              target="_blank"
-              rel="noreferrer"
-              className="py-2.5 px-2 rounded-2xl bg-emerald-500/15 border border-emerald-500/30 hover:bg-emerald-500/25 transition-colors text-center flex flex-col sm:flex-row items-center justify-center gap-1.5 text-xs text-emerald-300"
-            >
-              <MessageCircle className="w-3.5 h-3.5 text-emerald-400" />
-              <span className="text-[11px] font-semibold">Vía WhatsApp</span>
-            </a>
-          </div>
-        </div>
-      </div>
-
-      {/* Indicador de Desplazamiento Suave */}
-      <div className="flex justify-center mb-6">
-        <div className="w-8 h-8 rounded-full bg-dark-surface border border-dark-border text-emerald-400 flex items-center justify-center shadow-md">
-          <ChevronDown className="w-4 h-4" />
-        </div>
+        <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
+          Cotizador Inteligente de Servicios
+        </h1>
+        <p className="text-xs sm:text-sm text-gray-300 mt-1 max-w-lg mx-auto">
+          Selecciona tamaños y cantidades para ver tu precio al instante. Visita a domicilio desde <strong>RD$ 1,500</strong> (0% anticipo).
+        </p>
       </div>
 
       {/* Stepper Wizard Bar */}
