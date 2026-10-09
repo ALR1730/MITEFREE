@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { AppointmentsController } from '../presentation/controllers/appointments.controller.js';
 import { ScheduleAppointmentUseCase } from '../application/appointments/schedule-appointment.use-case.js';
 import { GetAppointmentUseCase } from '../application/appointments/get-appointment.use-case.js';
+import { ListAppointmentsUseCase } from '../application/appointments/list-appointments.use-case.js';
 import { GetAvailableSlotsUseCase } from '../application/appointments/get-available-slots.use-case.js';
 import { TransitionAppointmentStatusUseCase } from '../application/appointments/transition-status.use-case.js';
 import { AssignTechnicianUseCase } from '../application/appointments/assign-technician.use-case.js';
@@ -15,6 +16,7 @@ import { QuotationsModule } from './quotations.module.js';
   providers: [
     ScheduleAppointmentUseCase,
     GetAppointmentUseCase,
+    ListAppointmentsUseCase,
     GetAvailableSlotsUseCase,
     TransitionAppointmentStatusUseCase,
     AssignTechnicianUseCase,
@@ -27,6 +29,7 @@ import { QuotationsModule } from './quotations.module.js';
     APPOINTMENT_REPOSITORY,
     ScheduleAppointmentUseCase,
     GetAppointmentUseCase,
+    ListAppointmentsUseCase,
     GetAvailableSlotsUseCase,
     TransitionAppointmentStatusUseCase,
     AssignTechnicianUseCase,

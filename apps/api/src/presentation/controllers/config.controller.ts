@@ -1,16 +1,26 @@
-import { Controller, Get, Put, Body, UsePipes, HttpStatus, HttpCode } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import {
+  Controller,
+  Get,
+  Put,
+  Body,
+  UsePipes,
+  UseGuards,
+  HttpStatus,
+  HttpCode,
+} from '@nestjs/common';
+import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
 import {
   DiscountPolicyConfigSchema,
-  DEFAULT_DISCOUNT_POLICY,
   type DiscountPolicyConfig,
 } from '@mitefree/shared-types';
 import { ZodValidationPipe } from '../pipes/zod-validation.pipe.js';
+import { JwtAuthGuard, RolesGuard, Roles } from '../guards/index.js';
+import { ConfigService } from '../../application/config/config.service.js';
 
 @ApiTags('Configuration (Tarifas, Zonas & Políticas de Descuento)')
 @Controller('config')
 export class ConfigController {
-  private currentPolicy: DiscountPolicyConfig = JSON.parse(JSON.stringify(DEFAULT_DISCOUNT_POLICY));
+  constructor(private readonly configService: ConfigService) {}
 
   @Get('discounts')
   @ApiOperation({
@@ -21,11 +31,14 @@ export class ConfigController {
     description: 'Políticas de descuento por zona y horario retornadas con éxito.',
   })
   getDiscountPolicy(): DiscountPolicyConfig {
-    return this.currentPolicy;
+    return this.configService.getDiscountPolicy();
   }
 
   @Put('discounts')
   @HttpCode(HttpStatus.OK)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('ADMIN')
+  @ApiBearerAuth('JWT-Auth')
   @ApiOperation({
     summary: 'Actualizar configuración personalizada de descuentos por zona y horario desde Admin',
   })
@@ -33,9 +46,12 @@ export class ConfigController {
     status: 200,
     description: 'Políticas de descuento actualizadas con éxito.',
   })
+  @ApiResponse({
+    status: 403,
+    description: 'Acceso denegado: solo administradores pueden modificar las políticas financieras.',
+  })
   @UsePipes(new ZodValidationPipe(DiscountPolicyConfigSchema))
   updateDiscountPolicy(@Body() body: DiscountPolicyConfig): DiscountPolicyConfig {
-    this.currentPolicy = body;
-    return this.currentPolicy;
+    return this.configService.updateDiscountPolicy(body);
   }
 }

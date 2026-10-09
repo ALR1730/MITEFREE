@@ -47,14 +47,23 @@ const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000/a
 async function request<T>(path: string, options: RequestInit = {}): Promise<ApiResult<T>> {
   const url = `${API_BASE_URL}${path.startsWith('/') ? path : `/${path}`}`;
 
+  const headers: Record<string, string> = {
+    'Content-Type': 'application/json',
+    Accept: 'application/json',
+    ...(options.headers as Record<string, string>),
+  };
+
+  if (typeof window !== 'undefined') {
+    const token = localStorage.getItem('mitefree_auth_token');
+    if (token && !headers['Authorization'] && !headers['authorization']) {
+      headers['Authorization'] = `Bearer ${token}`;
+    }
+  }
+
   try {
     const response = await fetch(url, {
       ...options,
-      headers: {
-        'Content-Type': 'application/json',
-        Accept: 'application/json',
-        ...options.headers,
-      },
+      headers,
     });
 
     if (response.ok) {

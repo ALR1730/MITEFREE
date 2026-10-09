@@ -13,11 +13,31 @@ async function bootstrap() {
   const logger = new Logger('MitefreeBootstrap');
   const app = await NestFactory.create(AppModule);
 
-  // Enable Cross-Origin Resource Sharing
+  // Enable Cross-Origin Resource Sharing with Origin Whitelist
+  const allowedOrigins = process.env.ALLOWED_ORIGINS
+    ? process.env.ALLOWED_ORIGINS.split(',').map((o) => o.trim())
+    : [
+        'http://localhost:3000',
+        'http://localhost:3001',
+        'http://127.0.0.1:3000',
+        'http://127.0.0.1:3001',
+      ];
+
   app.enableCors({
-    origin: '*',
+    origin: (
+      origin: string | undefined,
+      callback: (err: Error | null, allow?: boolean) => void,
+    ) => {
+      // Permitir peticiones server-to-server o desde orígenes explícitos
+      if (!origin || allowedOrigins.includes(origin) || origin.startsWith('http://localhost:')) {
+        callback(null, true);
+      } else {
+        callback(new Error(`Origen ${origin} no permitido por política CORS de ALR COMPANY.`));
+      }
+    },
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
     allowedHeaders: 'Content-Type, Accept, Authorization, X-Requested-With',
+    credentials: true,
   });
 
   // Global Exception Filter for RFC 7807 ProblemDetails
@@ -39,6 +59,15 @@ async function bootstrap() {
       'Angel Luis Rosario',
       'https://github.com/ALR1730',
       'angelluisrosario12345@gmail.com',
+    )
+    .addBearerAuth(
+      {
+        type: 'http',
+        scheme: 'bearer',
+        bearerFormat: 'JWT',
+        description: 'Introduce tu token JWT firmado con HMAC-SHA256',
+      },
+      'JWT-Auth',
     )
     .addTag('Health & Telemetry', 'Health probes and status checks')
     .addTag('Quotations (Cotizaciones)', 'Quotation creation and canonical pricing engine')

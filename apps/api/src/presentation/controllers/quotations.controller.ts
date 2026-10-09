@@ -9,7 +9,6 @@ import {
   NotFoundException,
   HttpStatus,
   HttpCode,
-  Inject,
   Res,
 } from '@nestjs/common';
 import type { Response } from 'express';
@@ -28,15 +27,14 @@ import {
   type PhotoConfirmDto,
   type PhotoConfirmResponseDto,
 } from '@mitefree/shared-types';
-import type { IQuotationRepository } from '@mitefree/domain-core';
 import { ZodValidationPipe } from '../pipes/zod-validation.pipe.js';
 import { CreateQuotationUseCase } from '../../application/quotations/create-quotation.use-case.js';
 import { GetQuotationUseCase } from '../../application/quotations/get-quotation.use-case.js';
+import { ListClientQuotationsUseCase } from '../../application/quotations/list-client-quotations.use-case.js';
 import { CalculatePricePreviewUseCase } from '../../application/quotations/calculate-price-preview.use-case.js';
 import { UploadPhotoIntentUseCase } from '../../application/quotations/upload-photo-intent.use-case.js';
 import { ConfirmPhotoUseCase } from '../../application/quotations/confirm-photo.use-case.js';
 import { QuotationPdfService } from '../../infrastructure/pdf/quotation-pdf.service.js';
-import { QUOTATION_REPOSITORY } from '../../infrastructure/database/database.tokens.js';
 
 @ApiTags('Quotations (Cotizaciones & Pricing Engine)')
 @Controller('quotations')
@@ -44,12 +42,11 @@ export class QuotationsController {
   constructor(
     private readonly createQuotationUseCase: CreateQuotationUseCase,
     private readonly getQuotationUseCase: GetQuotationUseCase,
+    private readonly listClientQuotationsUseCase: ListClientQuotationsUseCase,
     private readonly calculatePricePreviewUseCase: CalculatePricePreviewUseCase,
     private readonly uploadPhotoIntentUseCase: UploadPhotoIntentUseCase,
     private readonly confirmPhotoUseCase: ConfirmPhotoUseCase,
     private readonly pdfService: QuotationPdfService,
-    @Inject(QUOTATION_REPOSITORY)
-    private readonly quotationRepo: IQuotationRepository,
   ) {}
 
   @Post('preview')
@@ -162,19 +159,10 @@ export class QuotationsController {
   @ApiOperation({ summary: 'List quotations by client UUID' })
   @ApiParam({ name: 'clientId', description: 'UUID of client' })
   async getByClientId(@Param('clientId') clientId: string): Promise<QuotationResponseDto[]> {
-    const quotations = await this.quotationRepo.findByClientId(clientId);
-
-    return quotations.map((q) => ({
-      id: q.id,
-      clientId: q.clientId,
-      subtotal: q.subtotal.amount,
-      discountAmount: q.discountAmount.amount,
-      total: q.total.amount,
-      depositRequired: q.depositRequired.amount,
-      currency: q.total.currency,
-      status: q.status,
-      expiresAt: q.expiresAt.toISOString(),
-      createdAt: q.createdAt.toISOString(),
-    }));
+    const result = await this.listClientQuotationsUseCase.execute(clientId);
+    if (result.isFailure) {
+      throw new BadRequestException(result.error);
+    }
+    return result.value;
   }
 }

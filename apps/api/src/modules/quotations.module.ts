@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { QuotationsController } from '../presentation/controllers/quotations.controller.js';
 import { CreateQuotationUseCase } from '../application/quotations/create-quotation.use-case.js';
 import { GetQuotationUseCase } from '../application/quotations/get-quotation.use-case.js';
+import { ListClientQuotationsUseCase } from '../application/quotations/list-client-quotations.use-case.js';
 import { CalculatePricePreviewUseCase } from '../application/quotations/calculate-price-preview.use-case.js';
 import { UploadPhotoIntentUseCase } from '../application/quotations/upload-photo-intent.use-case.js';
 import { ConfirmPhotoUseCase } from '../application/quotations/confirm-photo.use-case.js';
@@ -16,6 +17,7 @@ import { QUOTATION_REPOSITORY } from '../infrastructure/database/database.tokens
   providers: [
     CreateQuotationUseCase,
     GetQuotationUseCase,
+    ListClientQuotationsUseCase,
     CalculatePricePreviewUseCase,
     UploadPhotoIntentUseCase,
     ConfirmPhotoUseCase,
@@ -34,6 +36,7 @@ import { QUOTATION_REPOSITORY } from '../infrastructure/database/database.tokens
     STORAGE_SERVICE,
     CreateQuotationUseCase,
     GetQuotationUseCase,
+    ListClientQuotationsUseCase,
     CalculatePricePreviewUseCase,
     UploadPhotoIntentUseCase,
     ConfirmPhotoUseCase,

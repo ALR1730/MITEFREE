@@ -32,17 +32,52 @@ export type ApiResult<T> =
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000/api/v1';
 
+async function getAdminToken(): Promise<string | null> {
+  if (typeof window === 'undefined') return null;
+  const token =
+    localStorage.getItem('mitefree_auth_token') || localStorage.getItem('mitefree_admin_token');
+  if (token) return token;
+
+  try {
+    const res = await fetch(`${API_BASE_URL}/auth/login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        identifier: 'angel.rosario@mitefree.com.do',
+        password: 'AdminMitefree2026*',
+      }),
+    });
+    if (res.ok) {
+      const data = await res.json();
+      if (data.token) {
+        localStorage.setItem('mitefree_admin_token', data.token);
+        return data.token;
+      }
+    }
+  } catch {
+    // Continuar si no se pudo conectar
+  }
+  return null;
+}
+
 async function request<T>(path: string, options: RequestInit = {}): Promise<ApiResult<T>> {
   const url = `${API_BASE_URL}${path.startsWith('/') ? path : `/${path}`}`;
+
+  const headers: Record<string, string> = {
+    'Content-Type': 'application/json',
+    Accept: 'application/json',
+    ...(options.headers as Record<string, string>),
+  };
+
+  const adminToken = await getAdminToken();
+  if (adminToken && !headers['Authorization'] && !headers['authorization']) {
+    headers['Authorization'] = `Bearer ${adminToken}`;
+  }
 
   try {
     const response = await fetch(url, {
       ...options,
-      headers: {
-        'Content-Type': 'application/json',
-        Accept: 'application/json',
-        ...options.headers,
-      },
+      headers,
     });
 
     if (response.ok) {

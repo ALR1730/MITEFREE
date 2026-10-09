@@ -4,6 +4,7 @@ import { CreatePaymentIntentUseCase } from '../application/payments/create-payme
 import { SubmitBankTransferProofUseCase } from '../application/payments/submit-bank-transfer.use-case.js';
 import { ProcessStripeWebhookUseCase } from '../application/payments/process-stripe-webhook.use-case.js';
 import { ReviewPaymentUseCase } from '../application/payments/review-payment.use-case.js';
+import { ListPaymentsUseCase } from '../application/payments/list-payments.use-case.js';
 import { DrizzlePaymentRepository } from '../infrastructure/repositories/drizzle-payment.repository.js';
 import { PAYMENT_REPOSITORY } from '../infrastructure/database/database.tokens.js';
 import { AppointmentsModule } from './appointments.module.js';
@@ -16,6 +17,7 @@ import { AppointmentsModule } from './appointments.module.js';
     SubmitBankTransferProofUseCase,
     ProcessStripeWebhookUseCase,
     ReviewPaymentUseCase,
+    ListPaymentsUseCase,
     {
       provide: PAYMENT_REPOSITORY,
       useClass: DrizzlePaymentRepository,
@@ -27,6 +29,7 @@ import { AppointmentsModule } from './appointments.module.js';
     SubmitBankTransferProofUseCase,
     ProcessStripeWebhookUseCase,
     ReviewPaymentUseCase,
+    ListPaymentsUseCase,
   ],
 })
 export class PaymentsModule {}

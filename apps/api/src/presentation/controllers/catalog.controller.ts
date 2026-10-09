@@ -6,23 +6,23 @@ import {
   Delete,
   Param,
   Body,
+  UseGuards,
   HttpStatus,
   HttpCode,
-  NotFoundException,
 } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
 import {
-  DEFAULT_CATALOG_ITEMS,
   type CatalogItem,
   type CreateCatalogItemDto,
   type UpdateCatalogItemDto,
 } from '@mitefree/shared-types';
+import { JwtAuthGuard, RolesGuard, Roles } from '../guards/index.js';
+import { CatalogService } from '../../application/catalog/catalog.service.js';
 
 @ApiTags('Catalog (Catálogo Dinámico de Artículos & Tarifas)')
 @Controller('catalog')
 export class CatalogController {
-  // Estado en memoria inicializado con los ítems canónicos
-  private items: CatalogItem[] = JSON.parse(JSON.stringify(DEFAULT_CATALOG_ITEMS));
+  constructor(private readonly catalogService: CatalogService) {}
 
   @Get()
   @ApiOperation({
@@ -33,11 +33,14 @@ export class CatalogController {
     description: 'Lista completa de artículos del catálogo retornada con éxito.',
   })
   getAll(): CatalogItem[] {
-    return this.items;
+    return this.catalogService.getAll();
   }
 
   @Post()
   @HttpCode(HttpStatus.CREATED)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('ADMIN')
+  @ApiBearerAuth('JWT-Auth')
   @ApiOperation({
     summary: 'Crear un nuevo artículo en el catálogo',
   })
@@ -45,30 +48,19 @@ export class CatalogController {
     status: 201,
     description: 'Artículo creado exitosamente.',
   })
+  @ApiResponse({
+    status: 403,
+    description: 'Acceso denegado: solo administradores pueden agregar artículos al catálogo.',
+  })
   create(@Body() body: CreateCatalogItemDto): CatalogItem {
-    const newItem: CatalogItem = {
-      id: body.id || `custom-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`,
-      name: body.name,
-      category: body.category,
-      basePrice: Number(body.basePrice),
-      bothSidesPrice: body.bothSidesPrice !== undefined ? Number(body.bothSidesPrice) : undefined,
-      iconText: body.iconText || '🪑',
-      image: body.image || '/cat-chair.jpg',
-      subtitle: body.subtitle || `Tarifa estándar RD$ ${Number(body.basePrice).toLocaleString('es-DO')}`,
-      dimensions: body.dimensions,
-      isMattress: body.isMattress ?? (body.category === 'Colchones'),
-      isSofaModular: body.isSofaModular,
-      isChair: body.isChair ?? (body.category === 'Sillas de Comedor'),
-      isRug: body.isRug ?? (body.category === 'Alfombras'),
-      isCustomRug: body.isCustomRug,
-    };
-
-    this.items.push(newItem);
-    return newItem;
+    return this.catalogService.create(body);
   }
 
   @Put(':id')
   @HttpCode(HttpStatus.OK)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('ADMIN')
+  @ApiBearerAuth('JWT-Auth')
   @ApiOperation({
     summary: 'Actualizar valores de un artículo existente (nombre, precio, descripción, etc.)',
   })
@@ -76,30 +68,19 @@ export class CatalogController {
     status: 200,
     description: 'Artículo actualizado exitosamente.',
   })
-  update(
-    @Param('id') id: string,
-    @Body() body: UpdateCatalogItemDto,
-  ): CatalogItem {
-    const index = this.items.findIndex((it) => it.id === id);
-    if (index === -1) {
-      throw new NotFoundException(`Artículo con ID ${id} no encontrado en el catálogo.`);
-    }
-
-    const current = this.items[index]!;
-    const updated: CatalogItem = {
-      ...current,
-      ...body,
-      basePrice: body.basePrice !== undefined ? Number(body.basePrice) : current.basePrice,
-      bothSidesPrice:
-        body.bothSidesPrice !== undefined ? Number(body.bothSidesPrice) : current.bothSidesPrice,
-    };
-
-    this.items[index] = updated;
-    return updated;
+  @ApiResponse({
+    status: 403,
+    description: 'Acceso denegado: solo administradores pueden modificar artículos.',
+  })
+  update(@Param('id') id: string, @Body() body: UpdateCatalogItemDto): CatalogItem {
+    return this.catalogService.update(id, body);
   }
 
   @Delete(':id')
   @HttpCode(HttpStatus.OK)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('ADMIN')
+  @ApiBearerAuth('JWT-Auth')
   @ApiOperation({
     summary: 'Eliminar totalmente un artículo del catálogo',
   })
@@ -107,18 +88,19 @@ export class CatalogController {
     status: 200,
     description: 'Artículo eliminado exitosamente del catálogo.',
   })
+  @ApiResponse({
+    status: 403,
+    description: 'Acceso denegado: solo administradores pueden eliminar artículos.',
+  })
   delete(@Param('id') id: string): { success: boolean; id: string } {
-    const index = this.items.findIndex((it) => it.id === id);
-    if (index === -1) {
-      throw new NotFoundException(`Artículo con ID ${id} no encontrado.`);
-    }
-
-    this.items.splice(index, 1);
-    return { success: true, id };
+    return this.catalogService.delete(id);
   }
 
   @Post('reset')
   @HttpCode(HttpStatus.OK)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('ADMIN')
+  @ApiBearerAuth('JWT-Auth')
   @ApiOperation({
     summary: 'Restaurar el catálogo completo a los artículos y precios canónicos de fábrica',
   })
@@ -126,8 +108,11 @@ export class CatalogController {
     status: 200,
     description: 'Catálogo restaurado a valores canónicos.',
   })
+  @ApiResponse({
+    status: 403,
+    description: 'Acceso denegado: solo administradores pueden restaurar el catálogo.',
+  })
   reset(): CatalogItem[] {
-    this.items = JSON.parse(JSON.stringify(DEFAULT_CATALOG_ITEMS));
-    return this.items;
+    return this.catalogService.reset();
   }
 }

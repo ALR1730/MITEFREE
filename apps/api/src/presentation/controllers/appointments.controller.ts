@@ -7,13 +7,13 @@ import {
   Param,
   Query,
   UsePipes,
+  UseGuards,
   BadRequestException,
   NotFoundException,
   HttpStatus,
   HttpCode,
-  Inject,
 } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiQuery } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiQuery, ApiBearerAuth } from '@nestjs/swagger';
 import {
   CreateAppointmentSchema,
   TransitionAppointmentStatusSchema,
@@ -25,14 +25,14 @@ import {
   type TransitionAppointmentStatusDto,
   type AssignTechnicianDto,
 } from '@mitefree/shared-types';
-import type { IAppointmentRepository } from '@mitefree/domain-core';
 import { ZodValidationPipe } from '../pipes/zod-validation.pipe.js';
+import { JwtAuthGuard, RolesGuard, Roles } from '../guards/index.js';
 import { ScheduleAppointmentUseCase } from '../../application/appointments/schedule-appointment.use-case.js';
 import { GetAppointmentUseCase } from '../../application/appointments/get-appointment.use-case.js';
+import { ListAppointmentsUseCase } from '../../application/appointments/list-appointments.use-case.js';
 import { GetAvailableSlotsUseCase } from '../../application/appointments/get-available-slots.use-case.js';
 import { TransitionAppointmentStatusUseCase } from '../../application/appointments/transition-status.use-case.js';
 import { AssignTechnicianUseCase } from '../../application/appointments/assign-technician.use-case.js';
-import { APPOINTMENT_REPOSITORY } from '../../infrastructure/database/database.tokens.js';
 
 @ApiTags('Appointments (Citas & Logística por Zonas)')
 @Controller('appointments')
@@ -40,36 +40,25 @@ export class AppointmentsController {
   constructor(
     private readonly scheduleAppointmentUseCase: ScheduleAppointmentUseCase,
     private readonly getAppointmentUseCase: GetAppointmentUseCase,
+    private readonly listAppointmentsUseCase: ListAppointmentsUseCase,
     private readonly getAvailableSlotsUseCase: GetAvailableSlotsUseCase,
     private readonly transitionStatusUseCase: TransitionAppointmentStatusUseCase,
     private readonly assignTechnicianUseCase: AssignTechnicianUseCase,
-    @Inject(APPOINTMENT_REPOSITORY)
-    private readonly appointmentRepo: IAppointmentRepository,
   ) {}
 
   @Get()
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('ADMIN', 'TECHNICIAN')
+  @ApiBearerAuth('JWT-Auth')
   @ApiOperation({ summary: 'List all appointments for Kanban dispatch board' })
   @ApiResponse({ status: 200, description: 'List of all appointments.' })
+  @ApiResponse({ status: 403, description: 'Forbidden: Admin or Technician role required.' })
   async listAll(): Promise<AppointmentResponseDto[]> {
-    const list = await this.appointmentRepo.findAll();
-    return list.map((apt) => ({
-      id: apt.id,
-      quotationId: apt.quotationId,
-      clientId: apt.clientId,
-      clientName: apt.clientName,
-      clientPhone: apt.clientPhone,
-      address: apt.address,
-      zoneCode: apt.zoneCode,
-      serviceDescription: apt.serviceDescription,
-      totalAmount: apt.totalAmount,
-      depositAmount: apt.depositAmount,
-      technicianId: apt.technicianId,
-      timeSlotId: apt.timeSlotId,
-      scheduledDate: apt.scheduledDate.toISOString().split('T')[0]!,
-      status: apt.status,
-      createdAt: apt.createdAt.toISOString(),
-      updatedAt: apt.updatedAt.toISOString(),
-    }));
+    const result = await this.listAppointmentsUseCase.execute();
+    if (result.isFailure) {
+      throw new BadRequestException(result.error);
+    }
+    return result.value;
   }
 
   @Post()

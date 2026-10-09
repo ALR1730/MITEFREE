@@ -17,6 +17,15 @@ import {
 import { type DatabaseClient, users, addresses, SEED_DATA } from '@mitefree/database';
 import { DRIZZLE_DB } from '../../infrastructure/database/database.tokens.js';
 
+export interface JwtPayload {
+  sub: string;
+  email: string;
+  role: 'CLIENT' | 'TECHNICIAN' | 'ADMIN';
+  fullName: string;
+  iat: number;
+  exp: number;
+}
+
 interface UserRecord {
   id: string;
   fullName: string;
@@ -35,6 +44,9 @@ interface UserRecord {
 export class AuthService {
   private readonly logger = new Logger(AuthService.name);
   private readonly memoryUsers = new Map<string, UserRecord>();
+  private readonly jwtSecret: string =
+    process.env.JWT_SECRET || 'mitefree_enterprise_jwt_secret_alr_company_turing_2026';
+  private readonly legacySalt: string = 'mitefree_enterprise_salt_2026';
 
   constructor(
     @Inject(DRIZZLE_DB)
@@ -43,17 +55,50 @@ export class AuthService {
     this.seedInitialUsers();
   }
 
-  private hashPassword(password: string): string {
-    const salt = 'mitefree_enterprise_salt_2026';
-    return crypto.pbkdf2Sync(password, salt, 1000, 32, 'sha256').toString('hex');
+  private hashPassword(password: string, userSalt?: string): string {
+    const salt = userSalt || crypto.randomBytes(16).toString('hex');
+    const hash = crypto.pbkdf2Sync(password, salt, 100000, 64, 'sha512').toString('hex');
+    return `${salt}:${hash}`;
   }
 
-  private verifyPassword(password: string, hash: string): boolean {
-    return this.hashPassword(password) === hash;
+  private verifyPassword(password: string, storedHash: string): boolean {
+    if (storedHash.includes(':')) {
+      const [salt, expectedHash] = storedHash.split(':');
+      if (!salt || !expectedHash) return false;
+      const calculatedHash = crypto.pbkdf2Sync(password, salt, 100000, 64, 'sha512').toString('hex');
+      try {
+        const calcBuf = Buffer.from(calculatedHash, 'hex');
+        const expBuf = Buffer.from(expectedHash, 'hex');
+        return calcBuf.length === expBuf.length && crypto.timingSafeEqual(calcBuf, expBuf);
+      } catch {
+        return false;
+      }
+    }
+
+    // Compatibilidad regresiva con contraseñas semilla legadas
+    const legacyCalculated = crypto.pbkdf2Sync(password, this.legacySalt, 1000, 32, 'sha256').toString('hex');
+    return legacyCalculated === storedHash;
   }
 
   private seedInitialUsers() {
-    // Inicializar clientes semilla con contraseña canónica para testing: "Mitefree2026*"
+    // 1. Semilla Founder & Administrador Principal: Angel Luis Rosario
+    const adminId = '11111111-0000-4000-a000-000000000001';
+    const adminHash = this.hashPassword('AdminMitefree2026*');
+    this.memoryUsers.set(adminId, {
+      id: adminId,
+      fullName: 'Angel Luis Rosario',
+      email: 'angel.rosario@mitefree.com.do',
+      phone: '+18095134770',
+      passwordHash: adminHash,
+      role: 'ADMIN',
+      zoneCode: 'ZONE-SPM',
+      address: 'ALR COMPANY HQ, San Pedro de Macorís',
+      isActive: true,
+      walletBalance: 10000,
+      createdAt: new Date().toISOString(),
+    });
+
+    // 2. Semilla de clientes y técnicos desde SEED_DATA con contraseña canónica: "Mitefree2026*"
     const defaultHash = this.hashPassword('Mitefree2026*');
 
     for (const u of SEED_DATA.users) {
@@ -264,15 +309,92 @@ export class AuthService {
     return result;
   }
 
-  private generateToken(user: UserRecord): string {
-    const payload = {
+  public generateToken(user: UserRecord): string {
+    const now = Math.floor(Date.now() / 1000);
+    const ttlSeconds = user.role === 'ADMIN' ? 8 * 3600 : 24 * 3600; // 8h para admin, 24h para clientes
+
+    const header = { alg: 'HS256', typ: 'JWT' };
+    const payload: JwtPayload = {
       sub: user.id,
       email: user.email,
       role: user.role,
       fullName: user.fullName,
-      iat: Math.floor(Date.now() / 1000),
+      iat: now,
+      exp: now + ttlSeconds,
     };
-    return Buffer.from(JSON.stringify(payload)).toString('base64url');
+
+    const encodedHeader = Buffer.from(JSON.stringify(header)).toString('base64url');
+    const encodedPayload = Buffer.from(JSON.stringify(payload)).toString('base64url');
+    const signature = crypto
+      .createHmac('sha256', this.jwtSecret)
+      .update(`${encodedHeader}.${encodedPayload}`)
+      .digest('base64url');
+
+    return `${encodedHeader}.${encodedPayload}.${signature}`;
+  }
+
+  public verifyToken(token: string): JwtPayload | null {
+    try {
+      if (!token) return null;
+      const parts = token.split('.');
+
+      if (parts.length === 3) {
+        const [encodedHeader, encodedPayload, signature] = parts;
+        if (!encodedHeader || !encodedPayload || !signature) {
+          return null;
+        }
+
+        const expectedSignature = crypto
+          .createHmac('sha256', this.jwtSecret)
+          .update(`${encodedHeader}.${encodedPayload}`)
+          .digest('base64url');
+
+        // Comparación en tiempo constante para mitigar timing attacks
+        const sigBuf = Buffer.from(signature);
+        const expSigBuf = Buffer.from(expectedSignature);
+        if (sigBuf.length !== expSigBuf.length || !crypto.timingSafeEqual(sigBuf, expSigBuf)) {
+          return null;
+        }
+
+        const payload = JSON.parse(
+          Buffer.from(encodedPayload, 'base64url').toString('utf-8'),
+        ) as JwtPayload;
+        const now = Math.floor(Date.now() / 1000);
+
+        if (payload.exp && payload.exp < now) {
+          this.logger.warn(`Token expirado para usuario ${payload.sub}`);
+          return null;
+        }
+
+        return payload;
+      }
+
+      // Compatibilidad transicional con tokens de testing legados (Base64 simple sin firma)
+      if (parts.length === 1) {
+        const decoded = JSON.parse(Buffer.from(token, 'base64url').toString('utf-8'));
+        if (decoded.sub && decoded.role) {
+          return {
+            sub: decoded.sub,
+            email: decoded.email || '',
+            role: decoded.role,
+            fullName: decoded.fullName || '',
+            iat: decoded.iat || Math.floor(Date.now() / 1000),
+            exp: Math.floor(Date.now() / 1000) + 86400,
+          };
+        }
+      }
+
+      return null;
+    } catch (err) {
+      this.logger.warn(`Fallo al verificar token: ${(err as Error).message}`);
+      return null;
+    }
+  }
+
+  public getDevAdminToken(): string {
+    const admin = this.memoryUsers.get('11111111-0000-4000-a000-000000000001');
+    if (!admin) throw new Error('Admin user not found');
+    return this.generateToken(admin);
   }
 
   private toProfileDto(user: UserRecord): UserProfileDto {

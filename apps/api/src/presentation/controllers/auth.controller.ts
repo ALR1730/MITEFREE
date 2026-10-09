@@ -4,11 +4,11 @@ import {
   Get,
   Body,
   UsePipes,
-  Headers,
+  UseGuards,
   HttpCode,
   HttpStatus,
 } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
 import {
   RegisterClientDtoSchema,
   type RegisterClientDto,
@@ -22,6 +22,13 @@ import {
 } from '@mitefree/shared-types';
 import { ZodValidationPipe } from '../pipes/zod-validation.pipe.js';
 import { AuthService } from '../../application/auth/auth.service.js';
+import {
+  JwtAuthGuard,
+  RolesGuard,
+  Roles,
+  CurrentUser,
+  type AuthenticatedUser,
+} from '../guards/index.js';
 
 @ApiTags('Auth & Identity (Registro, Sesión y Clientes)')
 @Controller('auth')
@@ -58,25 +65,22 @@ export class AuthController {
   }
 
   @Get('me')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth('JWT-Auth')
   @ApiOperation({ summary: 'Obtener datos del usuario/cliente actualmente autenticado' })
   @ApiResponse({ status: 200, description: 'Perfil retornado.' })
-  async getMe(@Headers('authorization') authHeader?: string): Promise<UserProfileDto> {
-    let userId = 'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa'; // Default seed client Laura
-    if (authHeader && authHeader.startsWith('Bearer ')) {
-      try {
-        const rawToken = authHeader.replace('Bearer ', '');
-        const decoded = JSON.parse(Buffer.from(rawToken, 'base64url').toString('utf-8'));
-        if (decoded.sub) userId = decoded.sub;
-      } catch {
-        // Fallback default
-      }
-    }
-    return this.authService.getProfile(userId);
+  @ApiResponse({ status: 401, description: 'No autorizado.' })
+  async getMe(@CurrentUser() user: AuthenticatedUser): Promise<UserProfileDto> {
+    return this.authService.getProfile(user.sub);
   }
 
   @Get('clients')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('ADMIN')
+  @ApiBearerAuth('JWT-Auth')
   @ApiOperation({ summary: 'Directorio de clientes registrados para el portal de administración' })
   @ApiResponse({ status: 200, description: 'Listado de clientes retornado.' })
+  @ApiResponse({ status: 403, description: 'Acceso denegado: rol insuficiente.' })
   async getClients(): Promise<ClientDirectoryItemDto[]> {
     return this.authService.getAllClients();
   }

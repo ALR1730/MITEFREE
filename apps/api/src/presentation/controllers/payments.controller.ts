@@ -5,12 +5,12 @@ import {
   Body,
   Param,
   UsePipes,
+  UseGuards,
   BadRequestException,
   HttpStatus,
   HttpCode,
-  Inject,
 } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse, ApiParam } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiBearerAuth } from '@nestjs/swagger';
 import {
   CreatePaymentIntentRequestSchema,
   SubmitBankTransferProofSchema,
@@ -24,12 +24,12 @@ import {
   type PaymentRecordResponseDto,
 } from '@mitefree/shared-types';
 import { ZodValidationPipe } from '../pipes/zod-validation.pipe.js';
+import { JwtAuthGuard, RolesGuard, Roles } from '../guards/index.js';
 import { CreatePaymentIntentUseCase } from '../../application/payments/create-payment-intent.use-case.js';
 import { SubmitBankTransferProofUseCase } from '../../application/payments/submit-bank-transfer.use-case.js';
 import { ProcessStripeWebhookUseCase } from '../../application/payments/process-stripe-webhook.use-case.js';
 import { ReviewPaymentUseCase } from '../../application/payments/review-payment.use-case.js';
-import { PAYMENT_REPOSITORY } from '../../infrastructure/database/database.tokens.js';
-import type { IPaymentRepository } from '@mitefree/domain-core';
+import { ListPaymentsUseCase } from '../../application/payments/list-payments.use-case.js';
 
 @ApiTags('Payments (Pagos, Anticipos & Webhooks Idempotentes)')
 @Controller('payments')
@@ -39,28 +39,22 @@ export class PaymentsController {
     private readonly submitTransferUseCase: SubmitBankTransferProofUseCase,
     private readonly webhookUseCase: ProcessStripeWebhookUseCase,
     private readonly reviewUseCase: ReviewPaymentUseCase,
-    @Inject(PAYMENT_REPOSITORY)
-    private readonly paymentRepo: IPaymentRepository,
+    private readonly listPaymentsUseCase: ListPaymentsUseCase,
   ) {}
 
   @Get()
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('ADMIN')
+  @ApiBearerAuth('JWT-Auth')
   @ApiOperation({ summary: 'List all payment records for admin reconciliation' })
   @ApiResponse({ status: 200, description: 'List of all payment records.' })
+  @ApiResponse({ status: 403, description: 'Forbidden: Admin access required.' })
   async listAll(): Promise<PaymentRecordResponseDto[]> {
-    const records = await this.paymentRepo.findAll();
-    return records.map((p) => ({
-      id: p.id,
-      appointmentId: p.appointmentId,
-      amount: p.amount.amount,
-      currency: p.amount.currency,
-      type: p.type,
-      method: p.method,
-      status: p.status,
-      idempotencyKey: p.idempotencyKey,
-      externalReference: p.externalReference,
-      createdAt: p.createdAt.toISOString(),
-      updatedAt: p.updatedAt.toISOString(),
-    }));
+    const result = await this.listPaymentsUseCase.execute();
+    if (result.isFailure) {
+      throw new BadRequestException(result.error);
+    }
+    return result.value;
   }
 
   @Post('intent')
@@ -101,10 +95,14 @@ export class PaymentsController {
 
   @Post(':id/review')
   @HttpCode(HttpStatus.OK)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('ADMIN')
+  @ApiBearerAuth('JWT-Auth')
   @ApiOperation({ summary: 'Admin review (Approve/Reject) of manual bank transfer' })
   @ApiParam({ name: 'id', description: 'UUID of payment' })
   @ApiResponse({ status: 200, description: 'Payment reviewed.' })
   @ApiResponse({ status: 400, description: 'Review failed.' })
+  @ApiResponse({ status: 403, description: 'Forbidden: Admin access required.' })
   @UsePipes(new ZodValidationPipe(ReviewPaymentSchema))
   async reviewPayment(
     @Param('id') id: string,
@@ -144,20 +142,10 @@ export class PaymentsController {
   async getByAppointment(
     @Param('appointmentId') appointmentId: string,
   ): Promise<PaymentRecordResponseDto[]> {
-    const payments = await this.paymentRepo.findByAppointmentId(appointmentId);
-
-    return payments.map((p) => ({
-      id: p.id,
-      appointmentId: p.appointmentId,
-      amount: p.amount.amount,
-      currency: p.amount.currency,
-      type: p.type as any,
-      method: p.method as any,
-      status: p.status as any,
-      externalReference: p.externalReference || null,
-      idempotencyKey: p.idempotencyKey,
-      createdAt: p.createdAt.toISOString(),
-      updatedAt: p.updatedAt.toISOString(),
-    }));
+    const result = await this.listPaymentsUseCase.getByAppointmentId(appointmentId);
+    if (result.isFailure) {
+      throw new BadRequestException(result.error);
+    }
+    return result.value;
   }
 }
