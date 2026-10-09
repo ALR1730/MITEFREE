@@ -19,6 +19,7 @@ import {
   UploadCloud,
   FileText,
   Image as ImageIcon,
+  Trash2,
   Lock,
   Wallet,
   Clock,
@@ -26,6 +27,7 @@ import {
   Plus,
   Minus,
   MessageCircle,
+  ShoppingCart,
   Check,
   MapPin,
   ShieldCheck,
@@ -51,6 +53,20 @@ export interface CatalogItem {
   isRug?: boolean;
   dimensions?: string;
   isCustomRug?: boolean;
+}
+
+export interface SelectedQuoteItem {
+  cartId: string;
+  catalogId: string;
+  name: string;
+  category: 'Colchones' | 'Muebles de Sala' | 'Sillas de Comedor' | 'Alfombras';
+  iconText: string;
+  bothSides: boolean;
+  extraSeats: number;
+  rugDimensions?: string;
+  quantity: number;
+  unitPrice: number;
+  itemTotal: number;
 }
 
 const CATALOG_ITEMS: CatalogItem[] = [
@@ -341,7 +357,10 @@ function CotizadorContent() {
     setSelectedItemId(def);
   };
 
-  // Estados locales para configurar el artículo seleccionado
+  // Carrito multi-item de artículos seleccionados
+  const [selectedItems, setSelectedItems] = useState<SelectedQuoteItem[]>([]);
+
+  // Estados locales temporales para configurar artículos
   const [tempBothSides, setTempBothSides] = useState<Record<string, boolean>>({});
   const [tempExtraSeats, setTempExtraSeats] = useState<Record<string, number>>({});
   const [tempQuantity, setTempQuantity] = useState<Record<string, number>>({});
@@ -387,7 +406,48 @@ function CotizadorContent() {
     return item.basePrice;
   };
 
-  // Ítem actualmente seleccionado para personalización
+  const handleAddItem = (item: CatalogItem) => {
+    const bothSides = tempBothSides[item.id] ?? false;
+    const extraSeats = tempExtraSeats[item.id] ?? 0;
+    const qty = tempQuantity[item.id] ?? (item.isChair ? 4 : 1);
+
+    const unitPrice = calculateCatalogUnitPrice(
+      item,
+      bothSides,
+      extraSeats,
+      customLength,
+      customWidth,
+    );
+    const itemTotal = unitPrice * qty;
+
+    let rugDimStr: string | undefined = item.dimensions;
+    let displayName = item.name;
+
+    if (item.isCustomRug) {
+      const area = (customLength * customWidth).toFixed(1);
+      rugDimStr = `${customLength.toFixed(1)}m × ${customWidth.toFixed(1)}m (~${area} m²)`;
+      displayName = `Alfombra Personalizada (${rugDimStr})`;
+    }
+
+    const newItem: SelectedQuoteItem = {
+      cartId: `${item.id}-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`,
+      catalogId: item.id,
+      name: displayName,
+      category: item.category,
+      iconText: item.iconText,
+      bothSides,
+      extraSeats,
+      rugDimensions: rugDimStr,
+      quantity: qty,
+      unitPrice,
+      itemTotal,
+    };
+
+    setSelectedItems((prev) => [...prev, newItem]);
+    setTempQuantity((prev) => ({ ...prev, [item.id]: item.isChair ? 4 : 1 }));
+  };
+
+  // Ítem actualmente seleccionado para personalización dinámica (Formato de Photo 2 & 3)
   const currentCatalogItem =
     CATALOG_ITEMS.find((it) => it.id === selectedItemId) || CATALOG_ITEMS[0]!;
   const currentBothSides = tempBothSides[currentCatalogItem.id] ?? false;
@@ -402,38 +462,104 @@ function CotizadorContent() {
   );
   const currentItemTotal = currentUnitPrice * currentQty;
 
-  let currentRugDimStr: string | undefined = currentCatalogItem.dimensions;
-  let currentDisplayName = currentCatalogItem.name;
+  const handleAddCurrentItem = () => {
+    handleAddItem(currentCatalogItem);
+  };
 
-  if (currentCatalogItem.isCustomRug) {
-    const area = (customLength * customWidth).toFixed(1);
-    currentRugDimStr = `${customLength.toFixed(1)}m × ${customWidth.toFixed(1)}m (~${area} m²)`;
-    currentDisplayName = `Alfombra Personalizada (${currentRugDimStr})`;
-  }
+  const handleProceedFromCustomizer = () => {
+    let currentList = [...selectedItems];
+    if (currentList.length === 0) {
+      const bothSides = tempBothSides[currentCatalogItem.id] ?? false;
+      const extraSeats = tempExtraSeats[currentCatalogItem.id] ?? 0;
+      const qty = tempQuantity[currentCatalogItem.id] ?? (currentCatalogItem.isChair ? 4 : 1);
+      const unitPrice = calculateCatalogUnitPrice(
+        currentCatalogItem,
+        bothSides,
+        extraSeats,
+        customLength,
+        customWidth,
+      );
+      const itemTotal = unitPrice * qty;
 
-  const MIN_DOMICILE_ORDER_RD = 1500;
-  const isMinimumOrderMet = currentItemTotal >= MIN_DOMICILE_ORDER_RD;
-  const amountMissingForMinimum = Math.max(0, MIN_DOMICILE_ORDER_RD - currentItemTotal);
-  const minProgressPercentage = Math.min(
-    100,
-    Math.round((currentItemTotal / MIN_DOMICILE_ORDER_RD) * 100),
-  );
+      let rugDimStr: string | undefined = currentCatalogItem.dimensions;
+      let displayName = currentCatalogItem.name;
 
-  const handleProceedFromStep1 = () => {
-    if (!isMinimumOrderMet) {
+      if (currentCatalogItem.isCustomRug) {
+        const area = (customLength * customWidth).toFixed(1);
+        rugDimStr = `${customLength.toFixed(1)}m × ${customWidth.toFixed(1)}m (~${area} m²)`;
+        displayName = `Alfombra Personalizada (${rugDimStr})`;
+      }
+
+      const newItem: SelectedQuoteItem = {
+        cartId: `${currentCatalogItem.id}-${Date.now()}`,
+        catalogId: currentCatalogItem.id,
+        name: displayName,
+        category: currentCatalogItem.category,
+        iconText: currentCatalogItem.iconText,
+        bothSides,
+        extraSeats,
+        rugDimensions: rugDimStr,
+        quantity: qty,
+        unitPrice,
+        itemTotal,
+      };
+      currentList = [newItem];
+      setSelectedItems(currentList);
+    }
+
+    const currentSubtotal = currentList.reduce((acc, curr) => acc + curr.itemTotal, 0);
+    if (currentSubtotal < MIN_DOMICILE_ORDER_RD) {
       alert(
-        `El servicio a domicilio requiere un consumo mínimo de RD$ 1,500. Te faltan RD$ ${amountMissingForMinimum.toLocaleString('es-DO')} para completar tu visita. Puedes aumentar la cantidad o elegir un servicio mayor.`,
+        `El servicio a domicilio requiere un consumo mínimo de RD$ 1,500. Te faltan RD$ ${(MIN_DOMICILE_ORDER_RD - currentSubtotal).toLocaleString('es-DO')}. Puedes agregar otra pieza o aumentar la cantidad.`,
       );
       return;
     }
+
     setCurrentStep(2);
   };
+
+  const handleUpdateItemQuantity = (cartId: string, delta: number) => {
+    setSelectedItems((prev) =>
+      prev
+        .map((item) => {
+          if (item.cartId === cartId) {
+            const newQty = Math.max(1, item.quantity + delta);
+            return {
+              ...item,
+              quantity: newQty,
+              itemTotal: item.unitPrice * newQty,
+            };
+          }
+          return item;
+        })
+        .filter((item) => item.quantity > 0),
+    );
+  };
+
+  const handleRemoveItem = (cartId: string) => {
+    setSelectedItems((prev) => prev.filter((item) => item.cartId !== cartId));
+  };
+
+  const MIN_DOMICILE_ORDER_RD = 1500;
+  const itemsSubtotal = selectedItems.reduce((acc, curr) => acc + curr.itemTotal, 0);
+  const activeSubtotal = selectedItems.length > 0 ? itemsSubtotal : currentItemTotal;
+  const totalItemsCount =
+    selectedItems.length > 0
+      ? selectedItems.reduce((acc, curr) => acc + curr.quantity, 0)
+      : currentQty;
+
+  const isMinimumOrderMet = activeSubtotal >= MIN_DOMICILE_ORDER_RD;
+  const amountMissingForMinimum = Math.max(0, MIN_DOMICILE_ORDER_RD - activeSubtotal);
+  const minProgressPercentage = Math.min(
+    100,
+    Math.round((activeSubtotal / MIN_DOMICILE_ORDER_RD) * 100),
+  );
 
   const fabricMultiplier = selectedFabric.multiplier;
   const stainSurcharge = selectedStain.surcharge;
 
   const subtotalWithFabric = Math.round(
-    currentItemTotal * fabricMultiplier + (currentItemTotal > 0 ? stainSurcharge : 0),
+    activeSubtotal * fabricMultiplier + (activeSubtotal > 0 ? stainSurcharge : 0),
   );
 
   const discountApplied = couponDiscount;
@@ -445,7 +571,7 @@ function CotizadorContent() {
     : 0;
 
   const total =
-    currentItemTotal > 0
+    activeSubtotal > 0
       ? Math.max(MIN_DOMICILE_ORDER_RD, Math.max(0, subtotalAfterDiscount - walletCreditApplied))
       : 0;
 
@@ -491,11 +617,16 @@ function CotizadorContent() {
   };
 
   const generateWhatsAppMessage = () => {
-    const itemDetail = `• ${currentQty}x ${currentDisplayName}${currentBothSides ? ' (Ambos Lados)' : ''}${currentExtraSeats > 0 ? ` (+${currentExtraSeats} plazas)` : ''}${currentRugDimStr ? ` [${currentRugDimStr}]` : ''} -> ${formatRD(currentItemTotal)}`;
+    const itemsList = selectedItems
+      .map(
+        (it) =>
+          `• ${it.quantity}x ${it.name}${it.bothSides ? ' (Ambos Lados)' : ''}${it.extraSeats > 0 ? ` (+${it.extraSeats} plazas)` : ''}${it.rugDimensions ? ` [${it.rugDimensions}]` : ''} -> ${formatRD(it.itemTotal)}`,
+      )
+      .join('\n');
 
-    const msg = `¡Hola Mite Free Clean! 👋 Deseo solicitar el servicio de limpieza y desinfección a domicilio:
+    const msg = `¡Hola Mite Free Clean! 👋 Deseo solicitar el servicio de limpieza y desinfección a domicilio para las siguientes piezas:
 
-${itemDetail}
+${itemsList}
 
 • Tejido/Fibra: ${selectedFabric.name}
 • Manchas: ${selectedStain.name}
@@ -512,16 +643,14 @@ Por favor confírmenme disponibilidad para mi zona (San Pedro / La Romana / Sant
     try {
       const quotationPayload = {
         clientId: user?.id || 'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa',
-        items: [
-          {
-            furnitureType: `${currentQty}x ${currentDisplayName}${currentBothSides ? ' (Ambos Lados)' : ''}${currentExtraSeats > 0 ? ` (+${currentExtraSeats} plazas)` : ''}`,
-            fabricType: selectedFabric.id as FabricType,
-            stainSeverity: selectedStain.id as StainSeverity,
-            basePriceAmount: currentItemTotal,
-            photoUrls: [],
-            additionalServices: [],
-          },
-        ],
+        items: selectedItems.map((item) => ({
+          furnitureType: item.name,
+          fabricType: selectedFabric.id as FabricType,
+          stainSeverity: selectedStain.id as StainSeverity,
+          basePriceAmount: item.unitPrice,
+          photoUrls: [],
+          additionalServices: [],
+        })),
         routeDiscountAmount: 0,
         couponCode: couponApplied ? promoCode : undefined,
         couponDiscountAmount: couponDiscount,
@@ -1151,53 +1280,24 @@ Por favor confírmenme disponibilidad para mi zona (San Pedro / La Romana / Sant
               </p>
             </div>
 
-            {/* Aviso de Pedido Mínimo a Domicilio (RD$ 1,500) */}
-            {!isMinimumOrderMet ? (
-              <div className="p-3.5 rounded-2xl bg-amber-500/10 border border-amber-500/30 text-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2.5">
-                <div className="flex items-center gap-2 text-amber-300">
-                  <ShieldAlert className="w-4 h-4 text-amber-400 shrink-0" />
-                  <span>
-                    El servicio a domicilio inicia en <strong>RD$ 1,500</strong>. Te faltan{' '}
-                    <strong className="text-white font-mono">
-                      {formatRD(amountMissingForMinimum)}
-                    </strong>{' '}
-                    (puedes aumentar las unidades o elegir un servicio mayor).
-                  </span>
-                </div>
-                <div className="w-full sm:w-28 bg-dark-bg h-2 rounded-full overflow-hidden border border-amber-500/30 shrink-0">
-                  <div
-                    className="bg-gradient-to-r from-amber-500 to-brand-400 h-full transition-all duration-300"
-                    style={{ width: `${minProgressPercentage}%` }}
-                  />
-                </div>
-              </div>
-            ) : (
-              <div className="p-3 rounded-2xl bg-emerald-500/10 border border-emerald-500/25 text-xs flex items-center gap-2 text-emerald-300">
-                <CheckCircle className="w-4 h-4 text-emerald-400 shrink-0" />
-                <span>
-                  <strong>¡Mínimo alcanzado!</strong> Incluye visita técnica a domicilio con cuadrilla certificada.
-                </span>
-              </div>
-            )}
-
-            {/* Botón de Acción Principal (Foto 1) */}
-            <div className="pt-1">
+            {/* Botones de Acción del Customizador (Foto 1) */}
+            <div className="space-y-3 pt-1">
               <button
                 type="button"
-                onClick={handleProceedFromStep1}
-                disabled={!isMinimumOrderMet}
-                className={`w-full flex items-center justify-center gap-2 py-4 px-6 rounded-full font-extrabold text-sm sm:text-base transition-all ${
-                  isMinimumOrderMet
-                    ? 'bg-gradient-to-r from-brand-500 to-cyan-500 text-dark-bg tech-glow shadow-xl active:scale-95 hover:opacity-95 cursor-pointer'
-                    : 'bg-dark-surface border border-dark-border text-gray-500 cursor-not-allowed opacity-75'
-                }`}
+                onClick={handleProceedFromCustomizer}
+                className="w-full flex items-center justify-center gap-2 py-4 px-6 rounded-full bg-gradient-to-r from-brand-500 to-cyan-500 text-dark-bg font-extrabold text-sm sm:text-base tech-glow shadow-xl active:scale-95 hover:opacity-95 transition-all"
               >
-                <span>
-                  {isMinimumOrderMet
-                    ? 'Continuar a fecha y dirección'
-                    : `Mínimo RD$ 1,500 (Faltan ${formatRD(amountMissingForMinimum)})`}
-                </span>
+                <span>Continuar a fecha y dirección</span>
                 <ArrowRight className="w-4 h-4 stroke-[2.5]" />
+              </button>
+
+              <button
+                type="button"
+                onClick={handleAddCurrentItem}
+                className="w-full flex items-center justify-center gap-2 py-3 px-6 rounded-2xl bg-dark-surface/90 hover:bg-dark-hover border border-dark-border text-xs sm:text-sm font-bold text-gray-200 transition-all"
+              >
+                <Plus className="w-4 h-4 text-brand-400" />
+                <span>+ Agregar otra pieza a mi cotización (+{formatRD(currentItemTotal)})</span>
               </button>
             </div>
 
@@ -1206,6 +1306,159 @@ Por favor confírmenme disponibilidad para mi zona (San Pedro / La Romana / Sant
               <span className="block text-xs font-bold text-emerald-400">Mite Free Clean</span>
               <span className="block text-[11px] text-gray-400">Tu hogar merece una limpieza profunda.</span>
             </div>
+          </div>
+
+          {/* ================= CARRITO / RESUMEN DE TU SELECCIÓN ================= */}
+          <div className="glass-card rounded-2xl p-5 border border-brand-500/30 tech-glow space-y-4">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-brand-500/20 text-brand-400 flex items-center justify-center">
+                  <ShoppingCart className="w-5 h-5" />
+                </div>
+                <div>
+                  <span className="text-xs text-gray-400 block">Tu Selección Actual:</span>
+                  <span className="text-base sm:text-lg font-extrabold text-white">
+                    {totalItemsCount}{' '}
+                    {totalItemsCount === 1 ? 'pieza agregada' : 'piezas agregadas'} ·{' '}
+                    <span className="text-brand-400 font-mono">{formatRD(activeSubtotal)}</span>
+                  </span>
+                </div>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => {
+                  if (selectedItems.length === 0) {
+                    alert('Por favor agrega al menos un artículo a tu cotización.');
+                    return;
+                  }
+                  if (!isMinimumOrderMet) {
+                    alert(
+                      `El servicio a domicilio requiere un consumo mínimo de RD$ 1,500. Te faltan RD$ ${amountMissingForMinimum.toLocaleString('es-DO')} para completar tu visita.`,
+                    );
+                    return;
+                  }
+                  setCurrentStep(2);
+                }}
+                disabled={!isMinimumOrderMet}
+                className={`w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-extrabold text-xs transition-all ${
+                  isMinimumOrderMet
+                    ? 'bg-gradient-to-r from-brand-500 to-cyan-500 text-dark-bg tech-glow shadow-md active:scale-95'
+                    : 'bg-dark-surface border border-dark-border text-gray-500 cursor-not-allowed opacity-75'
+                }`}
+              >
+                <span>
+                  {isMinimumOrderMet
+                    ? `Continuar (${totalItemsCount} piezas)`
+                    : `Mínimo RD$ 1,500 (Faltan ${formatRD(amountMissingForMinimum)})`}
+                </span>
+                <ArrowRight className="w-4 h-4" />
+              </button>
+            </div>
+
+            {/* Barra de Progreso del Mínimo */}
+            {!isMinimumOrderMet ? (
+              <div className="p-3 rounded-xl bg-amber-500/10 border border-amber-500/30 text-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2.5">
+                <div className="flex items-center gap-2 text-amber-300">
+                  <ShieldAlert className="w-4 h-4 text-amber-400 shrink-0" />
+                  <span>
+                    El servicio a domicilio inicia en <strong>RD$ 1,500</strong>. Te faltan{' '}
+                    <strong className="text-white font-mono">
+                      {formatRD(amountMissingForMinimum)}
+                    </strong>{' '}
+                    (puedes agregar sillas por RD$ 300 o una alfombra pequeña).
+                  </span>
+                </div>
+                <div className="w-full sm:w-32 bg-dark-bg h-2 rounded-full overflow-hidden border border-amber-500/30 shrink-0">
+                  <div
+                    className="bg-gradient-to-r from-amber-500 to-brand-400 h-full transition-all duration-300"
+                    style={{ width: `${minProgressPercentage}%` }}
+                  />
+                </div>
+              </div>
+            ) : (
+              <div className="p-2.5 rounded-xl bg-emerald-500/10 border border-emerald-500/25 text-xs flex items-center gap-2 text-emerald-300">
+                <CheckCircle className="w-4 h-4 text-emerald-400 shrink-0" />
+                <span>
+                  <strong>¡Mínimo alcanzado!</strong> Tu orden incluye visita a domicilio y cuadrilla
+                  técnica sin costo de traslado.
+                </span>
+              </div>
+            )}
+
+            {/* Lista de Artículos en el Carrito */}
+            {selectedItems.length > 0 && (
+              <div className="pt-2 divide-y divide-dark-border/40">
+                {selectedItems.map((item) => (
+                  <div
+                    key={item.cartId}
+                    className="py-3 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs"
+                  >
+                    <div className="flex items-center gap-3 min-w-0 flex-1">
+                      <span className="text-2xl shrink-0 p-1.5 rounded-lg bg-dark-surface border border-dark-border">
+                        {item.iconText}
+                      </span>
+                      <div className="min-w-0 flex-1">
+                        <div className="font-bold text-white text-sm flex flex-wrap items-center gap-1.5">
+                          <span>{item.name}</span>
+                          {item.bothSides && (
+                            <span className="px-1.5 py-0.5 rounded text-[10px] bg-brand-500/20 text-brand-300 font-semibold border border-brand-500/30">
+                              Ambos Lados
+                            </span>
+                          )}
+                          {item.extraSeats > 0 && (
+                            <span className="px-1.5 py-0.5 rounded text-[10px] bg-indigo-500/20 text-indigo-300 font-semibold border border-indigo-500/30">
+                              +{item.extraSeats} Plazas
+                            </span>
+                          )}
+                        </div>
+                        <span className="text-[11px] text-gray-400">
+                          {formatRD(item.unitPrice)} unitario
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center justify-between sm:justify-end w-full sm:w-auto gap-3">
+                      {/* Stepper del Carrito */}
+                      <div className="flex items-center gap-2 bg-dark-bg border border-dark-border rounded-xl p-1">
+                        <button
+                          type="button"
+                          onClick={() => handleUpdateItemQuantity(item.cartId, -1)}
+                          className="w-7 h-7 rounded-lg bg-dark-surface hover:bg-dark-hover text-white flex items-center justify-center transition-colors"
+                        >
+                          <Minus className="w-3.5 h-3.5" />
+                        </button>
+                        <span className="w-6 text-center font-bold text-white font-mono text-xs">
+                          {item.quantity}
+                        </span>
+                        <button
+                          type="button"
+                          onClick={() => handleUpdateItemQuantity(item.cartId, 1)}
+                          className="w-7 h-7 rounded-lg bg-dark-surface hover:bg-dark-hover text-white flex items-center justify-center transition-colors"
+                        >
+                          <Plus className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
+
+                      {/* Total del Item */}
+                      <span className="font-mono font-bold text-brand-400 text-sm min-w-[85px] text-right">
+                        {formatRD(item.itemTotal)}
+                      </span>
+
+                      {/* Botón Eliminar */}
+                      <button
+                        type="button"
+                        onClick={() => handleRemoveItem(item.cartId)}
+                        className="text-gray-500 hover:text-rose-400 transition-colors p-1"
+                        title="Eliminar artículo"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         </div>
       )}
@@ -1387,41 +1640,21 @@ Por favor confírmenme disponibilidad para mi zona (San Pedro / La Romana / Sant
             {/* Items Breakdown */}
             <div className="space-y-3 text-xs">
               <span className="font-bold text-gray-400 uppercase tracking-wider block">
-                Servicio a tratar:
+                Artículos a tratar ({totalItemsCount} piezas):
               </span>
-              <div className="p-3.5 rounded-2xl bg-dark-surface/60 border border-dark-border flex justify-between items-center">
-                <div className="min-w-0 flex-1 pr-3">
-                  <div className="flex items-center gap-2.5">
-                    <span className="text-xl shrink-0 p-1.5 rounded-lg bg-dark-surface border border-dark-border">
-                      {currentCatalogItem.iconText}
+              <div className="divide-y divide-dark-border/40">
+                {selectedItems.map((it) => (
+                  <div key={it.cartId} className="py-2.5 flex justify-between items-center">
+                    <span className="text-white font-medium">
+                      {it.quantity}x {it.name}
+                      {it.bothSides && ' (Ambos Lados)'}
+                      {it.extraSeats > 0 && ` (+${it.extraSeats} plazas)`}
                     </span>
-                    <div>
-                      <span className="text-white font-bold text-sm block">
-                        {currentQty}x {currentDisplayName}
-                      </span>
-                      <div className="flex flex-wrap items-center gap-1.5 mt-0.5">
-                        {currentBothSides && (
-                          <span className="px-1.5 py-0.5 rounded text-[10px] bg-brand-500/20 text-brand-300 font-semibold border border-brand-500/30">
-                            Ambos Lados
-                          </span>
-                        )}
-                        {currentExtraSeats > 0 && (
-                          <span className="px-1.5 py-0.5 rounded text-[10px] bg-indigo-500/20 text-indigo-300 font-semibold border border-indigo-500/30">
-                            +{currentExtraSeats} plazas extra
-                          </span>
-                        )}
-                        {currentRugDimStr && (
-                          <span className="text-[11px] text-gray-400">
-                            {currentRugDimStr}
-                          </span>
-                        )}
-                      </div>
-                    </div>
+                    <span className="font-mono font-bold text-brand-400">
+                      {formatRD(it.itemTotal)}
+                    </span>
                   </div>
-                </div>
-                <span className="font-mono font-bold text-brand-400 text-sm sm:text-base shrink-0">
-                  {formatRD(currentItemTotal)}
-                </span>
+                ))}
               </div>
             </div>
 
@@ -1534,21 +1767,29 @@ Por favor confírmenme disponibilidad para mi zona (San Pedro / La Romana / Sant
         </div>
       )}
 
-      {/* Floating Sticky Bottom Bar for Mobile */}
-      {currentStep === 1 && (
+      {/* Floating Sticky Bottom Bar for Mobile (Visible when items are in cart) */}
+      {selectedItems.length > 0 && currentStep === 1 && (
         <div className="md:hidden fixed bottom-16 left-3 right-3 z-40 p-3 rounded-2xl glass-panel border border-brand-500/40 tech-glow flex items-center justify-between shadow-2xl backdrop-blur-xl">
           <div>
             <span className="text-[10px] text-gray-400 block font-mono">
-              {currentQty}x {currentDisplayName}
+              {totalItemsCount} {totalItemsCount === 1 ? 'pieza' : 'piezas'}
             </span>
             <span className="text-base font-extrabold text-brand-300 font-mono">
-              {formatRD(currentItemTotal)}
+              {formatRD(itemsSubtotal)}
             </span>
           </div>
 
           <button
             type="button"
-            onClick={handleProceedFromStep1}
+            onClick={() => {
+              if (!isMinimumOrderMet) {
+                alert(
+                  `Faltan RD$ ${amountMissingForMinimum.toLocaleString('es-DO')} para el mínimo a domicilio de RD$ 1,500.`,
+                );
+                return;
+              }
+              setCurrentStep(2);
+            }}
             disabled={!isMinimumOrderMet}
             className={`flex items-center gap-1.5 px-4 py-2.5 rounded-xl font-bold text-xs transition-all ${
               isMinimumOrderMet
