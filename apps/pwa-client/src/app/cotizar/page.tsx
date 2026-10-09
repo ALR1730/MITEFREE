@@ -351,10 +351,39 @@ function CotizadorContent() {
     }
   }, [searchParams]);
 
+  const scrollToSection = (sectionId: string, offset = 80) => {
+    if (typeof window === 'undefined') return;
+    setTimeout(() => {
+      const el = document.getElementById(sectionId);
+      if (!el) return;
+      const y = el.getBoundingClientRect().top + window.pageYOffset - offset;
+      window.scrollTo({ top: Math.max(0, y), behavior: 'smooth' });
+    }, 80);
+  };
+
   const handleSelectCategory = (catId: MainCategoryId) => {
     setSelectedMainCategory(catId);
     const def = MAIN_CATEGORIES.find((c) => c.id === catId)?.defaultItemId || 'mat-full';
     setSelectedItemId(def);
+    scrollToSection('customizer-section', 70);
+  };
+
+  const handleSelectModel = (itemId: string) => {
+    setSelectedItemId(itemId);
+    scrollToSection('active-quantity-section', 80);
+  };
+
+  const handleSelectBothSides = (both: boolean) => {
+    setTempBothSides((prev) => ({ ...prev, [selectedItemId]: both }));
+    scrollToSection('active-quantity-section', 80);
+  };
+
+  const handleSelectChairPreset = (count: number) => {
+    setTempQuantity((prev) => ({
+      ...prev,
+      ['dining-chair']: count,
+    }));
+    scrollToSection('active-quantity-section', 80);
   };
 
   // Carrito multi-item de artículos seleccionados
@@ -456,14 +485,6 @@ function CotizadorContent() {
     setTimeout(() => {
       setAddedFeedback(null);
     }, 3500);
-
-    // Scroll suave a la bandeja de selección
-    if (typeof window !== 'undefined') {
-      const tray = document.getElementById('order-summary-tray');
-      if (tray) {
-        tray.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-      }
-    }
   };
 
   // Ítem actualmente seleccionado para personalización dinámica (Formato de Photo 2 & 3)
@@ -481,8 +502,69 @@ function CotizadorContent() {
   );
   const currentItemTotal = currentUnitPrice * currentQty;
 
-  const handleAddCurrentItem = () => {
+  const handleAddAndSelectAnother = () => {
     handleAddItem(currentCatalogItem);
+    scrollToSection('categories-section', 80);
+  };
+
+  const handleProceedAndAddCurrent = () => {
+    const bothSides = tempBothSides[currentCatalogItem.id] ?? false;
+    const extraSeats = tempExtraSeats[currentCatalogItem.id] ?? 0;
+    const qty = tempQuantity[currentCatalogItem.id] ?? (currentCatalogItem.isChair ? 4 : 1);
+    const unitPrice = calculateCatalogUnitPrice(
+      currentCatalogItem,
+      bothSides,
+      extraSeats,
+      customLength,
+      customWidth,
+    );
+    const itemTotal = unitPrice * qty;
+
+    let rugDimStr: string | undefined = currentCatalogItem.dimensions;
+    let displayName = currentCatalogItem.name;
+
+    if (currentCatalogItem.isCustomRug) {
+      const area = (customLength * customWidth).toFixed(1);
+      rugDimStr = `${customLength.toFixed(1)}m × ${customWidth.toFixed(1)}m (~${area} m²)`;
+      displayName = `Alfombra Personalizada (${rugDimStr})`;
+    }
+
+    const newItem: SelectedQuoteItem = {
+      cartId: `${currentCatalogItem.id}-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`,
+      catalogId: currentCatalogItem.id,
+      name: displayName,
+      category: currentCatalogItem.category,
+      iconText: currentCatalogItem.iconText,
+      bothSides,
+      extraSeats,
+      rugDimensions: rugDimStr,
+      quantity: qty,
+      unitPrice,
+      itemTotal,
+    };
+
+    const updatedList = [...selectedItems, newItem];
+    const updatedSubtotal = updatedList.reduce((acc, curr) => acc + curr.itemTotal, 0);
+
+    if (updatedSubtotal < MIN_DOMICILE_ORDER_RD) {
+      alert(
+        `El servicio a domicilio requiere un consumo mínimo de RD$ 1,500. Te faltan RD$ ${(MIN_DOMICILE_ORDER_RD - updatedSubtotal).toLocaleString('es-DO')}.`,
+      );
+      return;
+    }
+
+    setSelectedItems(updatedList);
+    setCurrentStep(2);
+  };
+
+  const handleProceedWithExistingItems = () => {
+    if (!isMinimumOrderMet) {
+      alert(
+        `El servicio a domicilio requiere un consumo mínimo de RD$ 1,500. Te faltan RD$ ${amountMissingForMinimum.toLocaleString('es-DO')}.`,
+      );
+      return;
+    }
+    setCurrentStep(2);
   };
 
   const handleProceedFromCustomizer = () => {
@@ -922,7 +1004,7 @@ Por favor confírmenme disponibilidad para mi zona (San Pedro / La Romana / Sant
           )}
 
           {/* 1. ¿Qué deseas limpiar? (Cuadrícula 2x2 interactiva - Foto 2) */}
-          <div className="space-y-3">
+          <div id="categories-section" className="space-y-3 scroll-mt-20">
             <div className="flex items-center justify-between px-1">
               <h2 className="text-lg sm:text-xl font-extrabold text-white">
                 {selectedItems.length > 0 ? '➕ Agrega otra pieza a tu orden' : '1. ¿Qué deseas limpiar?'}
@@ -991,7 +1073,10 @@ Por favor confírmenme disponibilidad para mi zona (San Pedro / La Romana / Sant
           </div>
 
           {/* 2. Personaliza tu servicio (Customizador Dinámico en Línea - Foto 3) */}
-          <div className="glass-card rounded-3xl p-5 sm:p-6 border border-brand-500/30 tech-glow space-y-5">
+          <div
+            id="customizer-section"
+            className="glass-card rounded-3xl p-5 sm:p-6 border border-brand-500/30 tech-glow space-y-5 scroll-mt-20"
+          >
             <div className="flex items-center justify-between border-b border-dark-border/60 pb-3">
               <h3 className="text-base sm:text-lg font-extrabold text-white">
                 2. Personaliza tu{' '}
@@ -1033,7 +1118,7 @@ Por favor confírmenme disponibilidad para mi zona (San Pedro / La Romana / Sant
                           type="radio"
                           name="selectedMattressModel"
                           checked={selectedItemId === opt.id}
-                          onChange={() => setSelectedItemId(opt.id)}
+                          onChange={() => handleSelectModel(opt.id)}
                           className="w-4 h-4 accent-cyan-400 cursor-pointer"
                         />
                         <span className="text-xs sm:text-sm">{opt.label}</span>
@@ -1049,9 +1134,7 @@ Por favor confírmenme disponibilidad para mi zona (San Pedro / La Romana / Sant
                   <div className="grid grid-cols-2 gap-2.5">
                     <button
                       type="button"
-                      onClick={() =>
-                        setTempBothSides((prev) => ({ ...prev, [currentCatalogItem.id]: false }))
-                      }
+                      onClick={() => handleSelectBothSides(false)}
                       className={`py-2.5 px-3 rounded-xl border text-xs font-bold transition-all ${
                         !currentBothSides
                           ? 'bg-brand-500 text-dark-bg border-brand-400 tech-glow shadow-md'
@@ -1062,9 +1145,7 @@ Por favor confírmenme disponibilidad para mi zona (San Pedro / La Romana / Sant
                     </button>
                     <button
                       type="button"
-                      onClick={() =>
-                        setTempBothSides((prev) => ({ ...prev, [currentCatalogItem.id]: true }))
-                      }
+                      onClick={() => handleSelectBothSides(true)}
                       className={`py-2.5 px-3 rounded-xl border text-xs font-bold transition-all ${
                         currentBothSides
                           ? 'bg-brand-500 text-dark-bg border-brand-400 tech-glow shadow-md'
@@ -1077,7 +1158,10 @@ Por favor confírmenme disponibilidad para mi zona (San Pedro / La Romana / Sant
                 </div>
 
                 {/* Stepper Cantidad */}
-                <div className="flex items-center justify-between pt-3 border-t border-dark-border/60">
+                <div
+                  id="active-quantity-section"
+                  className="flex items-center justify-between pt-3 border-t border-dark-border/60 scroll-mt-24"
+                >
                   <div>
                     <span className="block text-sm font-bold text-white">Cantidad</span>
                     <span className="block text-xs text-gray-400">Unidades que deseas limpiar</span>
@@ -1141,7 +1225,7 @@ Por favor confírmenme disponibilidad para mi zona (San Pedro / La Romana / Sant
                           type="radio"
                           name="selectedSofaModel"
                           checked={selectedItemId === opt.id}
-                          onChange={() => setSelectedItemId(opt.id)}
+                          onChange={() => handleSelectModel(opt.id)}
                           className="w-4 h-4 accent-cyan-400 cursor-pointer"
                         />
                         <span className="text-xs sm:text-sm">{opt.label}</span>
@@ -1187,7 +1271,10 @@ Por favor confírmenme disponibilidad para mi zona (San Pedro / La Romana / Sant
                 )}
 
                 {/* Stepper Cantidad */}
-                <div className="flex items-center justify-between pt-3 border-t border-dark-border/60">
+                <div
+                  id="active-quantity-section"
+                  className="flex items-center justify-between pt-3 border-t border-dark-border/60 scroll-mt-24"
+                >
                   <div>
                     <span className="block text-sm font-bold text-white">Cantidad</span>
                     <span className="block text-xs text-gray-400">Unidades que deseas limpiar</span>
@@ -1251,7 +1338,7 @@ Por favor confírmenme disponibilidad para mi zona (San Pedro / La Romana / Sant
                           type="radio"
                           name="selectedRugModel"
                           checked={selectedItemId === opt.id}
-                          onChange={() => setSelectedItemId(opt.id)}
+                          onChange={() => handleSelectModel(opt.id)}
                           className="w-4 h-4 accent-cyan-400 cursor-pointer"
                         />
                         <span className="text-xs sm:text-sm">{opt.label}</span>
@@ -1341,7 +1428,10 @@ Por favor confírmenme disponibilidad para mi zona (San Pedro / La Romana / Sant
                 )}
 
                 {/* Stepper Cantidad */}
-                <div className="flex items-center justify-between pt-3 border-t border-dark-border/60">
+                <div
+                  id="active-quantity-section"
+                  className="flex items-center justify-between pt-3 border-t border-dark-border/60 scroll-mt-24"
+                >
                   <div>
                     <span className="block text-sm font-bold text-white">Cantidad</span>
                     <span className="block text-xs text-gray-400">Unidades que deseas limpiar</span>
@@ -1403,12 +1493,7 @@ Por favor confírmenme disponibilidad para mi zona (San Pedro / La Romana / Sant
                           type="radio"
                           name="chairPreset"
                           checked={currentQty === opt.count}
-                          onChange={() =>
-                            setTempQuantity((prev) => ({
-                              ...prev,
-                              ['dining-chair']: opt.count,
-                            }))
-                          }
+                          onChange={() => handleSelectChairPreset(opt.count)}
                           className="w-4 h-4 accent-cyan-400 cursor-pointer"
                         />
                         <span className="text-xs sm:text-sm">{opt.label}</span>
@@ -1418,7 +1503,10 @@ Por favor confírmenme disponibilidad para mi zona (San Pedro / La Romana / Sant
                 </div>
 
                 {/* Stepper Cantidad */}
-                <div className="flex items-center justify-between pt-3 border-t border-dark-border/60">
+                <div
+                  id="active-quantity-section"
+                  className="flex items-center justify-between pt-3 border-t border-dark-border/60 scroll-mt-24"
+                >
                   <div>
                     <span className="block text-sm font-bold text-white">Total de Sillas</span>
                     <span className="block text-xs text-gray-400">RD$ 300 cada silla</span>
@@ -1489,46 +1577,48 @@ Por favor confírmenme disponibilidad para mi zona (San Pedro / La Romana / Sant
                     onClick={handleProceedFromCustomizer}
                     className="w-full flex items-center justify-center gap-2 py-4 px-6 rounded-full bg-gradient-to-r from-brand-500 to-cyan-500 text-dark-bg font-extrabold text-sm sm:text-base tech-glow shadow-xl active:scale-95 hover:opacity-95 transition-all cursor-pointer"
                   >
-                    <span>Continuar a fecha y dirección</span>
+                    <span>Continuar a fecha y dirección (o pago)</span>
                     <ArrowRight className="w-4 h-4 stroke-[2.5]" />
                   </button>
 
                   <button
                     type="button"
-                    onClick={handleAddCurrentItem}
+                    onClick={handleAddAndSelectAnother}
                     className="w-full flex items-center justify-center gap-2 py-3.5 px-6 rounded-2xl bg-brand-500/15 hover:bg-brand-500/25 border border-brand-500/40 text-xs sm:text-sm font-bold text-brand-300 transition-all active:scale-95 cursor-pointer"
                   >
-                    <Plus className="w-4 h-4 text-brand-400" />
-                    <span>+ Añadir esta pieza y agregar otra (+{formatRD(currentItemTotal)})</span>
+                    <Plus className="w-4 h-4 text-brand-400 stroke-[2.5]" />
+                    <span>+ Añadir esta pieza y agregar otro artículo (+{formatRD(currentItemTotal)})</span>
                   </button>
                 </>
               ) : (
                 <div className="space-y-2.5">
                   <button
                     type="button"
-                    onClick={handleAddCurrentItem}
-                    className="w-full flex items-center justify-center gap-2 py-4 px-6 rounded-full bg-gradient-to-r from-emerald-500 to-brand-500 text-dark-bg font-extrabold text-sm sm:text-base tech-glow shadow-xl active:scale-95 hover:opacity-95 transition-all cursor-pointer"
+                    onClick={handleProceedAndAddCurrent}
+                    className="w-full flex items-center justify-center gap-2 py-4 px-6 rounded-full bg-gradient-to-r from-brand-500 to-cyan-500 text-dark-bg font-extrabold text-sm sm:text-base tech-glow shadow-xl active:scale-95 hover:opacity-95 transition-all cursor-pointer"
                   >
-                    <Plus className="w-4 h-4 stroke-[2.5]" />
-                    <span>✓ Agregar {currentCatalogItem.name} a mi orden (+{formatRD(currentItemTotal)})</span>
+                    <span>Añadir {currentCatalogItem.name} e ir a fecha y pago ({formatRD(itemsSubtotal + currentItemTotal)})</span>
+                    <ArrowRight className="w-4 h-4 stroke-[2.5]" />
                   </button>
 
                   <button
                     type="button"
-                    onClick={() => {
-                      if (!isMinimumOrderMet) {
-                        alert(
-                          `El servicio a domicilio requiere un consumo mínimo de RD$ 1,500. Te faltan RD$ ${amountMissingForMinimum.toLocaleString('es-DO')}.`,
-                        );
-                        return;
-                      }
-                      setCurrentStep(2);
-                    }}
-                    className="w-full flex items-center justify-center gap-2 py-3 px-6 rounded-2xl bg-dark-surface/90 hover:bg-dark-hover border border-dark-border text-xs sm:text-sm font-bold text-gray-200 transition-all cursor-pointer"
+                    onClick={handleAddAndSelectAnother}
+                    className="w-full flex items-center justify-center gap-2 py-3.5 px-6 rounded-2xl bg-brand-500/15 hover:bg-brand-500/25 border border-brand-500/40 text-xs sm:text-sm font-bold text-brand-300 transition-all active:scale-95 cursor-pointer"
                   >
-                    <span>Continuar a fecha y dirección con mis {totalItemsCount} piezas ({formatRD(activeSubtotal)})</span>
-                    <ArrowRight className="w-4 h-4" />
+                    <Plus className="w-4 h-4 text-brand-400 stroke-[2.5]" />
+                    <span>+ Añadir {currentCatalogItem.name} y agregar otro artículo (+{formatRD(currentItemTotal)})</span>
                   </button>
+
+                  {itemsSubtotal >= MIN_DOMICILE_ORDER_RD && (
+                    <button
+                      type="button"
+                      onClick={handleProceedWithExistingItems}
+                      className="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl text-xs font-semibold text-gray-400 hover:text-white transition-colors cursor-pointer"
+                    >
+                      <span>O continuar solo con mis {totalItemsCount} piezas guardadas ({formatRD(itemsSubtotal)}) →</span>
+                    </button>
+                  )}
                 </div>
               )}
             </div>
