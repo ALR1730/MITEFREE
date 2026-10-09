@@ -236,14 +236,14 @@ function AgendaContent() {
       <div className="text-center mb-8">
         <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-cyan-500/10 text-cyan-400 text-xs font-semibold mb-2 border border-cyan-500/20">
           <Truck className="w-3.5 h-3.5" />
-          <span>Motor de Logística & Rutas DDD · Fase 3</span>
+          <span>Mite Free Clean · Coordinación de Citas a Domicilio</span>
         </div>
         <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
-          Agendamiento de Cuadrilla Técnica
+          Agenda tu Visita a Domicilio
         </h1>
-        <p className="text-xs sm:text-sm text-gray-400 mt-1">
-          Asignamos especialistas con equipamiento hospitalario UV-C optimizando desplazamientos por
-          zona.
+        <p className="text-xs sm:text-sm text-gray-300 mt-1">
+          Selecciona tu día preferido, turno y dirección para recibir a nuestros especialistas en tu
+          hogar.
         </p>
       </div>
 
@@ -282,7 +282,7 @@ function AgendaContent() {
           <div className="glass-card rounded-2xl p-6 border border-dark-border">
             <h2 className="text-sm font-bold uppercase tracking-wider text-gray-300 mb-4 flex items-center gap-2">
               <MapPin className="w-4 h-4 text-cyan-400" />
-              <span>2. Cuadrante Geoespacial de Cobertura</span>
+              <span>2. Selecciona tu Ciudad / Sector</span>
             </h2>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -326,7 +326,7 @@ function AgendaContent() {
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4">
               <h2 className="text-sm font-bold uppercase tracking-wider text-gray-300 flex items-center gap-2">
                 <Clock className="w-4 h-4 text-indigo-400" />
-                <span>3. Bloque Horario de 3 Horas</span>
+                <span>3. Elige tu Turno Preferido</span>
               </h2>
               {totalPromoDiscountPct > 0 && (
                 <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-emerald-500/15 text-emerald-400 text-xs font-bold border border-emerald-500/30 self-start sm:self-auto">
@@ -374,7 +374,7 @@ function AgendaContent() {
           <div className="glass-card rounded-2xl p-6 border border-dark-border space-y-4">
             <h2 className="text-sm font-bold uppercase tracking-wider text-gray-300 flex items-center gap-2">
               <User className="w-4 h-4 text-emerald-400" />
-              <span>4. Datos del Domicilio de Servicio</span>
+              <span>4. ¿Dónde realizaremos el servicio?</span>
             </h2>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">

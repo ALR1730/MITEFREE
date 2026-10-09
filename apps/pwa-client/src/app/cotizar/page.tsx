@@ -1,8 +1,9 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, Suspense, useEffect } from 'react';
+import Image from 'next/image';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
 import { apiClient } from '@/lib/api-client';
 import type { FabricType, StainSeverity } from '@mitefree/shared-types';
@@ -31,6 +32,9 @@ import {
   MapPin,
   ShieldCheck,
   Maximize2,
+  Calendar,
+  Droplets,
+  HeartHandshake,
 } from 'lucide-react';
 
 export interface CatalogItem {
@@ -40,6 +44,7 @@ export interface CatalogItem {
   basePrice: number;
   bothSidesPrice?: number;
   iconText: string;
+  image: string;
   subtitle: string;
   isMattress?: boolean;
   isSofaModular?: boolean;
@@ -64,7 +69,7 @@ export interface SelectedQuoteItem {
 }
 
 const CATALOG_ITEMS: CatalogItem[] = [
-  // 1. Lavado de Colchones (Flyer oficial Mitefree)
+  // 1. Lavado de Colchones
   {
     id: 'mat-full',
     name: 'Colchón Matrimonial (Full)',
@@ -72,6 +77,7 @@ const CATALOG_ITEMS: CatalogItem[] = [
     basePrice: 2500,
     bothSidesPrice: 3000,
     iconText: '🛏️',
+    image: '/cat-mattress.jpg',
     isMattress: true,
     subtitle: '1 lado RD$ 2,500 · Ambos lados RD$ 3,000',
   },
@@ -82,6 +88,7 @@ const CATALOG_ITEMS: CatalogItem[] = [
     basePrice: 3000,
     bothSidesPrice: 3500,
     iconText: '🛏️',
+    image: '/cat-mattress.jpg',
     isMattress: true,
     subtitle: '1 lado RD$ 3,000 · Ambos lados RD$ 3,500',
   },
@@ -92,17 +99,19 @@ const CATALOG_ITEMS: CatalogItem[] = [
     basePrice: 3500,
     bothSidesPrice: 4000,
     iconText: '🛏️',
+    image: '/cat-mattress.jpg',
     isMattress: true,
     subtitle: '1 lado RD$ 3,500 · Ambos lados RD$ 4,000',
   },
 
-  // 2. Muebles de Sala (Flyer oficial Mitefree)
+  // 2. Muebles de Sala
   {
     id: 'sofa-1',
-    name: 'Mueble 1 Plaza (Sillón)',
+    name: 'Mueble 1 Plaza (Sillón Individual)',
     category: 'Muebles de Sala',
     basePrice: 1500,
     iconText: '🛋️',
+    image: '/cat-sofa.jpg',
     subtitle: 'Tarifa estándar RD$ 1,500',
   },
   {
@@ -111,6 +120,7 @@ const CATALOG_ITEMS: CatalogItem[] = [
     category: 'Muebles de Sala',
     basePrice: 2000,
     iconText: '🛋️',
+    image: '/cat-sofa.jpg',
     subtitle: 'Tarifa estándar RD$ 2,000',
   },
   {
@@ -119,6 +129,7 @@ const CATALOG_ITEMS: CatalogItem[] = [
     category: 'Muebles de Sala',
     basePrice: 2500,
     iconText: '🛋️',
+    image: '/cat-sofa.jpg',
     subtitle: 'Tarifa estándar RD$ 2,500',
   },
   {
@@ -127,6 +138,7 @@ const CATALOG_ITEMS: CatalogItem[] = [
     category: 'Muebles de Sala',
     basePrice: 3000,
     iconText: '🛋️',
+    image: '/cat-sofa.jpg',
     subtitle: 'Tarifa estándar RD$ 3,000',
   },
   {
@@ -135,28 +147,31 @@ const CATALOG_ITEMS: CatalogItem[] = [
     category: 'Muebles de Sala',
     basePrice: 3500,
     iconText: '🛋️',
+    image: '/cat-sofa.jpg',
     isSofaModular: true,
     subtitle: 'Base 5 plazas RD$ 3,500 (+RD$ 500 c/u extra)',
   },
 
-  // 3. Sillas de Comedor (Flyer oficial Mitefree)
+  // 3. Sillas de Comedor
   {
     id: 'dining-chair',
     name: 'Sillas de Comedor',
     category: 'Sillas de Comedor',
     basePrice: 300,
     iconText: '🪑',
+    image: '/cat-chair.jpg',
     isChair: true,
-    subtitle: 'RD$ 300 cada una',
+    subtitle: 'RD$ 300 cada una (juegos de 4 o más)',
   },
 
-  // 4. Lavado y Desinfección de Alfombras (Diferentes Longitudes & Medidas)
+  // 4. Lavado y Desinfección de Alfombras
   {
     id: 'rug-small',
     name: 'Alfombra Pequeña / Pie de Cama',
     category: 'Alfombras',
     basePrice: 600,
     iconText: '🧶',
+    image: '/cat-rug.jpg',
     isRug: true,
     dimensions: 'Hasta 1.50m × 0.80m (~1.2 m²)',
     subtitle: 'Ideal para pasillo o pie de cama (RD$ 600)',
@@ -167,6 +182,7 @@ const CATALOG_ITEMS: CatalogItem[] = [
     category: 'Alfombras',
     basePrice: 1200,
     iconText: '🧶',
+    image: '/cat-rug.jpg',
     isRug: true,
     dimensions: '2.00m × 1.50m (~3.0 m²)',
     subtitle: 'Área común o sala estándar (RD$ 1,200)',
@@ -177,6 +193,7 @@ const CATALOG_ITEMS: CatalogItem[] = [
     category: 'Alfombras',
     basePrice: 1800,
     iconText: '🧶',
+    image: '/cat-rug.jpg',
     isRug: true,
     dimensions: '2.50m × 2.00m (~5.0 m²)',
     subtitle: 'Sala principal o comedor formal (RD$ 1,800)',
@@ -187,16 +204,18 @@ const CATALOG_ITEMS: CatalogItem[] = [
     category: 'Alfombras',
     basePrice: 2500,
     iconText: '🧶',
+    image: '/cat-rug.jpg',
     isRug: true,
     dimensions: '3.00m × 2.50m (~7.5 m²)',
     subtitle: 'Salones amplios o áreas ejecutivas (RD$ 2,500)',
   },
   {
     id: 'rug-custom',
-    name: 'Alfombra por Longitud Personalizada',
+    name: 'Alfombra por Medida Personalizada',
     category: 'Alfombras',
     basePrice: 300, // RD$ 300 por m²
     iconText: '📏',
+    image: '/cat-rug.jpg',
     isRug: true,
     isCustomRug: true,
     subtitle: 'Ajusta largo y ancho en metros (RD$ 300 / m²)',
@@ -208,31 +227,31 @@ const FABRIC_OPTIONS = [
     id: 'SYNTHETIC',
     name: 'Sintética / Estándar',
     multiplier: 1.0,
-    desc: 'Fácil extracción, secado acelerado en pocas horas',
+    desc: 'Secado acelerado en 2-3 horas, uso cotidiano.',
   },
   {
     id: 'MICROFIBER',
     name: 'Microfibra / Gamuzina',
     multiplier: 1.0,
-    desc: 'Tejido denso suave, tratamiento profundo con cepillado',
+    desc: 'Tejido suave de alta densidad, cepillado profundo.',
   },
   {
     id: 'LINEN',
     name: 'Lino Natural',
     multiplier: 1.15,
-    desc: 'Fibra delicada, pH neutro balanceado',
+    desc: 'Fibra natural delicada, tratamiento con pH neutro.',
   },
   {
     id: 'VELVET',
     name: 'Terciopelo / Chenille / Lana',
     multiplier: 1.25,
-    desc: 'Tratamiento especial anti-aplastamiento de hebras',
+    desc: 'Protección especial contra aplastamiento de hebras.',
   },
   {
     id: 'LEATHER',
     name: 'Cuero / Piel Genuina',
     multiplier: 1.35,
-    desc: 'Nutrición con bálsamo hidratante anti-grietas',
+    desc: 'Nutrición con bálsamo hidratante anti-grietas.',
   },
 ];
 
@@ -241,31 +260,83 @@ const STAIN_OPTIONS = [
     id: 'LIGHT',
     name: 'Leve / Mantenimiento',
     surcharge: 0,
-    desc: 'Polvo acumulado, ácaros habituales y uso diario preventivo',
+    desc: 'Polvo diario, ácaros habituales y uso preventivo (+RD$ 0)',
   },
   {
     id: 'MODERATE',
-    name: 'Moderada / Grasa o Comida',
+    name: 'Moderada / Comida o Bebidas',
     surcharge: 300,
-    desc: 'Manchas visibles, marcas de sudor o derrame de bebidas',
+    desc: 'Manchas visibles, marcas de café o derrames (+RD$ 300)',
   },
   {
     id: 'CRITICAL',
-    name: 'Crítica / Orina o Vómito',
+    name: 'Crítica / Mascotas o Manchas Difíciles',
     surcharge: 500,
-    desc: 'Desinfección biológica profunda con enzimas bio-activas y UV-C',
+    desc: 'Desinfección biológica profunda con enzimas y UV-C (+RD$ 500)',
   },
 ];
 
-export default function CotizadorPage() {
+const CATEGORY_CARDS = [
+  {
+    id: 'TODOS',
+    name: 'Ver Todo',
+    iconText: '✨',
+    image: '/hero-service.jpg',
+  },
+  {
+    id: 'Colchones',
+    name: 'Colchones',
+    iconText: '🛏️',
+    image: '/cat-mattress.jpg',
+  },
+  {
+    id: 'Muebles de Sala',
+    name: 'Muebles & Sofás',
+    iconText: '🛋️',
+    image: '/cat-sofa.jpg',
+  },
+  {
+    id: 'Alfombras',
+    name: 'Alfombras',
+    iconText: '🧶',
+    image: '/cat-rug.jpg',
+  },
+  {
+    id: 'Sillas de Comedor',
+    name: 'Sillas',
+    iconText: '🪑',
+    image: '/cat-chair.jpg',
+  },
+];
+
+function CotizadorContent() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { user } = useAuth();
+
   const [currentStep, setCurrentStep] = useState<number>(1);
   const [isSubmittingQuotation, setIsSubmittingQuotation] = useState<boolean>(false);
   const [persistedQuotationId, setPersistedQuotationId] = useState<string | null>(null);
+
+  const initialCat = searchParams.get('category') as any;
   const [activeCategoryTab, setActiveCategoryTab] = useState<
     'TODOS' | 'Colchones' | 'Muebles de Sala' | 'Sillas de Comedor' | 'Alfombras'
-  >('TODOS');
+  >(
+    initialCat &&
+      ['Colchones', 'Muebles de Sala', 'Sillas de Comedor', 'Alfombras'].includes(initialCat)
+      ? initialCat
+      : 'TODOS',
+  );
+
+  useEffect(() => {
+    const cat = searchParams.get('category');
+    if (
+      cat &&
+      ['Colchones', 'Muebles de Sala', 'Sillas de Comedor', 'Alfombras'].includes(cat)
+    ) {
+      setActiveCategoryTab(cat as any);
+    }
+  }, [searchParams]);
 
   // Carrito multi-item de artículos seleccionados
   const [selectedItems, setSelectedItems] = useState<SelectedQuoteItem[]>([
@@ -283,14 +354,14 @@ export default function CotizadorPage() {
     },
   ]);
 
-  // Estados locales temporales para configurar artículos antes de añadirlos
+  // Estados locales temporales para configurar artículos
   const [tempBothSides, setTempBothSides] = useState<Record<string, boolean>>({});
   const [tempExtraSeats, setTempExtraSeats] = useState<Record<string, number>>({});
   const [tempQuantity, setTempQuantity] = useState<Record<string, number>>({});
 
   // Medidas dinámicas para alfombra personalizada
-  const [customLength, setCustomLength] = useState<number>(2.5); // metros
-  const [customWidth, setCustomWidth] = useState<number>(2.0); // metros
+  const [customLength, setCustomLength] = useState<number>(2.5);
+  const [customWidth, setCustomWidth] = useState<number>(2.0);
 
   // Paso 2: Tejido, manchas y fotos
   const [selectedFabric, setSelectedFabric] = useState(FABRIC_OPTIONS[0]!);
@@ -305,12 +376,10 @@ export default function CotizadorPage() {
   const [couponDiscount, setCouponDiscount] = useState<number>(0);
   const [useWalletCashback, setUseWalletCashback] = useState<boolean>(false);
 
-  // Saldo mock de billetera en RD$
-  const walletBalanceAvailable = 500.0;
+  const walletBalanceAvailable = user?.walletBalance ?? 500.0;
 
   const formatRD = (amount: number) => `RD$ ${Math.round(amount).toLocaleString('es-DO')}`;
 
-  // Helper para calcular precio unitario de un artículo del catálogo según sus opciones
   const calculateCatalogUnitPrice = (
     item: CatalogItem,
     bothSides: boolean,
@@ -331,7 +400,6 @@ export default function CotizadorPage() {
     return item.basePrice;
   };
 
-  // Agregar artículo al carrito
   const handleAddItem = (item: CatalogItem) => {
     const bothSides = tempBothSides[item.id] ?? false;
     const extraSeats = tempExtraSeats[item.id] ?? 0;
@@ -370,12 +438,9 @@ export default function CotizadorPage() {
     };
 
     setSelectedItems((prev) => [...prev, newItem]);
-
-    // Resetear temporal del item
     setTempQuantity((prev) => ({ ...prev, [item.id]: item.isChair ? 4 : 1 }));
   };
 
-  // Modificar cantidad de un ítem ya en el carrito
   const handleUpdateItemQuantity = (cartId: string, delta: number) => {
     setSelectedItems((prev) =>
       prev
@@ -394,12 +459,10 @@ export default function CotizadorPage() {
     );
   };
 
-  // Eliminar un ítem del carrito
   const handleRemoveItem = (cartId: string) => {
     setSelectedItems((prev) => prev.filter((item) => item.cartId !== cartId));
   };
 
-  // Regla Canónica de Negocio DDD: Consumo Mínimo para Despacho a Domicilio
   const MIN_DOMICILE_ORDER_RD = 1500;
   const itemsSubtotal = selectedItems.reduce((acc, curr) => acc + curr.itemTotal, 0);
   const totalItemsCount = selectedItems.reduce((acc, curr) => acc + curr.quantity, 0);
@@ -414,22 +477,18 @@ export default function CotizadorPage() {
   const fabricMultiplier = selectedFabric.multiplier;
   const stainSurcharge = selectedStain.surcharge;
 
-  // Subtotal base con factor de tejido y recargo de mancha
   const subtotalWithFabric = Math.round(
     itemsSubtotal * fabricMultiplier + (selectedItems.length > 0 ? stainSurcharge : 0),
   );
 
-  // Descuentos aplicados
   const discountApplied = couponDiscount;
   const subtotalAfterDiscount = Math.max(0, subtotalWithFabric - discountApplied);
 
-  // Billetera cashback (tope de salvaguarda 50%)
   const maxRedeemableCap = Math.round(subtotalAfterDiscount * 0.5);
   const walletCreditApplied = useWalletCashback
     ? Math.min(walletBalanceAvailable, maxRedeemableCap)
     : 0;
 
-  // Total definitivo sin anticipo (piso mínimo garantizado de RD$ 1,500 para visita a domicilio)
   const total =
     selectedItems.length > 0
       ? Math.max(MIN_DOMICILE_ORDER_RD, Math.max(0, subtotalAfterDiscount - walletCreditApplied))
@@ -476,91 +535,28 @@ export default function CotizadorPage() {
     setUploadedPhotos((prev) => prev.filter((p) => p.id !== id));
   };
 
-  const downloadFallbackTxt = () => {
-    const itemsLines = selectedItems
+  const generateWhatsAppMessage = () => {
+    const itemsList = selectedItems
       .map(
         (it) =>
-          `• ${it.quantity}x ${it.name} ${it.bothSides ? '(Ambos Lados)' : it.category === 'Colchones' ? '(1 Solo Lado)' : ''} ${it.extraSeats > 0 ? `(+${it.extraSeats} plazas extra)` : ''} ${it.rugDimensions ? `[Dim: ${it.rugDimensions}]` : ''}: ${formatRD(it.itemTotal)}`,
+          `• ${it.quantity}x ${it.name}${it.bothSides ? ' (Ambos Lados)' : ''}${it.extraSeats > 0 ? ` (+${it.extraSeats} plazas)` : ''}${it.rugDimensions ? ` [${it.rugDimensions}]` : ''} -> ${formatRD(it.itemTotal)}`,
       )
       .join('\n');
 
-    const content = `=====================================================
-MITEFREE — PRESUPUESTO OFICIAL DE SERVICIO
-Tel / WhatsApp: (809) 513-4773
-Código: COT-2026-${Math.random().toString(36).substring(2, 8).toUpperCase()}
-Fecha: ${new Date().toLocaleDateString('es-DO')}
-Validez: Congelado por 7 días calendario
-=====================================================
+    const msg = `¡Hola Mite Free Clean! 👋 Deseo solicitar el servicio de limpieza y desinfección a domicilio para las siguientes piezas:
 
-ARTÍCULOS INCLUIDOS EN LA ORDEN:
-${itemsLines}
+${itemsList}
 
------------------------------------------------------
-Subtotal de Piezas: ${formatRD(itemsSubtotal)}
-Tipo de Tapicería / Fibra: ${selectedFabric.name} (x${fabricMultiplier})
-Tratamiento Manchas: ${selectedStain.name} (+${formatRD(stainSurcharge)})
-Descuento Aplicado: -${formatRD(discountApplied)}
-Billetera Cashback: -${formatRD(walletCreditApplied)}
------------------------------------------------------
-TOTAL FINAL A PAGAR: ${formatRD(total)} DOP
-CONDICIÓN DE PAGO: 100% AL FINALIZAR EL SERVICIO (SIN ANTICIPO)
------------------------------------------------------
+• Tejido/Fibra: ${selectedFabric.name}
+• Manchas: ${selectedStain.name}
+• Total Estimado: ${formatRD(total)} DOP
+• Modalidad: 0% Anticipo (Pagas al finalizar)
 
-COBERTURA EXCLUSIVA:
-- San Pedro de Macorís (y todos sus municipios)
-- La Romana (y todos sus municipios)
-- Santo Domingo Este
+Por favor confírmenme disponibilidad para mi zona (San Pedro / La Romana / Santo Domingo). ¡Gracias!`;
 
-ALR COMPANY — División de Ingeniería de Software`;
-
-    const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `Presupuesto-Mitefree-MultiItem.txt`;
-    a.click();
-    URL.revokeObjectURL(url);
+    return encodeURIComponent(msg);
   };
 
-  // Construcción del presupuesto oficial en PDF vía Core WebAPI (con fallback local)
-  const handleDownloadPdf = async () => {
-    if (persistedQuotationId) {
-      window.open(apiClient.quotations.getPdfUrl(persistedQuotationId), '_blank');
-      return;
-    }
-
-    try {
-      const quotationPayload = {
-        clientId: user?.id || 'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa',
-        items: selectedItems.map((item) => ({
-          furnitureType: item.name,
-          fabricType: selectedFabric.id as FabricType,
-          stainSeverity: selectedStain.id as StainSeverity,
-          basePriceAmount: item.unitPrice,
-          photoUrls: [],
-          additionalServices: [],
-        })),
-        routeDiscountAmount: 0,
-        couponCode: couponApplied ? promoCode : undefined,
-        couponDiscountAmount: couponDiscount,
-        walletBalanceAvailable: useWalletCashback ? walletCreditApplied : 0,
-        currency: 'DOP',
-      };
-
-      const res = await apiClient.quotations.create(quotationPayload);
-      if (res.success) {
-        setPersistedQuotationId(res.data.id);
-        window.open(apiClient.quotations.getPdfUrl(res.data.id), '_blank');
-        return;
-      }
-    } catch {
-      // Fallback a descarga de texto plano
-    }
-
-    downloadFallbackTxt();
-  };
-
-  // Enviar cotización al Core API y navegar a Agenda con quotationId
   const handleProceedToSchedule = async () => {
     setIsSubmittingQuotation(true);
     try {
@@ -590,35 +586,12 @@ ALR COMPANY — División de Ingeniería de Software`;
         return;
       }
     } catch {
-      // Fallback a navegación con parámetros query
+      // Fallback a navegación con query params
     } finally {
       setIsSubmittingQuotation(false);
     }
 
     router.push(`/agenda?total=${total}&deposit=${Math.round(total * 0.3)}`);
-  };
-
-  // Generador de mensaje de WhatsApp con desglose multi-item y alfombras
-  const generateWhatsAppMessage = () => {
-    const itemsList = selectedItems
-      .map(
-        (it) =>
-          `• ${it.quantity}x ${it.name}${it.bothSides ? ' (Ambos Lados)' : ''}${it.extraSeats > 0 ? ` (+${it.extraSeats} plazas)` : ''}${it.rugDimensions ? ` [${it.rugDimensions}]` : ''} -> ${formatRD(it.itemTotal)}`,
-      )
-      .join('\n');
-
-    const msg = `¡Hola MITEFREE! Deseo solicitar el servicio de limpieza y desinfección para las siguientes piezas:
-
-${itemsList}
-
-• Tejido/Fibra: ${selectedFabric.name}
-• Manchas: ${selectedStain.name}
-• Total Estimado: ${formatRD(total)} DOP
-• Modalidad: Pago 100% al finalizar (Sin anticipo)
-
-Por favor confírmenme disponibilidad para mi zona (San Pedro / La Romana / Santo Domingo Este).`;
-
-    return encodeURIComponent(msg);
   };
 
   const filteredCatalog = CATALOG_ITEMS.filter((item) => {
@@ -627,48 +600,48 @@ Por favor confírmenme disponibilidad para mi zona (San Pedro / La Romana / Sant
   });
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-8 sm:py-12">
-      {/* Header */}
+    <div className="max-w-4xl mx-auto px-4 py-8 sm:py-12 pb-32">
+      {/* Top Header */}
       <div className="text-center mb-8">
         <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-brand-500/10 text-brand-400 text-xs font-semibold mb-2 border border-brand-500/20">
           <Sparkles className="w-3.5 h-3.5" />
-          <span>Servicio a Domicilio Exclusivo · Mínimo RD$ 1,500 · Sin Anticipo</span>
+          <span>Mite Free Clean · Cotización Inmediata en Línea</span>
         </div>
         <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
-          Cotizador Inteligente Multi-Pieza
+          Elige lo que deseas limpiar
         </h1>
-        <p className="text-xs sm:text-sm text-gray-400 mt-1 max-w-xl mx-auto">
-          Agrega varios colchones, muebles, sillas y alfombras de cualquier longitud en una misma
-          cotización. Consumo mínimo para despacho técnico a domicilio: <strong>RD$ 1,500</strong>.
-          Pagas el 100% al finalizar.
+        <p className="text-xs sm:text-sm text-gray-300 mt-1 max-w-lg mx-auto">
+          Selecciona tamaños y cantidades para ver tu precio al instante. Recuerda que el servicio a
+          domicilio aplica desde <strong>RD$ 1,500</strong> y pagas al terminar.
         </p>
-        <div className="flex items-center justify-center gap-2 mt-2 text-[11px] text-cyan-400">
-          <MapPin className="w-3.5 h-3.5" />
-          <span>Cobertura: San Pedro de Macorís, La Romana y Santo Domingo Este</span>
-        </div>
       </div>
 
-      {/* Stepper Indicator */}
+      {/* Stepper Wizard Bar */}
       <div className="flex items-center justify-between mb-8 max-w-sm mx-auto px-2">
         {[
-          { num: 1, label: 'Piezas' },
-          { num: 2, label: 'Tejido & Manchas' },
-          { num: 3, label: 'Resumen' },
+          { num: 1, label: '1. Piezas' },
+          { num: 2, label: '2. Tela & Manchas' },
+          { num: 3, label: '3. Resumen' },
         ].map((s, idx) => (
           <div key={s.num} className="flex items-center flex-1 last:flex-initial">
             <div className="flex flex-col items-center">
-              <div
-                className={`w-8 h-8 sm:w-9 sm:h-9 rounded-full flex items-center justify-center font-bold text-xs transition-colors shrink-0 ${
+              <button
+                type="button"
+                onClick={() => {
+                  if (s.num === 1) setCurrentStep(1);
+                  if (s.num === 2 && isMinimumOrderMet) setCurrentStep(2);
+                }}
+                className={`w-9 h-9 rounded-full flex items-center justify-center font-bold text-xs transition-all shrink-0 ${
                   currentStep >= s.num
-                    ? 'bg-brand-500 text-dark-bg tech-glow'
+                    ? 'bg-gradient-to-tr from-brand-600 to-cyan-400 text-dark-bg tech-glow shadow-md'
                     : 'bg-dark-surface border border-dark-border text-gray-500'
                 }`}
               >
                 {s.num}
-              </div>
+              </button>
               <span
-                className={`text-[10px] sm:text-[11px] font-medium mt-1 text-center whitespace-nowrap ${
-                  currentStep >= s.num ? 'text-brand-400 font-bold' : 'text-gray-500'
+                className={`text-[11px] font-medium mt-1 text-center whitespace-nowrap ${
+                  currentStep >= s.num ? 'text-brand-300 font-bold' : 'text-gray-500'
                 }`}
               >
                 {s.label}
@@ -677,7 +650,7 @@ Por favor confírmenme disponibilidad para mi zona (San Pedro / La Romana / Sant
             {idx < 2 && (
               <div
                 className={`h-0.5 flex-1 mx-2 -mt-4 transition-colors ${
-                  currentStep > s.num ? 'bg-brand-500' : 'bg-dark-border'
+                  currentStep > s.num ? 'bg-cyan-400' : 'bg-dark-border'
                 }`}
               />
             )}
@@ -685,152 +658,164 @@ Por favor confírmenme disponibilidad para mi zona (San Pedro / La Romana / Sant
         ))}
       </div>
 
-      {/* ================= STEP 1: MULTI-ITEM SELECTION ================= */}
+      {/* ================= STEP 1: GRAPHIC CATEGORIES & SELECTION ================= */}
       {currentStep === 1 && (
         <div className="space-y-6 animate-fadeIn">
-          {/* Summary / Cart Floating Bar */}
-          <div className="p-4 sm:p-5 rounded-2xl bg-dark-surface/90 border border-brand-500/40 tech-glow space-y-3">
-            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          {/* Visual Category Quick Cards (Inspirado en el prototipo interactivo) */}
+          <div className="space-y-2">
+            <span className="text-xs font-bold uppercase tracking-wider text-gray-400 block px-1">
+              Categorías Principales:
+            </span>
+            <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
+              {CATEGORY_CARDS.map((cat) => {
+                const isActive = activeCategoryTab === cat.id;
+                return (
+                  <button
+                    key={cat.id}
+                    type="button"
+                    onClick={() => setActiveCategoryTab(cat.id as any)}
+                    className={`relative rounded-2xl overflow-hidden p-3.5 flex flex-col items-center text-center transition-all border ${
+                      isActive
+                        ? 'border-cyan-400 bg-cyan-500/15 tech-glow-blue shadow-lg scale-102'
+                        : 'border-dark-border bg-dark-surface/80 hover:border-brand-500/40 hover:bg-dark-hover'
+                    }`}
+                  >
+                    <span className="text-2xl mb-1">{cat.iconText}</span>
+                    <span
+                      className={`text-xs font-bold leading-tight ${
+                        isActive ? 'text-white' : 'text-gray-300'
+                      }`}
+                    >
+                      {cat.name}
+                    </span>
+                    {isActive && (
+                      <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 mt-1 animate-pulse" />
+                    )}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Current Selection / Cart Card */}
+          <div className="glass-card rounded-2xl p-5 border border-brand-500/30 tech-glow space-y-4">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-xl bg-brand-500/20 text-brand-400 flex items-center justify-center">
                   <ShoppingCart className="w-5 h-5" />
                 </div>
                 <div>
-                  <span className="text-xs text-gray-400 block">Tu Pedido Actual:</span>
+                  <span className="text-xs text-gray-400 block">Tu Selección Actual:</span>
                   <span className="text-base sm:text-lg font-extrabold text-white">
                     {totalItemsCount}{' '}
-                    {totalItemsCount === 1 ? 'pieza seleccionada' : 'piezas seleccionadas'} ·{' '}
+                    {totalItemsCount === 1 ? 'pieza agregada' : 'piezas agregadas'} ·{' '}
                     <span className="text-brand-400 font-mono">{formatRD(itemsSubtotal)}</span>
                   </span>
                 </div>
               </div>
 
-              <div className="flex items-center gap-3 w-full sm:w-auto">
-                <button
-                  type="button"
-                  onClick={() => {
-                    if (selectedItems.length === 0) {
-                      alert(
-                        'Por favor agrega al menos un mueble, colchón o alfombra a tu cotización.',
-                      );
-                      return;
-                    }
-                    if (!isMinimumOrderMet) {
-                      alert(
-                        `El servicio a domicilio requiere un consumo mínimo de RD$ 1,500 para cubrir el traslado de la unidad móvil y cuadrilla técnica. Te faltan RD$ ${amountMissingForMinimum.toLocaleString('es-DO')} (puedes agregar sillas de comedor por RD$ 300 o una alfombra pequeña por RD$ 600).`,
-                      );
-                      return;
-                    }
-                    setCurrentStep(2);
-                  }}
-                  disabled={!isMinimumOrderMet}
-                  className={`w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-2.5 rounded-xl font-extrabold text-xs transition-all ${
-                    isMinimumOrderMet
-                      ? 'bg-gradient-to-r from-brand-500 to-cyan-500 text-dark-bg tech-glow shadow-md active:scale-95'
-                      : 'bg-dark-surface border border-dark-border text-gray-400 cursor-not-allowed opacity-80'
-                  }`}
-                >
-                  <span>
-                    {isMinimumOrderMet
-                      ? `Continuar (${totalItemsCount} piezas)`
-                      : `Mínimo RD$ 1,500 (Faltan ${formatRD(amountMissingForMinimum)})`}
-                  </span>
-                  <ArrowRight className="w-4 h-4" />
-                </button>
-              </div>
+              <button
+                type="button"
+                onClick={() => {
+                  if (selectedItems.length === 0) {
+                    alert('Por favor agrega al menos un artículo a tu cotización.');
+                    return;
+                  }
+                  if (!isMinimumOrderMet) {
+                    alert(
+                      `El servicio a domicilio requiere un consumo mínimo de RD$ 1,500. Te faltan RD$ ${amountMissingForMinimum.toLocaleString('es-DO')} para completar tu visita.`,
+                    );
+                    return;
+                  }
+                  setCurrentStep(2);
+                }}
+                disabled={!isMinimumOrderMet}
+                className={`w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-extrabold text-xs transition-all ${
+                  isMinimumOrderMet
+                    ? 'bg-gradient-to-r from-brand-500 to-cyan-500 text-dark-bg tech-glow shadow-md active:scale-95'
+                    : 'bg-dark-surface border border-dark-border text-gray-500 cursor-not-allowed opacity-75'
+                }`}
+              >
+                <span>
+                  {isMinimumOrderMet
+                    ? `Continuar (${totalItemsCount} piezas)`
+                    : `Mínimo RD$ 1,500 (Faltan ${formatRD(amountMissingForMinimum)})`}
+                </span>
+                <ArrowRight className="w-4 h-4" />
+              </button>
             </div>
 
-            {/* Minimum Order Threshold Status Banner */}
-            {selectedItems.length > 0 && !isMinimumOrderMet && (
-              <div className="p-3 rounded-xl bg-amber-500/10 border border-amber-500/30 text-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 animate-fadeIn">
+            {/* Minimum Order Helper Bar */}
+            {!isMinimumOrderMet ? (
+              <div className="p-3 rounded-xl bg-amber-500/10 border border-amber-500/30 text-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2.5">
                 <div className="flex items-center gap-2 text-amber-300">
                   <ShieldAlert className="w-4 h-4 text-amber-400 shrink-0" />
                   <span>
-                    <strong>Condición de Visita a Domicilio:</strong> El consumo mínimo para
-                    despacho de unidad es de <strong>RD$ 1,500</strong>. Te faltan{' '}
-                    <strong>{formatRD(amountMissingForMinimum)}</strong> en piezas.
+                    El servicio a domicilio inicia en <strong>RD$ 1,500</strong>. Te faltan{' '}
+                    <strong className="text-white font-mono">
+                      {formatRD(amountMissingForMinimum)}
+                    </strong>{' '}
+                    (puedes agregar sillas por RD$ 300 o una alfombra pequeña).
                   </span>
                 </div>
-                <div className="w-full sm:w-36 bg-dark-bg h-2 rounded-full overflow-hidden border border-amber-500/30 shrink-0">
+                <div className="w-full sm:w-32 bg-dark-bg h-2 rounded-full overflow-hidden border border-amber-500/30 shrink-0">
                   <div
                     className="bg-gradient-to-r from-amber-500 to-brand-400 h-full transition-all duration-300"
                     style={{ width: `${minProgressPercentage}%` }}
                   />
                 </div>
               </div>
-            )}
-
-            {isMinimumOrderMet && (
+            ) : (
               <div className="p-2.5 rounded-xl bg-emerald-500/10 border border-emerald-500/25 text-xs flex items-center gap-2 text-emerald-300">
                 <CheckCircle className="w-4 h-4 text-emerald-400 shrink-0" />
                 <span>
-                  <strong>¡Mínimo de Visita a Domicilio Alcanzado!</strong> Tu orden califica para
-                  el traslado de la cuadrilla técnica sin anticipo.
+                  <strong>¡Mínimo alcanzado!</strong> Tu orden incluye visita a domicilio y cuadrilla
+                  técnica sin costo de traslado.
                 </span>
               </div>
             )}
-          </div>
 
-          {/* List of currently selected items in the cart */}
-          {selectedItems.length > 0 && (
-            <div className="glass-card rounded-2xl p-5 border border-dark-border space-y-3">
-              <div className="flex items-center justify-between pb-2 border-b border-dark-border/60">
-                <h3 className="text-xs font-bold uppercase tracking-wider text-gray-300 flex items-center gap-2">
-                  <CheckCircle className="w-4 h-4 text-emerald-400" />
-                  <span>Artículos en tu Cotización ({selectedItems.length})</span>
-                </h3>
-                <button
-                  type="button"
-                  onClick={() => setSelectedItems([])}
-                  className="text-[11px] text-red-400 hover:text-red-300 flex items-center gap-1 transition-colors"
-                >
-                  <Trash2 className="w-3 h-3" />
-                  <span>Vaciar selección</span>
-                </button>
-              </div>
-
-              <div className="divide-y divide-dark-border/40">
+            {/* Selected Items List */}
+            {selectedItems.length > 0 && (
+              <div className="pt-2 divide-y divide-dark-border/40">
                 {selectedItems.map((item) => (
                   <div
                     key={item.cartId}
                     className="py-3 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs"
                   >
                     <div className="flex items-center gap-3 min-w-0 flex-1">
-                      <span className="text-xl shrink-0">{item.iconText}</span>
-                      <div className="min-w-0 flex-1 pr-2">
-                        <div className="font-bold text-white text-sm flex flex-wrap items-center gap-2">
-                          <span className="truncate">{item.name}</span>
+                      <span className="text-2xl shrink-0 p-1.5 rounded-lg bg-dark-surface border border-dark-border">
+                        {item.iconText}
+                      </span>
+                      <div className="min-w-0 flex-1">
+                        <div className="font-bold text-white text-sm flex flex-wrap items-center gap-1.5">
+                          <span>{item.name}</span>
                           {item.bothSides && (
-                            <span className="px-1.5 py-0.5 rounded text-[10px] bg-brand-500/20 text-brand-300 border border-brand-500/40">
+                            <span className="px-1.5 py-0.5 rounded text-[10px] bg-brand-500/20 text-brand-300 font-semibold border border-brand-500/30">
                               Ambos Lados
                             </span>
                           )}
                           {item.extraSeats > 0 && (
-                            <span className="px-1.5 py-0.5 rounded text-[10px] bg-indigo-500/20 text-indigo-300 border border-indigo-500/40">
+                            <span className="px-1.5 py-0.5 rounded text-[10px] bg-indigo-500/20 text-indigo-300 font-semibold border border-indigo-500/30">
                               +{item.extraSeats} Plazas
-                            </span>
-                          )}
-                          {item.rugDimensions && (
-                            <span className="px-1.5 py-0.5 rounded text-[10px] bg-cyan-500/20 text-cyan-300 border border-cyan-500/40">
-                              {item.rugDimensions}
                             </span>
                           )}
                         </div>
                         <span className="text-[11px] text-gray-400">
-                          {formatRD(item.unitPrice)} c/u
+                          {formatRD(item.unitPrice)} unitario
                         </span>
                       </div>
                     </div>
 
-                    <div className="flex items-center justify-between sm:justify-end w-full sm:w-auto gap-4">
-                      {/* Quantity counter */}
-                      <div className="flex items-center gap-2 bg-dark-bg/80 border border-dark-border rounded-lg p-1">
+                    <div className="flex items-center justify-between sm:justify-end w-full sm:w-auto gap-3">
+                      {/* Counter */}
+                      <div className="flex items-center gap-2 bg-dark-bg border border-dark-border rounded-xl p-1">
                         <button
                           type="button"
                           onClick={() => handleUpdateItemQuantity(item.cartId, -1)}
-                          className="w-6 h-6 rounded bg-dark-surface hover:bg-dark-hover text-white flex items-center justify-center transition-colors"
+                          className="w-7 h-7 rounded-lg bg-dark-surface hover:bg-dark-hover text-white flex items-center justify-center transition-colors"
                         >
-                          <Minus className="w-3 h-3" />
+                          <Minus className="w-3.5 h-3.5" />
                         </button>
                         <span className="w-6 text-center font-bold text-white font-mono text-xs">
                           {item.quantity}
@@ -838,23 +823,23 @@ Por favor confírmenme disponibilidad para mi zona (San Pedro / La Romana / Sant
                         <button
                           type="button"
                           onClick={() => handleUpdateItemQuantity(item.cartId, 1)}
-                          className="w-6 h-6 rounded bg-dark-surface hover:bg-dark-hover text-white flex items-center justify-center transition-colors"
+                          className="w-7 h-7 rounded-lg bg-dark-surface hover:bg-dark-hover text-white flex items-center justify-center transition-colors"
                         >
-                          <Plus className="w-3 h-3" />
+                          <Plus className="w-3.5 h-3.5" />
                         </button>
                       </div>
 
-                      {/* Subtotal of this item */}
-                      <span className="font-mono font-bold text-brand-400 text-sm min-w-[90px] text-right">
+                      {/* Total */}
+                      <span className="font-mono font-bold text-brand-400 text-sm min-w-[85px] text-right">
                         {formatRD(item.itemTotal)}
                       </span>
 
-                      {/* Delete */}
+                      {/* Remove */}
                       <button
                         type="button"
                         onClick={() => handleRemoveItem(item.cartId)}
-                        className="text-gray-500 hover:text-red-400 transition-colors p-1"
-                        title="Eliminar de la cotización"
+                        className="text-gray-500 hover:text-rose-400 transition-colors p-1"
+                        title="Eliminar artículo"
                       >
                         <Trash2 className="w-4 h-4" />
                       </button>
@@ -862,251 +847,233 @@ Por favor confírmenme disponibilidad para mi zona (San Pedro / La Romana / Sant
                   </div>
                 ))}
               </div>
-            </div>
-          )}
-
-          {/* Catalog Tabs (Mobile app swipeable pills) */}
-          <div className="flex items-center gap-2 pt-2 overflow-x-auto pb-1 scrollbar-none flex-nowrap sm:flex-wrap w-full">
-            {(
-              ['TODOS', 'Colchones', 'Muebles de Sala', 'Sillas de Comedor', 'Alfombras'] as const
-            ).map((tab) => (
-              <button
-                key={tab}
-                type="button"
-                onClick={() => setActiveCategoryTab(tab)}
-                className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all whitespace-nowrap shrink-0 ${
-                  activeCategoryTab === tab
-                    ? 'bg-brand-500 text-dark-bg tech-glow'
-                    : 'bg-dark-surface border border-dark-border text-gray-400 hover:text-white hover:bg-dark-hover'
-                }`}
-              >
-                {tab === 'TODOS' ? 'Ver Todo el Catálogo' : tab}
-              </button>
-            ))}
+            )}
           </div>
 
           {/* Product Cards Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {filteredCatalog.map((product) => {
-              const isBothSides = tempBothSides[product.id] ?? false;
-              const extraSeats = tempExtraSeats[product.id] ?? 0;
-              const qty = tempQuantity[product.id] ?? (product.isChair ? 4 : 1);
-              const unitPrice = calculateCatalogUnitPrice(
-                product,
-                isBothSides,
-                extraSeats,
-                customLength,
-                customWidth,
-              );
-              const previewTotal = unitPrice * qty;
+          <div className="space-y-3">
+            <div className="flex items-center justify-between px-1">
+              <span className="text-xs font-bold uppercase tracking-wider text-gray-400">
+                Opciones Disponibles ({filteredCatalog.length})
+              </span>
+              <span className="text-xs text-brand-400">Pagas al finalizar el servicio</span>
+            </div>
 
-              return (
-                <div
-                  key={product.id}
-                  className="glass-card rounded-2xl p-5 border border-dark-border hover:border-brand-500/40 transition-all flex flex-col justify-between space-y-4"
-                >
-                  <div>
-                    <div className="flex items-start justify-between gap-3">
-                      <div className="flex items-center gap-3">
-                        <span className="text-3xl p-2 rounded-xl bg-dark-surface border border-dark-border">
-                          {product.iconText}
-                        </span>
-                        <div>
-                          <div className="flex items-center gap-2">
-                            <h4 className="font-bold text-white text-base">{product.name}</h4>
-                            {product.category === 'Alfombras' && (
-                              <span className="px-1.5 py-0.5 rounded text-[10px] bg-cyan-500/20 text-cyan-300 font-mono">
-                                Alfombra
-                              </span>
-                            )}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {filteredCatalog.map((product) => {
+                const isBothSides = tempBothSides[product.id] ?? false;
+                const extraSeats = tempExtraSeats[product.id] ?? 0;
+                const qty = tempQuantity[product.id] ?? (product.isChair ? 4 : 1);
+                const unitPrice = calculateCatalogUnitPrice(
+                  product,
+                  isBothSides,
+                  extraSeats,
+                  customLength,
+                  customWidth,
+                );
+                const previewTotal = unitPrice * qty;
+
+                return (
+                  <div
+                    key={product.id}
+                    className="glass-card rounded-3xl p-5 border border-dark-border hover:border-brand-500/40 transition-all flex flex-col justify-between space-y-4 group hover:shadow-lg"
+                  >
+                    <div>
+                      {/* Top Product Header */}
+                      <div className="flex items-start justify-between gap-3">
+                        <div className="flex items-center gap-3">
+                          <span className="text-3xl p-2.5 rounded-2xl bg-dark-surface border border-dark-border group-hover:scale-105 transition-transform">
+                            {product.iconText}
+                          </span>
+                          <div>
+                            <h3 className="font-extrabold text-white text-base group-hover:text-brand-300 transition-colors">
+                              {product.name}
+                            </h3>
+                            <p className="text-xs text-gray-400 mt-0.5">{product.subtitle}</p>
                           </div>
-                          <span className="text-xs text-gray-400">{product.subtitle}</span>
+                        </div>
+
+                        <div className="text-right shrink-0">
+                          <span className="text-xs text-gray-500 block">Tarifa</span>
+                          <span className="text-base font-extrabold font-mono text-cyan-300">
+                            {formatRD(unitPrice)}
+                          </span>
                         </div>
                       </div>
-                      <span className="text-xs font-mono font-bold text-brand-400 shrink-0">
-                        {product.isCustomRug
-                          ? `${formatRD(unitPrice)}`
-                          : formatRD(product.basePrice)}
-                      </span>
+
+                      {/* Dimensions for rugs */}
+                      {product.isRug && product.dimensions && (
+                        <div className="mt-3 inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-dark-bg/80 border border-dark-border text-xs text-cyan-300 font-mono">
+                          <Maximize2 className="w-3.5 h-3.5 text-cyan-400" />
+                          <span>Dimensiones: {product.dimensions}</span>
+                        </div>
+                      )}
+
+                      {/* Options: Mattress 1 or 2 sides */}
+                      {product.isMattress && (
+                        <div className="mt-3 p-3 rounded-2xl bg-dark-surface/90 border border-dark-border/80 flex items-center justify-between text-xs">
+                          <span className="text-gray-300 font-medium">Lados a higienizar:</span>
+                          <div className="flex items-center gap-1.5">
+                            <button
+                              type="button"
+                              onClick={() =>
+                                setTempBothSides((prev) => ({ ...prev, [product.id]: false }))
+                              }
+                              className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
+                                !isBothSides
+                                  ? 'bg-brand-500 text-dark-bg tech-glow'
+                                  : 'text-gray-400 hover:text-white bg-dark-bg'
+                              }`}
+                            >
+                              1 Lado
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() =>
+                                setTempBothSides((prev) => ({ ...prev, [product.id]: true }))
+                              }
+                              className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
+                                isBothSides
+                                  ? 'bg-brand-500 text-dark-bg tech-glow'
+                                  : 'text-gray-400 hover:text-white bg-dark-bg'
+                              }`}
+                            >
+                              Ambos (+RD$ 500)
+                            </button>
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Options: Modular extra seats */}
+                      {product.isSofaModular && (
+                        <div className="mt-3 p-3 rounded-2xl bg-dark-surface/90 border border-dark-border/80 flex items-center justify-between text-xs">
+                          <span className="text-gray-300 font-medium">Plazas adicionales:</span>
+                          <div className="flex items-center gap-2">
+                            <button
+                              type="button"
+                              onClick={() =>
+                                setTempExtraSeats((prev) => ({
+                                  ...prev,
+                                  [product.id]: Math.max(0, extraSeats - 1),
+                                }))
+                              }
+                              className="w-7 h-7 rounded-lg bg-dark-bg border border-dark-border text-white flex items-center justify-center"
+                            >
+                              <Minus className="w-3.5 h-3.5" />
+                            </button>
+                            <span className="w-5 text-center font-bold text-cyan-400 font-mono">
+                              {extraSeats}
+                            </span>
+                            <button
+                              type="button"
+                              onClick={() =>
+                                setTempExtraSeats((prev) => ({
+                                  ...prev,
+                                  [product.id]: extraSeats + 1,
+                                }))
+                              }
+                              className="w-7 h-7 rounded-lg bg-dark-bg border border-dark-border text-white flex items-center justify-center"
+                            >
+                              <Plus className="w-3.5 h-3.5" />
+                            </button>
+                            <span className="text-[10px] text-gray-500 font-mono">
+                              (+RD$ 500 c/u)
+                            </span>
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Options: Custom Rug Length & Width */}
+                      {product.isCustomRug && (
+                        <div className="mt-3 p-3.5 rounded-2xl bg-dark-surface/90 border border-cyan-500/30 space-y-3 text-xs">
+                          <span className="text-white font-bold block flex items-center gap-1.5">
+                            <Maximize2 className="w-4 h-4 text-cyan-400" />
+                            <span>Medidas en metros:</span>
+                          </span>
+
+                          <div className="grid grid-cols-2 gap-3">
+                            <div className="p-2.5 rounded-xl bg-dark-bg border border-dark-border space-y-1">
+                              <span className="text-[11px] text-gray-400 block">Largo (m):</span>
+                              <div className="flex items-center justify-between">
+                                <button
+                                  type="button"
+                                  onClick={() =>
+                                    setCustomLength(
+                                      Math.max(1.0, Math.round((customLength - 0.5) * 10) / 10),
+                                    )
+                                  }
+                                  className="w-7 h-7 rounded-lg bg-dark-surface text-white flex items-center justify-center"
+                                >
+                                  <Minus className="w-3.5 h-3.5" />
+                                </button>
+                                <span className="font-mono font-bold text-cyan-300 text-sm">
+                                  {customLength.toFixed(1)} m
+                                </span>
+                                <button
+                                  type="button"
+                                  onClick={() =>
+                                    setCustomLength(
+                                      Math.min(10.0, Math.round((customLength + 0.5) * 10) / 10),
+                                    )
+                                  }
+                                  className="w-7 h-7 rounded-lg bg-dark-surface text-white flex items-center justify-center"
+                                >
+                                  <Plus className="w-3.5 h-3.5" />
+                                </button>
+                              </div>
+                            </div>
+
+                            <div className="p-2.5 rounded-xl bg-dark-bg border border-dark-border space-y-1">
+                              <span className="text-[11px] text-gray-400 block">Ancho (m):</span>
+                              <div className="flex items-center justify-between">
+                                <button
+                                  type="button"
+                                  onClick={() =>
+                                    setCustomWidth(
+                                      Math.max(0.5, Math.round((customWidth - 0.5) * 10) / 10),
+                                    )
+                                  }
+                                  className="w-7 h-7 rounded-lg bg-dark-surface text-white flex items-center justify-center"
+                                >
+                                  <Minus className="w-3.5 h-3.5" />
+                                </button>
+                                <span className="font-mono font-bold text-cyan-300 text-sm">
+                                  {customWidth.toFixed(1)} m
+                                </span>
+                                <button
+                                  type="button"
+                                  onClick={() =>
+                                    setCustomWidth(
+                                      Math.min(6.0, Math.round((customWidth + 0.5) * 10) / 10),
+                                    )
+                                  }
+                                  className="w-7 h-7 rounded-lg bg-dark-surface text-white flex items-center justify-center"
+                                >
+                                  <Plus className="w-3.5 h-3.5" />
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+
+                          <div className="flex justify-between items-center text-[11px] text-gray-300 pt-1">
+                            <span>
+                              Área:{' '}
+                              <strong className="text-white">
+                                {(customLength * customWidth).toFixed(1)} m²
+                              </strong>
+                            </span>
+                            <span className="text-brand-400 font-mono font-bold">
+                              {formatRD(unitPrice)}
+                            </span>
+                          </div>
+                        </div>
+                      )}
                     </div>
 
-                    {/* Dimension badge for standard rugs */}
-                    {product.isRug && product.dimensions && (
-                      <div className="mt-2.5 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-dark-bg/60 border border-dark-border text-[11px] text-cyan-300 font-mono">
-                        <Maximize2 className="w-3.5 h-3.5 text-cyan-400" />
-                        <span>Dimensiones: {product.dimensions}</span>
-                      </div>
-                    )}
-
-                    {/* Modificador: Ambos lados para colchones */}
-                    {product.isMattress && (
-                      <div className="mt-3 p-2.5 rounded-xl bg-dark-bg/60 border border-dark-border/80 flex items-center justify-between text-xs">
-                        <span className="text-gray-300">¿Lavar ambos lados?</span>
-                        <div className="flex items-center gap-1.5">
-                          <button
-                            type="button"
-                            onClick={() =>
-                              setTempBothSides((prev) => ({ ...prev, [product.id]: false }))
-                            }
-                            className={`px-2.5 py-1 rounded-lg text-[11px] font-semibold transition-all ${
-                              !isBothSides
-                                ? 'bg-brand-500 text-dark-bg font-bold'
-                                : 'text-gray-400 hover:text-white'
-                            }`}
-                          >
-                            1 Lado
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() =>
-                              setTempBothSides((prev) => ({ ...prev, [product.id]: true }))
-                            }
-                            className={`px-2.5 py-1 rounded-lg text-[11px] font-semibold transition-all ${
-                              isBothSides
-                                ? 'bg-brand-500 text-dark-bg font-bold tech-glow'
-                                : 'text-gray-400 hover:text-white'
-                            }`}
-                          >
-                            Ambos (+RD$ 500)
-                          </button>
-                        </div>
-                      </div>
-                    )}
-
-                    {/* Modificador: Plazas modulares en L */}
-                    {product.isSofaModular && (
-                      <div className="mt-3 p-2.5 rounded-xl bg-dark-bg/60 border border-dark-border/80 flex items-center justify-between text-xs">
-                        <span className="text-gray-300">Plazas adicionales:</span>
-                        <div className="flex items-center gap-2">
-                          <button
-                            type="button"
-                            onClick={() =>
-                              setTempExtraSeats((prev) => ({
-                                ...prev,
-                                [product.id]: Math.max(0, extraSeats - 1),
-                              }))
-                            }
-                            className="w-6 h-6 rounded bg-dark-surface border border-dark-border text-white flex items-center justify-center hover:bg-dark-hover"
-                          >
-                            <Minus className="w-3 h-3" />
-                          </button>
-                          <span className="w-5 text-center font-bold text-brand-400">
-                            {extraSeats}
-                          </span>
-                          <button
-                            type="button"
-                            onClick={() =>
-                              setTempExtraSeats((prev) => ({
-                                ...prev,
-                                [product.id]: extraSeats + 1,
-                              }))
-                            }
-                            className="w-6 h-6 rounded bg-dark-surface border border-dark-border text-white flex items-center justify-center hover:bg-dark-hover"
-                          >
-                            <Plus className="w-3 h-3" />
-                          </button>
-                          <span className="text-[10px] text-gray-500 font-mono">
-                            (+RD$ 500 c/u)
-                          </span>
-                        </div>
-                      </div>
-                    )}
-
-                    {/* Modificador: Alfombra de Longitud Personalizada (Largo x Ancho) */}
-                    {product.isCustomRug && (
-                      <div className="mt-3 p-3 rounded-xl bg-dark-bg/80 border border-cyan-500/30 space-y-2.5 text-xs">
-                        <span className="text-white font-bold block flex items-center gap-1.5">
-                          <Maximize2 className="w-3.5 h-3.5 text-cyan-400" />
-                          <span>Especificar Longitudes de la Alfombra:</span>
-                        </span>
-
-                        <div className="grid grid-cols-2 gap-3">
-                          {/* Selector de Largo */}
-                          <div className="p-2 rounded-lg bg-dark-surface border border-dark-border space-y-1">
-                            <span className="text-[11px] text-gray-400 block">Largo (m):</span>
-                            <div className="flex items-center justify-between">
-                              <button
-                                type="button"
-                                onClick={() =>
-                                  setCustomLength(
-                                    Math.max(1.0, Math.round((customLength - 0.5) * 10) / 10),
-                                  )
-                                }
-                                className="w-6 h-6 rounded bg-dark-bg hover:bg-dark-hover text-white flex items-center justify-center"
-                              >
-                                <Minus className="w-3 h-3" />
-                              </button>
-                              <span className="font-mono font-bold text-cyan-300 text-sm">
-                                {customLength.toFixed(1)} m
-                              </span>
-                              <button
-                                type="button"
-                                onClick={() =>
-                                  setCustomLength(
-                                    Math.min(10.0, Math.round((customLength + 0.5) * 10) / 10),
-                                  )
-                                }
-                                className="w-6 h-6 rounded bg-dark-bg hover:bg-dark-hover text-white flex items-center justify-center"
-                              >
-                                <Plus className="w-3 h-3" />
-                              </button>
-                            </div>
-                          </div>
-
-                          {/* Selector de Ancho */}
-                          <div className="p-2 rounded-lg bg-dark-surface border border-dark-border space-y-1">
-                            <span className="text-[11px] text-gray-400 block">Ancho (m):</span>
-                            <div className="flex items-center justify-between">
-                              <button
-                                type="button"
-                                onClick={() =>
-                                  setCustomWidth(
-                                    Math.max(0.5, Math.round((customWidth - 0.5) * 10) / 10),
-                                  )
-                                }
-                                className="w-6 h-6 rounded bg-dark-bg hover:bg-dark-hover text-white flex items-center justify-center"
-                              >
-                                <Minus className="w-3 h-3" />
-                              </button>
-                              <span className="font-mono font-bold text-cyan-300 text-sm">
-                                {customWidth.toFixed(1)} m
-                              </span>
-                              <button
-                                type="button"
-                                onClick={() =>
-                                  setCustomWidth(
-                                    Math.min(6.0, Math.round((customWidth + 0.5) * 10) / 10),
-                                  )
-                                }
-                                className="w-6 h-6 rounded bg-dark-bg hover:bg-dark-hover text-white flex items-center justify-center"
-                              >
-                                <Plus className="w-3 h-3" />
-                              </button>
-                            </div>
-                          </div>
-                        </div>
-
-                        {/* Calculo de m2 */}
-                        <div className="flex justify-between items-center pt-1 border-t border-dark-border/40 text-[11px]">
-                          <span className="text-gray-400">
-                            Superficie calculada:{' '}
-                            <b className="text-white font-mono">
-                              {(customLength * customWidth).toFixed(1)} m²
-                            </b>
-                          </span>
-                          <span className="text-emerald-400 font-bold font-mono">
-                            {formatRD(unitPrice)} unitario
-                          </span>
-                        </div>
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Selector de cantidad y Botón de Añadir */}
-                  <div className="pt-3 border-t border-dark-border/50 flex items-center justify-between gap-3">
-                    <div className="flex items-center gap-2">
-                      <span className="text-xs text-gray-400">Cantidad:</span>
-                      <div className="flex items-center gap-1.5 bg-dark-surface border border-dark-border rounded-lg p-1">
+                    {/* Card Actions: Stepper + Add Button */}
+                    <div className="pt-3 border-t border-dark-border/60 flex items-center justify-between gap-3">
+                      {/* Quantity Stepper */}
+                      <div className="flex items-center gap-2 bg-dark-bg border border-dark-border rounded-xl p-1 shrink-0">
                         <button
                           type="button"
                           onClick={() =>
@@ -1115,11 +1082,13 @@ Por favor confírmenme disponibilidad para mi zona (San Pedro / La Romana / Sant
                               [product.id]: Math.max(1, qty - 1),
                             }))
                           }
-                          className="w-6 h-6 rounded hover:bg-dark-hover text-white flex items-center justify-center"
+                          className="w-8 h-8 rounded-lg bg-dark-surface hover:bg-dark-hover text-white flex items-center justify-center transition-colors"
                         >
-                          <Minus className="w-3 h-3" />
+                          <Minus className="w-3.5 h-3.5" />
                         </button>
-                        <span className="w-6 text-center font-bold text-white text-xs">{qty}</span>
+                        <span className="w-6 text-center font-bold text-white font-mono text-xs">
+                          {qty}
+                        </span>
                         <button
                           type="button"
                           onClick={() =>
@@ -1128,438 +1097,383 @@ Por favor confírmenme disponibilidad para mi zona (San Pedro / La Romana / Sant
                               [product.id]: qty + 1,
                             }))
                           }
-                          className="w-6 h-6 rounded hover:bg-dark-hover text-white flex items-center justify-center"
+                          className="w-8 h-8 rounded-lg bg-dark-surface hover:bg-dark-hover text-white flex items-center justify-center transition-colors"
                         >
-                          <Plus className="w-3 h-3" />
+                          <Plus className="w-3.5 h-3.5" />
                         </button>
                       </div>
-                    </div>
 
-                    <button
-                      type="button"
-                      onClick={() => handleAddItem(product)}
-                      className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-brand-500/15 hover:bg-brand-500 text-brand-300 hover:text-dark-bg font-bold text-xs border border-brand-500/30 hover:tech-glow transition-all active:scale-95"
-                    >
-                      <Plus className="w-4 h-4" />
-                      <span>Agregar ({formatRD(previewTotal)})</span>
-                    </button>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-
-          <div className="mt-8 flex justify-end">
-            <button
-              onClick={() => {
-                if (selectedItems.length === 0) {
-                  alert('Por favor agrega al menos un mueble, colchón o alfombra a tu cotización.');
-                  return;
-                }
-                if (!isMinimumOrderMet) {
-                  alert(
-                    `El servicio a domicilio requiere un consumo mínimo de RD$ 1,500 para cubrir el traslado de la unidad móvil y cuadrilla técnica. Te faltan RD$ ${amountMissingForMinimum.toLocaleString('es-DO')} (puedes agregar sillas de comedor por RD$ 300 o una alfombra pequeña por RD$ 600).`,
-                  );
-                  return;
-                }
-                setCurrentStep(2);
-              }}
-              disabled={!isMinimumOrderMet}
-              className={`flex items-center gap-2 px-7 py-3.5 rounded-xl font-extrabold text-sm transition-all ${
-                isMinimumOrderMet
-                  ? 'bg-gradient-to-r from-brand-500 to-cyan-500 text-dark-bg tech-glow shadow-lg active:scale-95'
-                  : 'bg-dark-surface border border-dark-border text-gray-400 cursor-not-allowed opacity-80'
-              }`}
-            >
-              <span>
-                {isMinimumOrderMet
-                  ? `Continuar con ${totalItemsCount} Piezas (${formatRD(itemsSubtotal)})`
-                  : `Mínimo RD$ 1,500 a Domicilio (Faltan ${formatRD(amountMissingForMinimum)})`}
-              </span>
-              <ArrowRight className="w-4 h-4" />
-            </button>
-          </div>
-        </div>
-      )}
-
-      {/* ================= STEP 2: FABRIC & STAINS ================= */}
-      {currentStep === 2 && (
-        <div className="glass-card rounded-2xl p-6 sm:p-8 border border-dark-border animate-fadeIn space-y-8">
-          {/* Summary of items in step 2 */}
-          <div className="p-4 rounded-xl bg-dark-surface/60 border border-dark-border/80 flex items-center justify-between text-xs">
-            <div>
-              <span className="text-gray-400 block">Artículos seleccionados:</span>
-              <span className="font-bold text-white text-sm">
-                {totalItemsCount} piezas (
-                {selectedItems
-                  .map(
-                    (i) =>
-                      `${i.quantity}x ${i.name}${i.rugDimensions ? ` [${i.rugDimensions}]` : ''}`,
-                  )
-                  .join(', ')}
-                )
-              </span>
-            </div>
-            <button
-              type="button"
-              onClick={() => setCurrentStep(1)}
-              className="text-brand-400 hover:underline font-semibold"
-            >
-              Editar piezas
-            </button>
-          </div>
-
-          {/* Fabric Type */}
-          <div>
-            <h2 className="text-lg font-bold text-white mb-2 flex items-center gap-2">
-              <span className="text-brand-400">2A.</span> Tipo de Tejido / Tapicería Predominante:
-            </h2>
-            <p className="text-xs text-gray-400 mb-4">
-              Cada fibra reacciona a diferentes temperaturas y tensioactivos biodegradables
-              específicos.
-            </p>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              {FABRIC_OPTIONS.map((fab) => (
-                <button
-                  key={fab.id}
-                  onClick={() => setSelectedFabric(fab)}
-                  className={`p-3.5 rounded-xl border text-left transition-all ${
-                    selectedFabric.id === fab.id
-                      ? 'border-brand-500 bg-brand-500/10 tech-glow text-white'
-                      : 'border-dark-border bg-dark-surface/60 hover:bg-dark-hover text-gray-300'
-                  }`}
-                >
-                  <div className="flex justify-between items-center mb-1">
-                    <span className="font-semibold text-sm text-white">{fab.name}</span>
-                    <span className="text-xs font-mono text-brand-400">
-                      +{Math.round((fab.multiplier - 1) * 100)}%
-                    </span>
-                  </div>
-                  <p className="text-xs text-gray-400">{fab.desc}</p>
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Stain Severity */}
-          <div>
-            <h2 className="text-lg font-bold text-white mb-2 flex items-center gap-2">
-              <span className="text-brand-400">2B.</span> Severidad de Manchas:
-            </h2>
-            <p className="text-xs text-gray-400 mb-4">
-              Determina si se requiere formulación de enzimas bio-activas o tratamiento UV-C médico.
-            </p>
-
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-              {STAIN_OPTIONS.map((stain) => (
-                <button
-                  key={stain.id}
-                  onClick={() => setSelectedStain(stain)}
-                  className={`p-3.5 rounded-xl border text-left transition-all ${
-                    selectedStain.id === stain.id
-                      ? 'border-brand-500 bg-brand-500/10 tech-glow text-white'
-                      : 'border-dark-border bg-dark-surface/60 hover:bg-dark-hover text-gray-300'
-                  }`}
-                >
-                  <div className="font-semibold text-sm text-white mb-1">{stain.name}</div>
-                  <p className="text-xs text-gray-400 mb-2">{stain.desc}</p>
-                  <span className="text-xs font-bold text-brand-400">
-                    {stain.surcharge === 0 ? 'Sin recargo' : `+${formatRD(stain.surcharge)}`}
-                  </span>
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Photo Upload Pipeline */}
-          <div className="p-5 rounded-xl bg-dark-surface/60 border border-dark-border/80 space-y-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <h3 className="text-sm font-bold text-white flex items-center gap-2">
-                  <ImageIcon className="w-4 h-4 text-cyan-400" />
-                  <span>2C. Evidencia Fotográfica (Opcional)</span>
-                </h3>
-                <p className="text-[11px] text-gray-400">
-                  Sube fotos de manchas críticas para diagnóstico previo del técnico.
-                </p>
-              </div>
-              <span className="px-2 py-0.5 rounded text-[10px] font-mono bg-brand-500/10 text-brand-400 border border-brand-500/30">
-                Presigned URL
-              </span>
-            </div>
-
-            <label className="flex flex-col items-center justify-center p-6 border-2 border-dashed border-dark-border hover:border-brand-500/50 rounded-xl cursor-pointer bg-dark-bg/40 hover:bg-brand-500/5 transition-all">
-              <UploadCloud className="w-8 h-8 text-brand-400 mb-2" />
-              <span className="text-xs font-semibold text-gray-300">
-                Haz clic o arrastra fotos aquí
-              </span>
-              <span className="text-[10px] text-gray-500 mt-0.5">
-                PNG, JPG o WebP (Máx. 5MB por imagen)
-              </span>
-              <input
-                type="file"
-                accept="image/png,image/jpeg,image/webp"
-                onChange={handleFileUpload}
-                className="hidden"
-              />
-            </label>
-
-            {uploadedPhotos.length > 0 && (
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2">
-                {uploadedPhotos.map((photo) => (
-                  <div
-                    key={photo.id}
-                    className="relative group rounded-lg overflow-hidden border border-dark-border bg-dark-bg"
-                  >
-                    <img
-                      src={photo.preview}
-                      alt={photo.name}
-                      className="w-full h-20 object-cover"
-                    />
-                    <div className="p-1.5 flex justify-between items-center bg-dark-surface/90 text-[10px]">
-                      <span className="truncate max-w-[80px] text-gray-300">{photo.name}</span>
+                      {/* Add Button */}
                       <button
-                        onClick={() => handleRemovePhoto(photo.id)}
-                        className="text-red-400 hover:text-red-300"
+                        type="button"
+                        onClick={() => handleAddItem(product)}
+                        className="flex-1 flex items-center justify-center gap-1.5 py-2.5 px-4 rounded-xl bg-gradient-to-r from-brand-500 to-cyan-500 text-dark-bg font-extrabold text-xs tech-glow active:scale-95 transition-all shadow-md"
                       >
-                        <Trash2 className="w-3.5 h-3.5" />
+                        <Plus className="w-4 h-4" />
+                        <span>Agregar ({formatRD(previewTotal)})</span>
                       </button>
                     </div>
                   </div>
-                ))}
-              </div>
-            )}
+                );
+              })}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ================= STEP 2: TEJIDO, MANCHAS & FOTOS ================= */}
+      {currentStep === 2 && (
+        <div className="space-y-6 animate-fadeIn">
+          {/* Fabric Type Selector */}
+          <div className="glass-card rounded-3xl p-6 border border-dark-border space-y-4">
+            <div>
+              <h3 className="text-base font-extrabold text-white flex items-center gap-2">
+                <Layers className="w-4 h-4 text-brand-400" />
+                <span>Tipo de Tapicería / Tela</span>
+              </h3>
+              <p className="text-xs text-gray-400 mt-0.5">
+                Selecciona el material de tus piezas para ajustar el producto químico y la técnica de
+                secado.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              {FABRIC_OPTIONS.map((fab) => {
+                const isSelected = selectedFabric.id === fab.id;
+                return (
+                  <button
+                    key={fab.id}
+                    type="button"
+                    onClick={() => setSelectedFabric(fab)}
+                    className={`p-4 rounded-2xl text-left transition-all border flex flex-col justify-between ${
+                      isSelected
+                        ? 'bg-cyan-500/15 border-cyan-400 tech-glow-blue'
+                        : 'bg-dark-surface/80 border-dark-border hover:border-brand-500/30'
+                    }`}
+                  >
+                    <div className="flex items-center justify-between w-full">
+                      <span className="font-bold text-white text-sm">{fab.name}</span>
+                      {fab.multiplier > 1.0 && (
+                        <span className="text-[11px] font-mono text-cyan-300 font-semibold px-2 py-0.5 rounded-full bg-cyan-500/20">
+                          +{Math.round((fab.multiplier - 1) * 100)}% cuidado
+                        </span>
+                      )}
+                    </div>
+                    <span className="text-xs text-gray-400 mt-1">{fab.desc}</span>
+                  </button>
+                );
+              })}
+            </div>
           </div>
 
-          <div className="flex justify-between items-center pt-4 border-t border-dark-border/40">
+          {/* Stain Severity Selector */}
+          <div className="glass-card rounded-3xl p-6 border border-dark-border space-y-4">
+            <div>
+              <h3 className="text-base font-extrabold text-white flex items-center gap-2">
+                <Droplets className="w-4 h-4 text-cyan-400" />
+                <span>Nivel de Suciedad o Manchas</span>
+              </h3>
+              <p className="text-xs text-gray-400 mt-0.5">
+                Garantizamos tratamiento con desmanchador biodegradable y luz ultravioleta UV-C.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              {STAIN_OPTIONS.map((stain) => {
+                const isSelected = selectedStain.id === stain.id;
+                return (
+                  <button
+                    key={stain.id}
+                    type="button"
+                    onClick={() => setSelectedStain(stain)}
+                    className={`p-4 rounded-2xl text-left transition-all border flex flex-col justify-between ${
+                      isSelected
+                        ? 'bg-brand-500/15 border-brand-400 tech-glow'
+                        : 'bg-dark-surface/80 border-dark-border hover:border-brand-500/30'
+                    }`}
+                  >
+                    <div>
+                      <span className="font-bold text-white text-sm block">{stain.name}</span>
+                      <p className="text-xs text-gray-400 mt-1">{stain.desc}</p>
+                    </div>
+                    <span className="text-xs font-mono font-bold text-brand-400 mt-3 block">
+                      {stain.surcharge === 0 ? 'Sin recargo' : `+${formatRD(stain.surcharge)}`}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Photo Upload (Opcional) */}
+          <div className="glass-card rounded-3xl p-6 border border-dark-border space-y-3">
+            <div>
+              <h3 className="text-base font-extrabold text-white flex items-center gap-2">
+                <UploadCloud className="w-4 h-4 text-emerald-400" />
+                <span>Foto de tus Muebles (Opcional)</span>
+              </h3>
+              <p className="text-xs text-gray-400 mt-0.5">
+                Si deseas que el especialista prepare productos específicos antes de la visita, sube
+                una foto.
+              </p>
+            </div>
+
+            <div className="flex flex-col sm:flex-row items-center gap-4">
+              <label className="w-full sm:w-auto cursor-pointer flex items-center justify-center gap-2 px-6 py-3 rounded-2xl bg-dark-surface hover:bg-dark-hover border border-dark-border text-xs font-bold text-white transition-all">
+                <ImageIcon className="w-4 h-4 text-brand-400" />
+                <span>Seleccionar Imagen (Máx 5MB)</span>
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleFileUpload}
+                  className="hidden"
+                />
+              </label>
+
+              {uploadedPhotos.length > 0 && (
+                <div className="flex items-center gap-2 overflow-x-auto py-1">
+                  {uploadedPhotos.map((p) => (
+                    <div
+                      key={p.id}
+                      className="relative w-14 h-14 rounded-xl overflow-hidden border border-brand-500/40 shrink-0"
+                    >
+                      <Image src={p.preview} alt={p.name} fill className="object-cover" />
+                      <button
+                        type="button"
+                        onClick={() => handleRemovePhoto(p.id)}
+                        className="absolute top-0.5 right-0.5 w-4 h-4 rounded-full bg-red-600 text-white flex items-center justify-center text-[10px]"
+                      >
+                        ×
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Step 2 Buttons */}
+          <div className="flex items-center justify-between gap-3 pt-4">
             <button
+              type="button"
               onClick={() => setCurrentStep(1)}
-              className="flex items-center gap-2 text-sm text-gray-400 hover:text-white transition-colors"
+              className="flex items-center gap-2 px-5 py-3 rounded-2xl glass-panel text-xs text-gray-300 hover:text-white"
             >
               <ArrowLeft className="w-4 h-4" />
-              <span>Atrás</span>
+              <span>Volver a Piezas</span>
             </button>
+
             <button
+              type="button"
               onClick={() => setCurrentStep(3)}
-              className="flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-brand-500 to-cyan-500 text-dark-bg font-bold text-sm tech-glow active:scale-95 transition-transform"
+              className="flex items-center gap-2 px-7 py-3 rounded-2xl bg-gradient-to-r from-brand-500 to-cyan-500 text-dark-bg font-extrabold text-xs tech-glow active:scale-95 transition-all shadow-lg"
             >
-              <span>Ver Presupuesto Formal</span>
+              <span>Ver Resumen Final</span>
               <ArrowRight className="w-4 h-4" />
             </button>
           </div>
         </div>
       )}
 
-      {/* ================= STEP 3: FORMAL BUDGET (NO ANTICIPO) ================= */}
+      {/* ================= STEP 3: RESUMEN & CONFIRMACIÓN ================= */}
       {currentStep === 3 && (
-        <div className="glass-card rounded-2xl p-6 sm:p-8 border border-dark-border animate-fadeIn space-y-6">
-          <div className="flex items-center justify-between pb-4 border-b border-dark-border/60">
-            <div>
-              <h2 className="text-xl font-bold text-white flex items-center gap-2">
-                <span>Presupuesto Canónico MITEFREE</span>
-                <Lock className="w-4 h-4 text-emerald-400" />
-              </h2>
-              <p className="text-xs text-gray-400 flex items-center gap-1 mt-0.5">
-                <Clock className="w-3.5 h-3.5 text-cyan-400" />
-                <span>Precio congelado por 7 días calendario a partir de hoy</span>
-              </p>
+        <div className="space-y-6 animate-fadeIn">
+          {/* Big Summary Card */}
+          <div className="glass-card rounded-3xl p-6 sm:p-8 border border-dark-border space-y-6">
+            <div className="flex items-center justify-between pb-4 border-b border-dark-border/60">
+              <div>
+                <span className="text-xs font-mono uppercase tracking-wider text-brand-400 font-bold block">
+                  Resumen de tu Cotización
+                </span>
+                <h3 className="text-xl font-extrabold text-white mt-0.5">
+                  Desinfección & Lavado a Domicilio
+                </h3>
+              </div>
+              <div className="px-3.5 py-1.5 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 text-xs font-bold flex items-center gap-1.5">
+                <CheckCircle className="w-3.5 h-3.5" />
+                <span>0% Anticipo</span>
+              </div>
             </div>
-            <span className="px-2.5 py-1 rounded bg-brand-500/15 text-brand-400 text-xs font-semibold border border-brand-500/30">
-              COT-2026-OFICIAL
-            </span>
-          </div>
 
-          {/* Itemized Breakdown List */}
-          <div className="space-y-3 text-xs sm:text-sm">
-            <div className="pb-2 border-b border-dark-border/60">
-              <span className="text-xs font-bold uppercase tracking-wider text-gray-400 block mb-2">
-                Desglose de Artículos ({totalItemsCount} piezas):
+            {/* Items Breakdown */}
+            <div className="space-y-3 text-xs">
+              <span className="font-bold text-gray-400 uppercase tracking-wider block">
+                Artículos a tratar ({totalItemsCount} piezas):
               </span>
-              <div className="space-y-2">
-                {selectedItems.map((item) => (
-                  <div
-                    key={item.cartId}
-                    className="flex justify-between items-center py-1.5 px-3 rounded-lg bg-dark-surface/50 border border-dark-border/40 gap-2"
-                  >
-                    <div className="flex items-center gap-2 min-w-0 flex-1 pr-2">
-                      <span className="text-base shrink-0">{item.iconText}</span>
-                      <span className="text-white font-medium truncate">
-                        {item.quantity}x {item.name}
-                        {item.bothSides && ' (Ambos Lados)'}
-                        {item.extraSeats > 0 && ` (+${item.extraSeats} plazas extra)`}
-                        {item.rugDimensions && ` [${item.rugDimensions}]`}
-                      </span>
-                    </div>
-                    <span className="font-mono text-cyan-300 font-bold shrink-0">
-                      {formatRD(item.itemTotal)}
+              <div className="divide-y divide-dark-border/40">
+                {selectedItems.map((it) => (
+                  <div key={it.cartId} className="py-2.5 flex justify-between items-center">
+                    <span className="text-white font-medium">
+                      {it.quantity}x {it.name}
+                      {it.bothSides && ' (Ambos Lados)'}
+                      {it.extraSeats > 0 && ` (+${it.extraSeats} plazas)`}
+                    </span>
+                    <span className="font-mono font-bold text-brand-400">
+                      {formatRD(it.itemTotal)}
                     </span>
                   </div>
                 ))}
               </div>
             </div>
 
-            <div className="flex justify-between py-2 border-b border-dark-border/30">
-              <span className="text-gray-300">
-                Factor Tapicería / Fibra ({selectedFabric.name})
-              </span>
-              <span className="font-mono text-brand-400">×{fabricMultiplier.toFixed(2)}</span>
-            </div>
-
-            <div className="flex justify-between py-2 border-b border-dark-border/30">
-              <span className="text-gray-300">Tratamiento Manchas ({selectedStain.name})</span>
-              <span className="font-mono text-white font-semibold">
-                +{formatRD(stainSurcharge)}
-              </span>
-            </div>
-
-            {discountApplied > 0 && (
-              <div className="flex justify-between py-2 border-b border-dark-border/30 text-emerald-400">
-                <span>Descuento Cupón Aplicado</span>
-                <span className="font-mono">-{formatRD(discountApplied)}</span>
+            {/* Treatment Specifications */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-3 border-t border-dark-border/60 text-xs">
+              <div className="p-3 rounded-xl bg-dark-surface/60 border border-dark-border">
+                <span className="text-gray-400 block">Tipo de Tapicería:</span>
+                <span className="font-bold text-white">{selectedFabric.name}</span>
               </div>
-            )}
-
-            {walletCreditApplied > 0 && (
-              <div className="flex justify-between py-2 border-b border-dark-border/30 text-cyan-400">
-                <span>Crédito Billetera Cashback</span>
-                <span className="font-mono">-{formatRD(walletCreditApplied)}</span>
-              </div>
-            )}
-          </div>
-
-          {/* Promotional options */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
-            {/* Coupon Input */}
-            <div className="p-3.5 rounded-xl bg-dark-surface/60 border border-dark-border/60">
-              <span className="text-xs font-semibold text-gray-300 block mb-2">
-                Cupón Promocional:
-              </span>
-              <div className="flex gap-2">
-                <input
-                  type="text"
-                  placeholder="ej: ALRPROMO"
-                  value={promoCode}
-                  onChange={(e) => setPromoCode(e.target.value)}
-                  disabled={couponApplied}
-                  className="flex-1 px-3 py-1.5 rounded-lg glass-input text-xs text-white placeholder-gray-500 focus:outline-none focus:border-brand-500"
-                />
-                <button
-                  onClick={handleApplyCoupon}
-                  disabled={couponApplied}
-                  className="px-3 py-1.5 rounded-lg bg-dark-hover hover:bg-dark-border text-xs font-semibold text-brand-400 border border-dark-border"
-                >
-                  {couponApplied ? 'Aplicado' : 'Aplicar'}
-                </button>
+              <div className="p-3 rounded-xl bg-dark-surface/60 border border-dark-border">
+                <span className="text-gray-400 block">Tratamiento de Manchas:</span>
+                <span className="font-bold text-white">{selectedStain.name}</span>
               </div>
             </div>
 
-            {/* Wallet Cashback Toggle */}
-            <div className="p-3.5 rounded-xl bg-dark-surface/60 border border-dark-border/60 flex items-center justify-between">
-              <div>
-                <span className="text-xs font-semibold text-gray-300 flex items-center gap-1.5">
-                  <Wallet className="w-3.5 h-3.5 text-cyan-400" />
-                  <span>Billetera Cashback</span>
-                </span>
-                <p className="text-[11px] text-gray-400">
-                  Saldo: {formatRD(walletBalanceAvailable)} | Máx: {formatRD(maxRedeemableCap)}
-                </p>
+            {/* Coupon & Cashback */}
+            <div className="p-4 rounded-2xl bg-dark-surface/80 border border-dark-border space-y-3">
+              <div className="flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
+                <div className="flex items-center gap-2 w-full sm:w-auto">
+                  <Tag className="w-4 h-4 text-brand-400" />
+                  <span className="text-gray-300 font-semibold">¿Tienes cupón de descuento?</span>
+                </div>
+                <div className="flex items-center gap-2 w-full sm:w-auto">
+                  <input
+                    type="text"
+                    value={promoCode}
+                    onChange={(e) => setPromoCode(e.target.value)}
+                    placeholder="Ej. ALRPROMO"
+                    className="px-3 py-1.5 rounded-xl bg-dark-bg border border-dark-border text-white text-xs font-mono uppercase focus:border-brand-500 outline-none w-full sm:w-36"
+                  />
+                  <button
+                    type="button"
+                    onClick={handleApplyCoupon}
+                    className="px-4 py-1.5 rounded-xl bg-brand-500/15 border border-brand-500/30 text-brand-300 font-bold hover:bg-brand-500/25 transition-colors whitespace-nowrap"
+                  >
+                    {couponApplied ? 'Aplicado' : 'Aplicar'}
+                  </button>
+                </div>
               </div>
+
+              {couponApplied && (
+                <div className="text-xs text-emerald-400 font-semibold flex items-center gap-1.5">
+                  <Check className="w-4 h-4" />
+                  <span>Descuento de {formatRD(couponDiscount)} aplicado exitosamente.</span>
+                </div>
+              )}
+            </div>
+
+            {/* Final Total Box */}
+            <div className="p-6 rounded-3xl bg-dark-surface/90 border border-brand-500/40 tech-glow space-y-3">
+              <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-2">
+                <div>
+                  <span className="text-xs uppercase tracking-wider text-gray-400 block">
+                    Total Final a Pagar:
+                  </span>
+                  <span className="text-3xl sm:text-4xl font-extrabold text-white font-mono tracking-tight">
+                    {formatRD(total)}{' '}
+                    <span className="text-xs font-sans text-brand-400 font-normal">DOP</span>
+                  </span>
+                </div>
+                <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 text-xs font-bold">
+                  <ShieldCheck className="w-4 h-4 text-emerald-400" />
+                  <span>Pagas 100% al finalizar tu servicio</span>
+                </div>
+              </div>
+
+              <p className="text-xs text-gray-300 leading-relaxed pt-2 border-t border-dark-border/40">
+                Cobertura en <strong>San Pedro de Macorís</strong>, <strong>La Romana</strong> y{' '}
+                <strong>Santo Domingo Este</strong>. No cobramos adelanto; pagas cuando veas tus
+                muebles limpios y desinfectados.
+              </p>
+            </div>
+
+            {/* Actions: Agendar Online / Pedir por WhatsApp */}
+            <div className="flex flex-col sm:flex-row gap-3 pt-2">
               <button
                 type="button"
-                onClick={() => setUseWalletCashback(!useWalletCashback)}
-                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
-                  useWalletCashback
-                    ? 'bg-emerald-500 text-dark-bg'
-                    : 'bg-dark-hover text-gray-300 border border-dark-border'
-                }`}
+                onClick={() => setCurrentStep(2)}
+                className="flex items-center justify-center gap-2 py-3 px-4 rounded-2xl glass-panel text-xs text-gray-300 hover:text-white"
               >
-                {useWalletCashback ? 'Canjeado' : 'Canjear'}
+                <ArrowLeft className="w-4 h-4" />
+                <span>Atrás</span>
+              </button>
+
+              <a
+                href={`https://wa.me/18095134773?text=${generateWhatsAppMessage()}`}
+                target="_blank"
+                rel="noreferrer"
+                className="flex items-center justify-center gap-2.5 py-3.5 px-6 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs sm:text-sm transition-all shadow-md active:scale-95"
+              >
+                <MessageCircle className="w-4 h-4" />
+                <span>Pedir por WhatsApp (809-513-4773)</span>
+              </a>
+
+              <button
+                type="button"
+                onClick={handleProceedToSchedule}
+                disabled={isSubmittingQuotation}
+                className="flex-1 flex items-center justify-center gap-2.5 py-3.5 px-6 rounded-2xl bg-gradient-to-r from-brand-500 to-cyan-500 text-dark-bg font-extrabold text-xs sm:text-sm tech-glow shadow-lg active:scale-95 transition-all text-center disabled:opacity-50"
+              >
+                <span>
+                  {isSubmittingQuotation
+                    ? 'Preparando Agenda...'
+                    : 'Agendar Fecha y Hora en Línea'}
+                </span>
+                <ArrowRight className="w-4 h-4" />
               </button>
             </div>
           </div>
+        </div>
+      )}
 
-          {/* Total Box (SIN ANTICIPO - 100% AL FINALIZAR) */}
-          <div className="p-6 rounded-2xl bg-dark-surface/90 border border-brand-500/40 tech-glow space-y-4">
-            <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-2">
-              <div>
-                <span className="text-xs uppercase tracking-wider text-gray-400 block">
-                  Total Estimado del Servicio:
-                </span>
-                <span className="text-3xl sm:text-4xl font-extrabold text-white font-mono tracking-tight">
-                  {formatRD(total)}{' '}
-                  <span className="text-xs font-sans text-brand-400 font-normal">DOP</span>
-                </span>
-              </div>
-
-              {/* Badge Sin Anticipo */}
-              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 text-xs font-bold">
-                <ShieldCheck className="w-4 h-4 text-emerald-400" />
-                <span>0% Anticipo · Pagas al Finalizar</span>
-              </div>
-            </div>
-
-            {/* Banner de Garantía y Pago al Finalizar */}
-            <div className="p-3.5 rounded-xl bg-dark-bg/80 border border-emerald-500/30 flex items-start gap-3">
-              <Check className="w-5 h-5 text-emerald-400 shrink-0 mt-0.5" />
-              <div className="text-xs">
-                <span className="font-bold text-white block">
-                  Servicio a Domicilio Especializado · Sin Anticipo
-                </span>
-                <p className="text-gray-300 mt-0.5 leading-relaxed">
-                  Condición de visita técnica hospitalaria (mínimo{' '}
-                  <strong className="text-white">RD$ 1,500</strong>) cumplida con éxito. No cobramos
-                  ningún adelanto; el pago total de{' '}
-                  <strong className="text-emerald-400 font-mono">{formatRD(total)}</strong> se
-                  realiza cuando el técnico concluya el servicio y tú verifiques el resultado y la
-                  desinfección.
-                </p>
-              </div>
-            </div>
+      {/* Floating Sticky Bottom Bar for Mobile (Visible when items are in cart) */}
+      {selectedItems.length > 0 && currentStep === 1 && (
+        <div className="md:hidden fixed bottom-16 left-3 right-3 z-40 p-3 rounded-2xl glass-panel border border-brand-500/40 tech-glow flex items-center justify-between shadow-2xl backdrop-blur-xl">
+          <div>
+            <span className="text-[10px] text-gray-400 block font-mono">
+              {totalItemsCount} {totalItemsCount === 1 ? 'pieza' : 'piezas'}
+            </span>
+            <span className="text-base font-extrabold text-brand-300 font-mono">
+              {formatRD(itemsSubtotal)}
+            </span>
           </div>
 
-          {/* Action buttons */}
-          <div className="flex flex-col sm:flex-row gap-3 pt-4">
-            <button
-              onClick={() => setCurrentStep(1)}
-              className="flex items-center justify-center gap-2 py-3 px-4 rounded-xl glass-panel text-xs text-gray-300 hover:text-white"
-            >
-              <ArrowLeft className="w-4 h-4" />
-              <span>Modificar Piezas</span>
-            </button>
-
-            <button
-              onClick={handleDownloadPdf}
-              className="flex items-center justify-center gap-2 py-3 px-5 rounded-xl border border-cyan-500/40 bg-cyan-500/10 text-cyan-300 hover:bg-cyan-500/20 text-xs font-bold transition-colors"
-            >
-              <Download className="w-4 h-4" />
-              <span>Descargar Presupuesto</span>
-            </button>
-
-            <a
-              href={`https://wa.me/18095134773?text=${generateWhatsAppMessage()}`}
-              target="_blank"
-              rel="noreferrer"
-              className="flex items-center justify-center gap-2 py-3.5 px-5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs transition-colors shadow-md"
-            >
-              <MessageCircle className="w-4 h-4" />
-              <span>Pedir por WhatsApp (809-513-4773)</span>
-            </a>
-
-            <button
-              type="button"
-              onClick={handleProceedToSchedule}
-              disabled={isSubmittingQuotation}
-              className="flex-1 flex items-center justify-center gap-2.5 py-3.5 px-6 rounded-xl bg-gradient-to-r from-brand-500 to-cyan-500 text-dark-bg font-bold text-sm tech-glow shadow-lg active:scale-95 transition-transform text-center disabled:opacity-50"
-            >
-              <span>
-                {isSubmittingQuotation ? 'Guardando Cotización...' : 'Agendar Cuadrilla Online'}
-              </span>
-              <ArrowRight className="w-4 h-4" />
-            </button>
-          </div>
+          <button
+            type="button"
+            onClick={() => {
+              if (!isMinimumOrderMet) {
+                alert(
+                  `Faltan RD$ ${amountMissingForMinimum.toLocaleString('es-DO')} para el mínimo a domicilio de RD$ 1,500.`,
+                );
+                return;
+              }
+              setCurrentStep(2);
+            }}
+            disabled={!isMinimumOrderMet}
+            className={`flex items-center gap-1.5 px-4 py-2.5 rounded-xl font-bold text-xs transition-all ${
+              isMinimumOrderMet
+                ? 'bg-gradient-to-r from-brand-500 to-cyan-500 text-dark-bg tech-glow shadow-md active:scale-95'
+                : 'bg-dark-surface border border-dark-border text-gray-500 opacity-75'
+            }`}
+          >
+            <span>{isMinimumOrderMet ? 'Continuar' : `Faltan ${formatRD(amountMissingForMinimum)}`}</span>
+            <ArrowRight className="w-3.5 h-3.5" />
+          </button>
         </div>
       )}
     </div>
+  );
+}
+
+export default function CotizadorPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="max-w-4xl mx-auto px-4 py-16 text-center text-gray-400">
+          Cargando catálogo de servicios Mite Free Clean...
+        </div>
+      }
+    >
+      <CotizadorContent />
+    </Suspense>
   );
 }
