@@ -13,6 +13,9 @@ import type {
   QuotationResponseDto,
   DiscountPolicyConfig,
   ClientDirectoryItemDto,
+  CatalogItem,
+  CreateCatalogItemDto,
+  UpdateCatalogItemDto,
 } from '@mitefree/shared-types';
 
 export type ApiResult<T> =
@@ -127,5 +130,27 @@ export const adminApiClient = {
 
   clients: {
     getAll: () => request<ClientDirectoryItemDto[]>('/auth/clients'),
+  },
+
+  catalog: {
+    getAll: () => request<CatalogItem[]>('/catalog'),
+    create: (body: CreateCatalogItemDto) =>
+      request<CatalogItem>('/catalog', {
+        method: 'POST',
+        body: JSON.stringify(body),
+      }),
+    update: (id: string, body: UpdateCatalogItemDto) =>
+      request<CatalogItem>(`/catalog/${id}`, {
+        method: 'PUT',
+        body: JSON.stringify(body),
+      }),
+    delete: (id: string) =>
+      request<{ success: boolean; id: string }>(`/catalog/${id}`, {
+        method: 'DELETE',
+      }),
+    reset: () =>
+      request<CatalogItem[]>('/catalog/reset', {
+        method: 'POST',
+      }),
   },
 };

@@ -9,3 +9,4 @@ export * from './dtos/payment-transaction.dto';
 export * from './dtos/loyalty-wallet.dto';
 export * from './dtos/discount-policy.dto';
 export * from './dtos/auth.dto';
+export * from './dtos/catalog.dto';

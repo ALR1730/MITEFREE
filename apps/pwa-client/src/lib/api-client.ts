@@ -27,6 +27,7 @@ import type {
   WhatsAppOtpLoginDto,
   AuthResponseDto,
   UserProfileDto,
+  CatalogItem,
 } from '@mitefree/shared-types';
 
 export type ApiResult<T> =
@@ -185,5 +186,9 @@ export const apiClient = {
       request<UserProfileDto>('/auth/me', {
         headers: token ? { Authorization: `Bearer ${token}` } : {},
       }),
+  },
+
+  catalog: {
+    getAll: () => request<CatalogItem[]>('/catalog'),
   },
 };

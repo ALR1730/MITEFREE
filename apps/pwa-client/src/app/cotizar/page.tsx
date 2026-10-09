@@ -6,7 +6,13 @@ import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
 import { apiClient } from '@/lib/api-client';
-import type { FabricType, StainSeverity } from '@mitefree/shared-types';
+import {
+  type FabricType,
+  type StainSeverity,
+  type CatalogItem,
+  type MainCategory,
+  DEFAULT_CATALOG_ITEMS,
+} from '@mitefree/shared-types';
 import {
   Sparkles,
   ArrowRight,
@@ -38,22 +44,7 @@ import {
   ChevronDown,
 } from 'lucide-react';
 
-export interface CatalogItem {
-  id: string;
-  name: string;
-  category: 'Colchones' | 'Muebles de Sala' | 'Sillas de Comedor' | 'Alfombras';
-  basePrice: number;
-  bothSidesPrice?: number;
-  iconText: string;
-  image: string;
-  subtitle: string;
-  isMattress?: boolean;
-  isSofaModular?: boolean;
-  isChair?: boolean;
-  isRug?: boolean;
-  dimensions?: string;
-  isCustomRug?: boolean;
-}
+export type { CatalogItem };
 
 export interface SelectedQuoteItem {
   cartId: string;
@@ -68,160 +59,6 @@ export interface SelectedQuoteItem {
   unitPrice: number;
   itemTotal: number;
 }
-
-const CATALOG_ITEMS: CatalogItem[] = [
-  // 1. Lavado de Colchones
-  {
-    id: 'mat-full',
-    name: 'Colchón Matrimonial (Full)',
-    category: 'Colchones',
-    basePrice: 2500,
-    bothSidesPrice: 3000,
-    iconText: '🛏️',
-    image: '/cat-mattress.jpg',
-    isMattress: true,
-    subtitle: '1 lado RD$ 2,500 · Ambos lados RD$ 3,000',
-  },
-  {
-    id: 'mat-queen',
-    name: 'Colchón Queen Size',
-    category: 'Colchones',
-    basePrice: 3000,
-    bothSidesPrice: 3500,
-    iconText: '🛏️',
-    image: '/cat-mattress.jpg',
-    isMattress: true,
-    subtitle: '1 lado RD$ 3,000 · Ambos lados RD$ 3,500',
-  },
-  {
-    id: 'mat-king',
-    name: 'Colchón King Size',
-    category: 'Colchones',
-    basePrice: 3500,
-    bothSidesPrice: 4000,
-    iconText: '🛏️',
-    image: '/cat-mattress.jpg',
-    isMattress: true,
-    subtitle: '1 lado RD$ 3,500 · Ambos lados RD$ 4,000',
-  },
-
-  // 2. Muebles de Sala
-  {
-    id: 'sofa-1',
-    name: 'Mueble 1 Plaza (Sillón Individual)',
-    category: 'Muebles de Sala',
-    basePrice: 1500,
-    iconText: '🛋️',
-    image: '/cat-sofa.jpg',
-    subtitle: 'Tarifa estándar RD$ 1,500',
-  },
-  {
-    id: 'sofa-2',
-    name: 'Mueble 2 Plazas (Love Seat)',
-    category: 'Muebles de Sala',
-    basePrice: 2000,
-    iconText: '🛋️',
-    image: '/cat-sofa.jpg',
-    subtitle: 'Tarifa estándar RD$ 2,000',
-  },
-  {
-    id: 'sofa-3',
-    name: 'Mueble 3 Plazas',
-    category: 'Muebles de Sala',
-    basePrice: 2500,
-    iconText: '🛋️',
-    image: '/cat-sofa.jpg',
-    subtitle: 'Tarifa estándar RD$ 2,500',
-  },
-  {
-    id: 'sofa-4',
-    name: 'Mueble 4 Plazas',
-    category: 'Muebles de Sala',
-    basePrice: 3000,
-    iconText: '🛋️',
-    image: '/cat-sofa.jpg',
-    subtitle: 'Tarifa estándar RD$ 3,000',
-  },
-  {
-    id: 'sofa-5',
-    name: 'Mueble 5 Plazas (Modular en L)',
-    category: 'Muebles de Sala',
-    basePrice: 3500,
-    iconText: '🛋️',
-    image: '/cat-sofa.jpg',
-    isSofaModular: true,
-    subtitle: 'Base 5 plazas RD$ 3,500 (+RD$ 500 c/u extra)',
-  },
-
-  // 3. Sillas de Comedor
-  {
-    id: 'dining-chair',
-    name: 'Sillas de Comedor',
-    category: 'Sillas de Comedor',
-    basePrice: 300,
-    iconText: '🪑',
-    image: '/cat-chair.jpg',
-    isChair: true,
-    subtitle: 'RD$ 300 cada una (juegos de 4 o más)',
-  },
-
-  // 4. Lavado y Desinfección de Alfombras
-  {
-    id: 'rug-small',
-    name: 'Alfombra Pequeña / Pie de Cama',
-    category: 'Alfombras',
-    basePrice: 600,
-    iconText: '🧶',
-    image: '/cat-rug.jpg',
-    isRug: true,
-    dimensions: 'Hasta 1.50m × 0.80m (~1.2 m²)',
-    subtitle: 'Ideal para pasillo o pie de cama (RD$ 600)',
-  },
-  {
-    id: 'rug-medium',
-    name: 'Alfombra Mediana (Área / Sala)',
-    category: 'Alfombras',
-    basePrice: 1200,
-    iconText: '🧶',
-    image: '/cat-rug.jpg',
-    isRug: true,
-    dimensions: '2.00m × 1.50m (~3.0 m²)',
-    subtitle: 'Área común o sala estándar (RD$ 1,200)',
-  },
-  {
-    id: 'rug-large',
-    name: 'Alfombra Grande (Sala Principal)',
-    category: 'Alfombras',
-    basePrice: 1800,
-    iconText: '🧶',
-    image: '/cat-rug.jpg',
-    isRug: true,
-    dimensions: '2.50m × 2.00m (~5.0 m²)',
-    subtitle: 'Sala principal o comedor formal (RD$ 1,800)',
-  },
-  {
-    id: 'rug-xlarge',
-    name: 'Alfombra Extra Grande / Salón',
-    category: 'Alfombras',
-    basePrice: 2500,
-    iconText: '🧶',
-    image: '/cat-rug.jpg',
-    isRug: true,
-    dimensions: '3.00m × 2.50m (~7.5 m²)',
-    subtitle: 'Salones amplios o áreas ejecutivas (RD$ 2,500)',
-  },
-  {
-    id: 'rug-custom',
-    name: 'Alfombra por Medida Personalizada',
-    category: 'Alfombras',
-    basePrice: 300, // RD$ 300 por m²
-    iconText: '📏',
-    image: '/cat-rug.jpg',
-    isRug: true,
-    isCustomRug: true,
-    subtitle: 'Ajusta largo y ancho en metros (RD$ 300 / m²)',
-  },
-];
 
 const FABRIC_OPTIONS = [
   {
@@ -329,6 +166,46 @@ function CotizadorContent() {
   const [selectedMainCategory, setSelectedMainCategory] =
     useState<MainCategoryId>(validInitialCat);
 
+  // Catálogo dinámico reactivo sincronizado con Admin Portal y API
+  const [catalogItems, setCatalogItems] = useState<CatalogItem[]>(DEFAULT_CATALOG_ITEMS);
+
+  useEffect(() => {
+    async function loadCatalog() {
+      try {
+        const res = await apiClient.catalog.getAll();
+        if (res.success && res.data && res.data.length > 0) {
+          setCatalogItems(res.data);
+          if (typeof window !== 'undefined') {
+            localStorage.setItem('mitefree_catalog_items', JSON.stringify(res.data));
+          }
+          return;
+        }
+      } catch {
+        // Fallback a almacenamiento local
+      }
+
+      if (typeof window !== 'undefined') {
+        const cached = localStorage.getItem('mitefree_catalog_items');
+        if (cached) {
+          try {
+            setCatalogItems(JSON.parse(cached));
+          } catch {
+            // Ignorar
+          }
+        }
+      }
+    }
+    loadCatalog();
+  }, []);
+
+  const getCategoryStartingPrice = (catId: MainCategoryId) => {
+    const items = catalogItems.filter((i) => i.category === catId);
+    if (items.length === 0) return 'Tarifa personalizada';
+    const min = Math.min(...items.map((i) => i.basePrice));
+    if (catId === 'Sillas de Comedor') return `RD$ ${min.toLocaleString('es-DO')} por silla`;
+    return `Desde RD$ ${min.toLocaleString('es-DO')}`;
+  };
+
   const [selectedItemId, setSelectedItemId] = useState<string>(
     validInitialCat === 'Colchones'
       ? 'mat-full'
@@ -346,10 +223,11 @@ function CotizadorContent() {
       ['Colchones', 'Muebles de Sala', 'Sillas de Comedor', 'Alfombras'].includes(cat)
     ) {
       setSelectedMainCategory(cat as MainCategoryId);
-      const def = MAIN_CATEGORIES.find((c) => c.id === cat)?.defaultItemId || 'mat-full';
+      const available = catalogItems.filter((c) => c.category === cat);
+      const def = available[0]?.id || MAIN_CATEGORIES.find((c) => c.id === cat)?.defaultItemId || 'mat-full';
       setSelectedItemId(def);
     }
-  }, [searchParams]);
+  }, [searchParams, catalogItems]);
 
   const scrollToSection = (sectionId: string, offset = 80) => {
     if (typeof window === 'undefined') return;
@@ -363,8 +241,10 @@ function CotizadorContent() {
 
   const handleSelectCategory = (catId: MainCategoryId) => {
     setSelectedMainCategory(catId);
-    const def = MAIN_CATEGORIES.find((c) => c.id === catId)?.defaultItemId || 'mat-full';
-    setSelectedItemId(def);
+    const available = catalogItems.filter((c) => c.category === catId);
+    if (available.length > 0 && !available.some((i) => i.id === selectedItemId)) {
+      setSelectedItemId(available[0]!.id);
+    }
     scrollToSection('customizer-section', 70);
   };
 
@@ -381,7 +261,7 @@ function CotizadorContent() {
   const handleSelectChairPreset = (count: number) => {
     setTempQuantity((prev) => ({
       ...prev,
-      ['dining-chair']: count,
+      [selectedItemId]: count,
     }));
     scrollToSection('active-quantity-section', 80);
   };
@@ -419,6 +299,25 @@ function CotizadorContent() {
   const [useWalletCashback, setUseWalletCashback] = useState<boolean>(false);
 
   const walletBalanceAvailable = user?.walletBalance ?? 500.0;
+
+  const goToStep = (step: number) => {
+    setCurrentStep(step);
+    if (typeof window !== 'undefined') {
+      setTimeout(() => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }, 50);
+    }
+  };
+
+  const handleSelectFabric = (fab: (typeof FABRIC_OPTIONS)[number]) => {
+    setSelectedFabric(fab);
+    scrollToSection('stains-section', 70);
+  };
+
+  const handleSelectStain = (stain: (typeof STAIN_OPTIONS)[number]) => {
+    setSelectedStain(stain);
+    scrollToSection('step2-actions-section', 70);
+  };
 
   const formatRD = (amount: number) => `RD$ ${Math.round(amount).toLocaleString('es-DO')}`;
 
@@ -489,7 +388,10 @@ function CotizadorContent() {
 
   // Ítem actualmente seleccionado para personalización dinámica (Formato de Photo 2 & 3)
   const currentCatalogItem =
-    CATALOG_ITEMS.find((it) => it.id === selectedItemId) || CATALOG_ITEMS[0]!;
+    catalogItems.find((it) => it.id === selectedItemId) ||
+    catalogItems.find((it) => it.category === selectedMainCategory) ||
+    catalogItems[0] ||
+    DEFAULT_CATALOG_ITEMS[0]!;
   const currentBothSides = tempBothSides[currentCatalogItem.id] ?? false;
   const currentExtraSeats = tempExtraSeats[currentCatalogItem.id] ?? 0;
   const currentQty = tempQuantity[currentCatalogItem.id] ?? (currentCatalogItem.isChair ? 4 : 1);
@@ -554,7 +456,7 @@ function CotizadorContent() {
     }
 
     setSelectedItems(updatedList);
-    setCurrentStep(2);
+    goToStep(2);
   };
 
   const handleProceedWithExistingItems = () => {
@@ -564,7 +466,7 @@ function CotizadorContent() {
       );
       return;
     }
-    setCurrentStep(2);
+    goToStep(2);
   };
 
   const handleProceedFromCustomizer = () => {
@@ -616,7 +518,7 @@ function CotizadorContent() {
       return;
     }
 
-    setCurrentStep(2);
+    goToStep(2);
   };
 
   const handleUpdateItemQuantity = (cartId: string, delta: number) => {
@@ -776,7 +678,7 @@ Por favor confírmenme disponibilidad para mi zona (San Pedro / La Romana / Sant
     router.push(`/agenda?total=${total}&deposit=${Math.round(total * 0.3)}`);
   };
 
-  const filteredCatalog = CATALOG_ITEMS.filter((item) => {
+  const filteredCatalog = catalogItems.filter((item) => {
     return item.category === selectedMainCategory;
   });
 
@@ -808,8 +710,8 @@ Por favor confírmenme disponibilidad para mi zona (San Pedro / La Romana / Sant
               <button
                 type="button"
                 onClick={() => {
-                  if (s.num === 1) setCurrentStep(1);
-                  if (s.num === 2 && isMinimumOrderMet) setCurrentStep(2);
+                  if (s.num === 1) goToStep(1);
+                  if (s.num === 2 && isMinimumOrderMet) goToStep(2);
                 }}
                 className={`w-9 h-9 rounded-full flex items-center justify-center font-bold text-xs transition-all shrink-0 ${
                   currentStep >= s.num
@@ -871,7 +773,7 @@ Por favor confírmenme disponibilidad para mi zona (San Pedro / La Romana / Sant
                       );
                       return;
                     }
-                    setCurrentStep(2);
+                    goToStep(2);
                   }}
                   disabled={!isMinimumOrderMet}
                   className={`w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-3.5 rounded-full font-extrabold text-xs sm:text-sm transition-all shadow-lg ${
@@ -1043,7 +945,7 @@ Por favor confírmenme disponibilidad para mi zona (San Pedro / La Romana / Sant
                           {cat.name}
                         </span>
                         <span className="block text-xs text-gray-400 mt-0.5">
-                          {cat.priceStarting}
+                          {getCategoryStartingPrice(cat.id)}
                         </span>
                       </div>
                       <div className="flex items-center gap-1.5">
@@ -1101,27 +1003,35 @@ Por favor confírmenme disponibilidad para mi zona (San Pedro / La Romana / Sant
                     Tamaño del colchón
                   </label>
                   <div className="space-y-2">
-                    {[
-                      { id: 'mat-full', label: 'Matrimonial (Full) — RD$ 2,500' },
-                      { id: 'mat-queen', label: 'Queen Size — RD$ 3,000' },
-                      { id: 'mat-king', label: 'King Size — RD$ 3,500' },
-                    ].map((opt) => (
+                    {filteredCatalog.map((item) => (
                       <label
-                        key={opt.id}
-                        className={`flex items-center gap-3 p-3 rounded-2xl cursor-pointer transition-all border ${
-                          selectedItemId === opt.id
+                        key={item.id}
+                        className={`flex items-center justify-between p-3 rounded-2xl cursor-pointer transition-all border ${
+                          selectedItemId === item.id
                             ? 'bg-brand-500/15 border-brand-400 text-white font-bold'
                             : 'bg-dark-surface/70 border-dark-border text-gray-300 hover:bg-dark-surface'
                         }`}
                       >
-                        <input
-                          type="radio"
-                          name="selectedMattressModel"
-                          checked={selectedItemId === opt.id}
-                          onChange={() => handleSelectModel(opt.id)}
-                          className="w-4 h-4 accent-cyan-400 cursor-pointer"
-                        />
-                        <span className="text-xs sm:text-sm">{opt.label}</span>
+                        <div className="flex items-center gap-3">
+                          <input
+                            type="radio"
+                            name="selectedMattressModel"
+                            checked={selectedItemId === item.id}
+                            onChange={() => handleSelectModel(item.id)}
+                            className="w-4 h-4 accent-cyan-400 cursor-pointer"
+                          />
+                          <div>
+                            <span className="text-xs sm:text-sm block">{item.name}</span>
+                            {item.subtitle && (
+                              <span className="text-[11px] text-gray-400 block font-normal">
+                                {item.subtitle}
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                        <span className="text-xs font-mono font-bold text-cyan-300 shrink-0 ml-2">
+                          RD$ {item.basePrice.toLocaleString('es-DO')}
+                        </span>
                       </label>
                     ))}
                   </div>
@@ -1152,7 +1062,12 @@ Por favor confírmenme disponibilidad para mi zona (San Pedro / La Romana / Sant
                           : 'bg-dark-surface border-dark-border text-gray-400 hover:text-white'
                       }`}
                     >
-                      Ambos lados (+RD$ 500)
+                      Ambos lados (+RD${' '}
+                      {(currentCatalogItem.bothSidesPrice
+                        ? currentCatalogItem.bothSidesPrice - currentCatalogItem.basePrice
+                        : 500
+                      ).toLocaleString('es-DO')}
+                      )
                     </button>
                   </div>
                 </div>
@@ -1206,35 +1121,41 @@ Por favor confírmenme disponibilidad para mi zona (San Pedro / La Romana / Sant
                     Tamaño y tipo de mueble
                   </label>
                   <div className="space-y-2">
-                    {[
-                      { id: 'sofa-1', label: '1 Plaza (Sillón Individual) — RD$ 1,500' },
-                      { id: 'sofa-2', label: '2 Plazas (Love Seat) — RD$ 2,000' },
-                      { id: 'sofa-3', label: '3 Plazas — RD$ 2,500' },
-                      { id: 'sofa-4', label: '4 Plazas — RD$ 3,000' },
-                      { id: 'sofa-5', label: '5 Plazas (Modular en L) — RD$ 3,500' },
-                    ].map((opt) => (
+                    {filteredCatalog.map((item) => (
                       <label
-                        key={opt.id}
-                        className={`flex items-center gap-3 p-3 rounded-2xl cursor-pointer transition-all border ${
-                          selectedItemId === opt.id
+                        key={item.id}
+                        className={`flex items-center justify-between p-3 rounded-2xl cursor-pointer transition-all border ${
+                          selectedItemId === item.id
                             ? 'bg-brand-500/15 border-brand-400 text-white font-bold'
                             : 'bg-dark-surface/70 border-dark-border text-gray-300 hover:bg-dark-surface'
                         }`}
                       >
-                        <input
-                          type="radio"
-                          name="selectedSofaModel"
-                          checked={selectedItemId === opt.id}
-                          onChange={() => handleSelectModel(opt.id)}
-                          className="w-4 h-4 accent-cyan-400 cursor-pointer"
-                        />
-                        <span className="text-xs sm:text-sm">{opt.label}</span>
+                        <div className="flex items-center gap-3">
+                          <input
+                            type="radio"
+                            name="selectedSofaModel"
+                            checked={selectedItemId === item.id}
+                            onChange={() => handleSelectModel(item.id)}
+                            className="w-4 h-4 accent-cyan-400 cursor-pointer"
+                          />
+                          <div>
+                            <span className="text-xs sm:text-sm block">{item.name}</span>
+                            {item.subtitle && (
+                              <span className="text-[11px] text-gray-400 block font-normal">
+                                {item.subtitle}
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                        <span className="text-xs font-mono font-bold text-cyan-300 shrink-0 ml-2">
+                          RD$ {item.basePrice.toLocaleString('es-DO')}
+                        </span>
                       </label>
                     ))}
                   </div>
                 </div>
 
-                {selectedItemId === 'sofa-5' && (
+                {(currentCatalogItem.isSofaModular || selectedItemId === 'sofa-5') && (
                   <div className="p-3 rounded-2xl bg-dark-surface/90 border border-dark-border flex items-center justify-between text-xs">
                     <span className="text-gray-300 font-medium">Plazas adicionales en L:</span>
                     <div className="flex items-center gap-2">
@@ -1243,7 +1164,7 @@ Por favor confírmenme disponibilidad para mi zona (San Pedro / La Romana / Sant
                         onClick={() =>
                           setTempExtraSeats((prev) => ({
                             ...prev,
-                            ['sofa-5']: Math.max(0, currentExtraSeats - 1),
+                            [currentCatalogItem.id]: Math.max(0, currentExtraSeats - 1),
                           }))
                         }
                         className="w-7 h-7 rounded-lg bg-dark-bg border border-dark-border text-white flex items-center justify-center"
@@ -1258,7 +1179,7 @@ Por favor confírmenme disponibilidad para mi zona (San Pedro / La Romana / Sant
                         onClick={() =>
                           setTempExtraSeats((prev) => ({
                             ...prev,
-                            ['sofa-5']: currentExtraSeats + 1,
+                            [currentCatalogItem.id]: currentExtraSeats + 1,
                           }))
                         }
                         className="w-7 h-7 rounded-lg bg-dark-bg border border-dark-border text-white flex items-center justify-center"
@@ -1319,35 +1240,48 @@ Por favor confírmenme disponibilidad para mi zona (San Pedro / La Romana / Sant
                     Tamaño de la alfombra
                   </label>
                   <div className="space-y-2">
-                    {[
-                      { id: 'rug-small', label: 'Pequeña (Pie de cama) — RD$ 600' },
-                      { id: 'rug-medium', label: 'Mediana (Área de sala) — RD$ 1,200' },
-                      { id: 'rug-large', label: 'Grande (Sala principal/comedor) — RD$ 1,800' },
-                      { id: 'rug-xlarge', label: 'Extra Grande (Salón) — RD$ 2,500' },
-                      { id: 'rug-custom', label: 'Medida Personalizada (RD$ 300 / m²)' },
-                    ].map((opt) => (
+                    {filteredCatalog.map((item) => (
                       <label
-                        key={opt.id}
-                        className={`flex items-center gap-3 p-3 rounded-2xl cursor-pointer transition-all border ${
-                          selectedItemId === opt.id
+                        key={item.id}
+                        className={`flex items-center justify-between p-3 rounded-2xl cursor-pointer transition-all border ${
+                          selectedItemId === item.id
                             ? 'bg-brand-500/15 border-brand-400 text-white font-bold'
                             : 'bg-dark-surface/70 border-dark-border text-gray-300 hover:bg-dark-surface'
                         }`}
                       >
-                        <input
-                          type="radio"
-                          name="selectedRugModel"
-                          checked={selectedItemId === opt.id}
-                          onChange={() => handleSelectModel(opt.id)}
-                          className="w-4 h-4 accent-cyan-400 cursor-pointer"
-                        />
-                        <span className="text-xs sm:text-sm">{opt.label}</span>
+                        <div className="flex items-center gap-3">
+                          <input
+                            type="radio"
+                            name="selectedRugModel"
+                            checked={selectedItemId === item.id}
+                            onChange={() => handleSelectModel(item.id)}
+                            className="w-4 h-4 accent-cyan-400 cursor-pointer"
+                          />
+                          <div>
+                            <span className="text-xs sm:text-sm block">{item.name}</span>
+                            {item.dimensions && (
+                              <span className="text-[11px] text-gray-400 block font-normal">
+                                Medidas: {item.dimensions}
+                              </span>
+                            )}
+                            {item.subtitle && !item.dimensions && (
+                              <span className="text-[11px] text-gray-400 block font-normal">
+                                {item.subtitle}
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                        <span className="text-xs font-mono font-bold text-cyan-300 shrink-0 ml-2">
+                          {item.isCustomRug
+                            ? `RD$ ${item.basePrice.toLocaleString('es-DO')} / m²`
+                            : `RD$ ${item.basePrice.toLocaleString('es-DO')}`}
+                        </span>
                       </label>
                     ))}
                   </div>
                 </div>
 
-                {selectedItemId === 'rug-custom' && (
+                {(currentCatalogItem.isCustomRug || selectedItemId === 'rug-custom') && (
                   <div className="p-3.5 rounded-2xl bg-dark-surface/90 border border-cyan-500/30 space-y-3 text-xs">
                     <span className="text-white font-bold block flex items-center gap-1.5">
                       <Maximize2 className="w-4 h-4 text-cyan-400" />
@@ -1509,7 +1443,9 @@ Por favor confírmenme disponibilidad para mi zona (San Pedro / La Romana / Sant
                 >
                   <div>
                     <span className="block text-sm font-bold text-white">Total de Sillas</span>
-                    <span className="block text-xs text-gray-400">RD$ 300 cada silla</span>
+                    <span className="block text-xs text-gray-400">
+                      RD$ {currentCatalogItem.basePrice.toLocaleString('es-DO')} cada silla
+                    </span>
                   </div>
                   <div className="flex items-center gap-3 bg-dark-bg border border-dark-border rounded-2xl p-1.5 shadow-md">
                     <button
@@ -1517,7 +1453,7 @@ Por favor confírmenme disponibilidad para mi zona (San Pedro / La Romana / Sant
                       onClick={() =>
                         setTempQuantity((prev) => ({
                           ...prev,
-                          ['dining-chair']: Math.max(2, currentQty - 1),
+                          [currentCatalogItem.id]: Math.max(2, currentQty - 1),
                         }))
                       }
                       className="w-8 h-8 rounded-xl bg-dark-surface hover:bg-dark-hover text-white flex items-center justify-center transition-colors"
@@ -1532,7 +1468,7 @@ Por favor confírmenme disponibilidad para mi zona (San Pedro / La Romana / Sant
                       onClick={() =>
                         setTempQuantity((prev) => ({
                           ...prev,
-                          ['dining-chair']: currentQty + 1,
+                          [currentCatalogItem.id]: currentQty + 1,
                         }))
                       }
                       className="w-8 h-8 rounded-xl bg-dark-surface hover:bg-dark-hover text-white flex items-center justify-center transition-colors"
@@ -1634,18 +1570,26 @@ Por favor confírmenme disponibilidad para mi zona (San Pedro / La Romana / Sant
 
       {/* ================= STEP 2: TEJIDO, MANCHAS & FOTOS ================= */}
       {currentStep === 2 && (
-        <div className="space-y-6 animate-fadeIn">
+        <div id="step2-container" className="space-y-6 animate-fadeIn">
           {/* Fabric Type Selector */}
-          <div className="glass-card rounded-3xl p-6 border border-dark-border space-y-4">
-            <div>
-              <h3 className="text-base font-extrabold text-white flex items-center gap-2">
-                <Layers className="w-4 h-4 text-brand-400" />
-                <span>Tipo de Tapicería / Tela</span>
-              </h3>
-              <p className="text-xs text-gray-400 mt-0.5">
-                Selecciona el material de tus piezas para ajustar el producto químico y la técnica de
-                secado.
-              </p>
+          <div
+            id="fabric-section"
+            className="glass-card rounded-3xl p-5 sm:p-6 border border-dark-border space-y-4 scroll-mt-20"
+          >
+            <div className="flex items-center justify-between border-b border-dark-border/60 pb-3">
+              <div>
+                <h3 className="text-base sm:text-lg font-extrabold text-white flex items-center gap-2">
+                  <Layers className="w-4 h-4 text-brand-400" />
+                  <span>Tipo de Tapicería / Tela</span>
+                </h3>
+                <p className="text-xs text-gray-400 mt-0.5">
+                  Selecciona el material de tus piezas para ajustar el producto químico y la técnica de
+                  secado.
+                </p>
+              </div>
+              <span className="text-xs text-cyan-400 font-semibold font-mono hidden sm:inline-block">
+                {selectedFabric.name}
+              </span>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -1655,20 +1599,27 @@ Por favor confírmenme disponibilidad para mi zona (San Pedro / La Romana / Sant
                   <button
                     key={fab.id}
                     type="button"
-                    onClick={() => setSelectedFabric(fab)}
-                    className={`p-4 rounded-2xl text-left transition-all border flex flex-col justify-between ${
+                    onClick={() => handleSelectFabric(fab)}
+                    className={`p-4 rounded-2xl text-left transition-all border flex flex-col justify-between cursor-pointer ${
                       isSelected
-                        ? 'bg-cyan-500/15 border-cyan-400 tech-glow-blue'
-                        : 'bg-dark-surface/80 border-dark-border hover:border-brand-500/30'
+                        ? 'bg-cyan-500/15 border-cyan-400 tech-glow-blue scale-[1.01]'
+                        : 'bg-dark-surface/80 border-dark-border hover:border-brand-500/30 hover:bg-dark-surface'
                     }`}
                   >
                     <div className="flex items-center justify-between w-full">
                       <span className="font-bold text-white text-sm">{fab.name}</span>
-                      {fab.multiplier > 1.0 && (
-                        <span className="text-[11px] font-mono text-cyan-300 font-semibold px-2 py-0.5 rounded-full bg-cyan-500/20">
-                          +{Math.round((fab.multiplier - 1) * 100)}% cuidado
-                        </span>
-                      )}
+                      <div className="flex items-center gap-2">
+                        {fab.multiplier > 1.0 && (
+                          <span className="text-[11px] font-mono text-cyan-300 font-semibold px-2 py-0.5 rounded-full bg-cyan-500/20 border border-cyan-500/30">
+                            +{Math.round((fab.multiplier - 1) * 100)}% cuidado
+                          </span>
+                        )}
+                        {isSelected && (
+                          <div className="w-5 h-5 rounded-full bg-cyan-400 text-dark-bg flex items-center justify-center shrink-0">
+                            <Check className="w-3.5 h-3.5 stroke-[3]" />
+                          </div>
+                        )}
+                      </div>
                     </div>
                     <span className="text-xs text-gray-400 mt-1">{fab.desc}</span>
                   </button>
@@ -1677,16 +1628,31 @@ Por favor confírmenme disponibilidad para mi zona (San Pedro / La Romana / Sant
             </div>
           </div>
 
+          {/* Conector Visual (Flecha hacia abajo) */}
+          <div className="flex justify-center my-1">
+            <div className="w-8 h-8 rounded-full bg-dark-surface border border-dark-border text-cyan-400 flex items-center justify-center shadow-md">
+              <ChevronDown className="w-4 h-4" />
+            </div>
+          </div>
+
           {/* Stain Severity Selector */}
-          <div className="glass-card rounded-3xl p-6 border border-dark-border space-y-4">
-            <div>
-              <h3 className="text-base font-extrabold text-white flex items-center gap-2">
-                <Droplets className="w-4 h-4 text-cyan-400" />
-                <span>Nivel de Suciedad o Manchas</span>
-              </h3>
-              <p className="text-xs text-gray-400 mt-0.5">
-                Garantizamos tratamiento con desmanchador biodegradable y luz ultravioleta UV-C.
-              </p>
+          <div
+            id="stains-section"
+            className="glass-card rounded-3xl p-5 sm:p-6 border border-dark-border space-y-4 scroll-mt-20"
+          >
+            <div className="flex items-center justify-between border-b border-dark-border/60 pb-3">
+              <div>
+                <h3 className="text-base sm:text-lg font-extrabold text-white flex items-center gap-2">
+                  <Droplets className="w-4 h-4 text-cyan-400" />
+                  <span>Nivel de Suciedad o Manchas</span>
+                </h3>
+                <p className="text-xs text-gray-400 mt-0.5">
+                  Garantizamos tratamiento con desmanchador biodegradable y luz ultravioleta UV-C.
+                </p>
+              </div>
+              <span className="text-xs text-brand-400 font-semibold font-mono hidden sm:inline-block">
+                {selectedStain.name}
+              </span>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
@@ -1696,15 +1662,22 @@ Por favor confírmenme disponibilidad para mi zona (San Pedro / La Romana / Sant
                   <button
                     key={stain.id}
                     type="button"
-                    onClick={() => setSelectedStain(stain)}
-                    className={`p-4 rounded-2xl text-left transition-all border flex flex-col justify-between ${
+                    onClick={() => handleSelectStain(stain)}
+                    className={`p-4 rounded-2xl text-left transition-all border flex flex-col justify-between cursor-pointer ${
                       isSelected
-                        ? 'bg-brand-500/15 border-brand-400 tech-glow'
-                        : 'bg-dark-surface/80 border-dark-border hover:border-brand-500/30'
+                        ? 'bg-brand-500/15 border-brand-400 tech-glow scale-[1.01]'
+                        : 'bg-dark-surface/80 border-dark-border hover:border-brand-500/30 hover:bg-dark-surface'
                     }`}
                   >
                     <div>
-                      <span className="font-bold text-white text-sm block">{stain.name}</span>
+                      <div className="flex items-center justify-between">
+                        <span className="font-bold text-white text-sm block">{stain.name}</span>
+                        {isSelected && (
+                          <div className="w-5 h-5 rounded-full bg-brand-500 text-dark-bg flex items-center justify-center shrink-0">
+                            <Check className="w-3.5 h-3.5 stroke-[3]" />
+                          </div>
+                        )}
+                      </div>
                       <p className="text-xs text-gray-400 mt-1">{stain.desc}</p>
                     </div>
                     <span className="text-xs font-mono font-bold text-brand-400 mt-3 block">
@@ -1716,79 +1689,126 @@ Por favor confírmenme disponibilidad para mi zona (San Pedro / La Romana / Sant
             </div>
           </div>
 
-          {/* Photo Upload (Opcional) */}
-          <div className="glass-card rounded-3xl p-6 border border-dark-border space-y-3">
-            <div>
-              <h3 className="text-base font-extrabold text-white flex items-center gap-2">
-                <UploadCloud className="w-4 h-4 text-emerald-400" />
-                <span>Foto de tus Muebles (Opcional)</span>
-              </h3>
-              <p className="text-xs text-gray-400 mt-0.5">
-                Si deseas que el especialista prepare productos específicos antes de la visita, sube
-                una foto.
-              </p>
-            </div>
-
-            <div className="flex flex-col sm:flex-row items-center gap-4">
-              <label className="w-full sm:w-auto cursor-pointer flex items-center justify-center gap-2 px-6 py-3 rounded-2xl bg-dark-surface hover:bg-dark-hover border border-dark-border text-xs font-bold text-white transition-all">
-                <ImageIcon className="w-4 h-4 text-brand-400" />
-                <span>Seleccionar Imagen (Máx 5MB)</span>
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={handleFileUpload}
-                  className="hidden"
-                />
-              </label>
-
-              {uploadedPhotos.length > 0 && (
-                <div className="flex items-center gap-2 overflow-x-auto py-1">
-                  {uploadedPhotos.map((p) => (
-                    <div
-                      key={p.id}
-                      className="relative w-14 h-14 rounded-xl overflow-hidden border border-brand-500/40 shrink-0"
-                    >
-                      <Image src={p.preview} alt={p.name} fill className="object-cover" />
-                      <button
-                        type="button"
-                        onClick={() => handleRemovePhoto(p.id)}
-                        className="absolute top-0.5 right-0.5 w-4 h-4 rounded-full bg-red-600 text-white flex items-center justify-center text-[10px]"
-                      >
-                        ×
-                      </button>
-                    </div>
-                  ))}
-                </div>
-              )}
+          {/* Conector Visual (Flecha hacia abajo) */}
+          <div className="flex justify-center my-1">
+            <div className="w-8 h-8 rounded-full bg-dark-surface border border-dark-border text-brand-400 flex items-center justify-center shadow-md">
+              <ChevronDown className="w-4 h-4" />
             </div>
           </div>
 
-          {/* Step 2 Buttons */}
-          <div className="flex items-center justify-between gap-3 pt-4">
-            <button
-              type="button"
-              onClick={() => setCurrentStep(1)}
-              className="flex items-center gap-2 px-5 py-3 rounded-2xl glass-panel text-xs text-gray-300 hover:text-white"
-            >
-              <ArrowLeft className="w-4 h-4" />
-              <span>Volver a Piezas</span>
-            </button>
+          {/* Acciones del Paso 2, Fotos & Tarifa Dinámica */}
+          <div
+            id="step2-actions-section"
+            className="glass-card rounded-3xl p-5 sm:p-6 border border-brand-500/30 tech-glow space-y-5 scroll-mt-20"
+          >
+            {/* Photo Upload (Opcional) */}
+            <div className="space-y-3 pb-2 border-b border-dark-border/60">
+              <div>
+                <h3 className="text-base font-extrabold text-white flex items-center gap-2">
+                  <UploadCloud className="w-4 h-4 text-emerald-400" />
+                  <span>Foto de tus Muebles (Opcional)</span>
+                </h3>
+                <p className="text-xs text-gray-400 mt-0.5">
+                  Si deseas que el especialista prepare productos específicos antes de la visita, sube
+                  una foto.
+                </p>
+              </div>
 
-            <button
-              type="button"
-              onClick={() => setCurrentStep(3)}
-              className="flex items-center gap-2 px-7 py-3 rounded-2xl bg-gradient-to-r from-brand-500 to-cyan-500 text-dark-bg font-extrabold text-xs tech-glow active:scale-95 transition-all shadow-lg"
-            >
-              <span>Ver Resumen Final</span>
-              <ArrowRight className="w-4 h-4" />
-            </button>
+              <div className="flex flex-col sm:flex-row items-center gap-4">
+                <label className="w-full sm:w-auto cursor-pointer flex items-center justify-center gap-2 px-6 py-3 rounded-2xl bg-dark-surface hover:bg-dark-hover border border-dark-border text-xs font-bold text-white transition-all">
+                  <ImageIcon className="w-4 h-4 text-brand-400" />
+                  <span>Seleccionar Imagen (Máx 5MB)</span>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleFileUpload}
+                    className="hidden"
+                  />
+                </label>
+
+                {uploadedPhotos.length > 0 && (
+                  <div className="flex items-center gap-2 overflow-x-auto py-1">
+                    {uploadedPhotos.map((p) => (
+                      <div
+                        key={p.id}
+                        className="relative w-14 h-14 rounded-xl overflow-hidden border border-brand-500/40 shrink-0"
+                      >
+                        <Image src={p.preview} alt={p.name} fill className="object-cover" />
+                        <button
+                          type="button"
+                          onClick={() => handleRemovePhoto(p.id)}
+                          className="absolute top-0.5 right-0.5 w-4 h-4 rounded-full bg-red-600 text-white flex items-center justify-center text-[10px]"
+                        >
+                          ×
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* PRECIO ESTIMADO ACTUALIZADO CON TELA & MANCHAS */}
+            <div className="p-4 sm:p-5 rounded-2xl bg-emerald-950/30 border border-emerald-500/40 text-left space-y-2 shadow-xl">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-semibold text-emerald-400">
+                  Total con Tratamiento de Tejido & Manchas
+                </span>
+                <span className="text-[11px] font-mono font-bold text-gray-400">
+                  {totalItemsCount} {totalItemsCount === 1 ? 'pieza' : 'piezas'}
+                </span>
+              </div>
+
+              <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-1">
+                <span className="text-2xl sm:text-3xl font-extrabold text-white font-mono">
+                  {formatRD(subtotalWithFabric)}
+                </span>
+                <span className="text-xs text-gray-400">
+                  Base: {formatRD(activeSubtotal)}
+                  {fabricMultiplier > 1 && ` · Tela: +${Math.round((fabricMultiplier - 1) * 100)}%`}
+                  {stainSurcharge > 0 && ` · Manchas: +${formatRD(stainSurcharge)}`}
+                </span>
+              </div>
+
+              <div className="grid grid-cols-2 gap-2 pt-2 border-t border-dark-border/60 text-xs">
+                <div className="flex items-center gap-1.5 text-gray-300">
+                  <Check className="w-3.5 h-3.5 text-cyan-400 shrink-0" />
+                  <span className="truncate">Tela: <strong>{selectedFabric.name}</strong></span>
+                </div>
+                <div className="flex items-center gap-1.5 text-gray-300">
+                  <Check className="w-3.5 h-3.5 text-brand-400 shrink-0" />
+                  <span className="truncate">Manchas: <strong>{selectedStain.name}</strong></span>
+                </div>
+              </div>
+            </div>
+
+            {/* Botones de Acción del Paso 2 */}
+            <div className="space-y-3 pt-1">
+              <button
+                type="button"
+                onClick={() => goToStep(3)}
+                className="w-full flex items-center justify-center gap-2 py-4 px-6 rounded-full bg-gradient-to-r from-brand-500 to-cyan-500 text-dark-bg font-extrabold text-sm sm:text-base tech-glow shadow-xl active:scale-95 hover:opacity-95 transition-all cursor-pointer"
+              >
+                <span>Continuar a Resumen y Fecha ({formatRD(subtotalWithFabric)})</span>
+                <ArrowRight className="w-4 h-4 stroke-[2.5]" />
+              </button>
+
+              <button
+                type="button"
+                onClick={() => goToStep(1)}
+                className="w-full flex items-center justify-center gap-2 py-3 px-5 rounded-2xl glass-panel text-xs sm:text-sm text-gray-300 hover:text-white transition-all cursor-pointer"
+              >
+                <ArrowLeft className="w-4 h-4" />
+                <span>← Volver a modificar piezas</span>
+              </button>
+            </div>
           </div>
         </div>
       )}
 
       {/* ================= STEP 3: RESUMEN & CONFIRMACIÓN ================= */}
       {currentStep === 3 && (
-        <div className="space-y-6 animate-fadeIn">
+        <div id="step3-container" className="space-y-6 animate-fadeIn scroll-mt-20">
           {/* Big Summary Card */}
           <div className="glass-card rounded-3xl p-6 sm:p-8 border border-dark-border space-y-6">
             <div className="flex items-center justify-between pb-4 border-b border-dark-border/60">
@@ -1901,7 +1921,7 @@ Por favor confírmenme disponibilidad para mi zona (San Pedro / La Romana / Sant
             <div className="flex flex-col sm:flex-row gap-3 pt-2">
               <button
                 type="button"
-                onClick={() => setCurrentStep(2)}
+                onClick={() => goToStep(2)}
                 className="flex items-center justify-center gap-2 py-3 px-4 rounded-2xl glass-panel text-xs text-gray-300 hover:text-white"
               >
                 <ArrowLeft className="w-4 h-4" />
