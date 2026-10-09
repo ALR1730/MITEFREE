@@ -359,6 +359,13 @@ function CotizadorContent() {
 
   // Carrito multi-item de artículos seleccionados
   const [selectedItems, setSelectedItems] = useState<SelectedQuoteItem[]>([]);
+  const [addedFeedback, setAddedFeedback] = useState<string | null>(null);
+
+  const getCategoryCount = (catName: string) => {
+    return selectedItems
+      .filter((it) => it.category === catName)
+      .reduce((acc, curr) => acc + curr.quantity, 0);
+  };
 
   // Estados locales temporales para configurar artículos
   const [tempBothSides, setTempBothSides] = useState<Record<string, boolean>>({});
@@ -445,6 +452,18 @@ function CotizadorContent() {
 
     setSelectedItems((prev) => [...prev, newItem]);
     setTempQuantity((prev) => ({ ...prev, [item.id]: item.isChair ? 4 : 1 }));
+    setAddedFeedback(`¡${displayName} agregada a tu orden!`);
+    setTimeout(() => {
+      setAddedFeedback(null);
+    }, 3500);
+
+    // Scroll suave a la bandeja de selección
+    if (typeof window !== 'undefined') {
+      const tray = document.getElementById('order-summary-tray');
+      if (tray) {
+        tray.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }
+    }
   };
 
   // Ítem actualmente seleccionado para personalización dinámica (Formato de Photo 2 & 3)
@@ -740,11 +759,173 @@ Por favor confírmenme disponibilidad para mi zona (San Pedro / La Romana / Sant
       {/* ================= STEP 1: DYNAMIC CATEGORIES & IN-PLACE CUSTOMIZER ================= */}
       {currentStep === 1 && (
         <div className="space-y-6 animate-fadeIn">
+          {/* BANDEJA PROMINENTE DE ORDEN / TUS PIEZAS SELECCIONADAS */}
+          {selectedItems.length > 0 && (
+            <div
+              id="order-summary-tray"
+              className="glass-card rounded-3xl p-5 sm:p-6 border-2 border-brand-500/40 tech-glow space-y-4 animate-fadeIn shadow-2xl"
+            >
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-dark-border/60 pb-3">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-brand-600 to-cyan-500 text-dark-bg flex items-center justify-center font-bold shadow-md">
+                    <ShoppingCart className="w-5 h-5 stroke-[2.5]" />
+                  </div>
+                  <div>
+                    <span className="text-xs text-brand-300 font-bold uppercase tracking-wider block">
+                      Tus Piezas Seleccionadas ({totalItemsCount})
+                    </span>
+                    <span className="text-xl sm:text-2xl font-extrabold text-white font-mono">
+                      {formatRD(activeSubtotal)}
+                    </span>
+                  </div>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (!isMinimumOrderMet) {
+                      alert(
+                        `El servicio a domicilio requiere un consumo mínimo de RD$ 1,500. Te faltan RD$ ${amountMissingForMinimum.toLocaleString('es-DO')} para completar tu visita.`,
+                      );
+                      return;
+                    }
+                    setCurrentStep(2);
+                  }}
+                  disabled={!isMinimumOrderMet}
+                  className={`w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-3.5 rounded-full font-extrabold text-xs sm:text-sm transition-all shadow-lg ${
+                    isMinimumOrderMet
+                      ? 'bg-gradient-to-r from-brand-500 to-cyan-500 text-dark-bg tech-glow active:scale-95 hover:opacity-95 cursor-pointer'
+                      : 'bg-dark-surface border border-dark-border text-gray-500 cursor-not-allowed opacity-75'
+                  }`}
+                >
+                  <span>
+                    {isMinimumOrderMet
+                      ? `Continuar a fecha y dirección (${totalItemsCount} ${totalItemsCount === 1 ? 'pieza' : 'piezas'})`
+                      : `Mínimo RD$ 1,500 (Faltan ${formatRD(amountMissingForMinimum)})`}
+                  </span>
+                  <ArrowRight className="w-4 h-4 stroke-[2.5]" />
+                </button>
+              </div>
+
+              {/* Termómetro de Pedido Mínimo */}
+              {!isMinimumOrderMet ? (
+                <div className="p-3.5 rounded-2xl bg-amber-500/10 border border-amber-500/30 text-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2.5">
+                  <div className="flex items-center gap-2 text-amber-300">
+                    <ShieldAlert className="w-4 h-4 text-amber-400 shrink-0" />
+                    <span>
+                      Servicio a domicilio desde <strong>RD$ 1,500</strong>. Te faltan{' '}
+                      <strong className="text-white font-mono">
+                        {formatRD(amountMissingForMinimum)}
+                      </strong>{' '}
+                      (agrega otra pieza abajo para completar tu orden).
+                    </span>
+                  </div>
+                  <div className="w-full sm:w-28 bg-dark-bg h-2 rounded-full overflow-hidden border border-amber-500/30 shrink-0">
+                    <div
+                      className="bg-gradient-to-r from-amber-500 to-brand-400 h-full transition-all duration-300"
+                      style={{ width: `${minProgressPercentage}%` }}
+                    />
+                  </div>
+                </div>
+              ) : (
+                <div className="p-2.5 rounded-2xl bg-emerald-500/10 border border-emerald-500/25 text-xs flex items-center gap-2 text-emerald-300">
+                  <CheckCircle className="w-4 h-4 text-emerald-400 shrink-0" />
+                  <span>
+                    <strong>¡Mínimo alcanzado!</strong> Visita técnica a domicilio incluida sin recargo de traslado.
+                  </span>
+                </div>
+              )}
+
+              {/* Lista de Artículos en la Orden */}
+              <div className="divide-y divide-dark-border/40">
+                {selectedItems.map((item) => (
+                  <div
+                    key={item.cartId}
+                    className="py-3 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs"
+                  >
+                    <div className="flex items-center gap-3 min-w-0 flex-1">
+                      <span className="text-2xl shrink-0 p-2 rounded-xl bg-dark-surface border border-dark-border">
+                        {item.iconText}
+                      </span>
+                      <div className="min-w-0 flex-1">
+                        <div className="font-bold text-white text-sm flex flex-wrap items-center gap-1.5">
+                          <span>{item.name}</span>
+                          {item.bothSides && (
+                            <span className="px-1.5 py-0.5 rounded text-[10px] bg-brand-500/20 text-brand-300 font-semibold border border-brand-500/30">
+                              Ambos Lados
+                            </span>
+                          )}
+                          {item.extraSeats > 0 && (
+                            <span className="px-1.5 py-0.5 rounded text-[10px] bg-indigo-500/20 text-indigo-300 font-semibold border border-indigo-500/30">
+                              +{item.extraSeats} Plazas
+                            </span>
+                          )}
+                        </div>
+                        <span className="text-[11px] text-gray-400">
+                          {formatRD(item.unitPrice)} unitario · Subtotal:{' '}
+                          <strong className="text-brand-300 font-mono">{formatRD(item.itemTotal)}</strong>
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center justify-between sm:justify-end w-full sm:w-auto gap-3">
+                      {/* Stepper del Carrito */}
+                      <div className="flex items-center gap-2 bg-dark-bg border border-dark-border rounded-xl p-1">
+                        <button
+                          type="button"
+                          onClick={() => handleUpdateItemQuantity(item.cartId, -1)}
+                          className="w-7 h-7 rounded-lg bg-dark-surface hover:bg-dark-hover text-white flex items-center justify-center transition-colors"
+                          title="Restar cantidad"
+                        >
+                          <Minus className="w-3.5 h-3.5" />
+                        </button>
+                        <span className="w-6 text-center font-bold text-cyan-300 font-mono text-xs">
+                          {item.quantity}
+                        </span>
+                        <button
+                          type="button"
+                          onClick={() => handleUpdateItemQuantity(item.cartId, 1)}
+                          className="w-7 h-7 rounded-lg bg-dark-surface hover:bg-dark-hover text-white flex items-center justify-center transition-colors"
+                          title="Sumar cantidad"
+                        >
+                          <Plus className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
+
+                      {/* Total del Item */}
+                      <span className="font-mono font-bold text-brand-400 text-sm min-w-[85px] text-right">
+                        {formatRD(item.itemTotal)}
+                      </span>
+
+                      {/* Botón Eliminar */}
+                      <button
+                        type="button"
+                        onClick={() => handleRemoveItem(item.cartId)}
+                        className="text-gray-500 hover:text-rose-400 transition-colors p-1.5 rounded-lg hover:bg-rose-500/10"
+                        title="Eliminar artículo"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Prompt para agregar más piezas */}
+              <div className="pt-2 text-center border-t border-dark-border/40">
+                <span className="text-xs text-brand-300 font-semibold inline-flex items-center gap-1.5">
+                  <Plus className="w-3.5 h-3.5 text-brand-400" />
+                  ¿Deseas agregar otra pieza? Elige una categoría abajo ⬇️
+                </span>
+              </div>
+            </div>
+          )}
+
           {/* 1. ¿Qué deseas limpiar? (Cuadrícula 2x2 interactiva - Foto 2) */}
           <div className="space-y-3">
             <div className="flex items-center justify-between px-1">
               <h2 className="text-lg sm:text-xl font-extrabold text-white">
-                1. ¿Qué deseas limpiar?
+                {selectedItems.length > 0 ? '➕ Agrega otra pieza a tu orden' : '1. ¿Qué deseas limpiar?'}
               </h2>
               <span className="text-xs text-brand-400 font-semibold font-mono">Paso 1 de 3</span>
             </div>
@@ -752,6 +933,7 @@ Por favor confírmenme disponibilidad para mi zona (San Pedro / La Romana / Sant
             <div className="grid grid-cols-2 gap-3.5">
               {MAIN_CATEGORIES.map((cat) => {
                 const isSelected = selectedMainCategory === cat.id;
+                const countInOrder = getCategoryCount(cat.name);
                 return (
                   <button
                     key={cat.id}
@@ -782,11 +964,18 @@ Por favor confírmenme disponibilidad para mi zona (San Pedro / La Romana / Sant
                           {cat.priceStarting}
                         </span>
                       </div>
-                      {isSelected && (
-                        <div className="w-6 h-6 rounded-full bg-brand-500 text-dark-bg flex items-center justify-center shrink-0 shadow-md">
-                          <Check className="w-4 h-4 stroke-[3]" />
-                        </div>
-                      )}
+                      <div className="flex items-center gap-1.5">
+                        {countInOrder > 0 && (
+                          <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/40">
+                            {countInOrder} en orden
+                          </span>
+                        )}
+                        {isSelected && (
+                          <div className="w-6 h-6 rounded-full bg-brand-500 text-dark-bg flex items-center justify-center shrink-0 shadow-md">
+                            <Check className="w-4 h-4 stroke-[3]" />
+                          </div>
+                        )}
+                      </div>
                     </div>
                   </button>
                 );
@@ -1267,10 +1456,21 @@ Por favor confírmenme disponibilidad para mi zona (San Pedro / La Romana / Sant
               </div>
             )}
 
+            {/* Feedback Toast de Pieza Agregada */}
+            {addedFeedback && (
+              <div className="p-3.5 rounded-2xl bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 text-xs font-bold flex items-center justify-between animate-fadeIn shadow-lg">
+                <div className="flex items-center gap-2">
+                  <CheckCircle className="w-4 h-4 text-emerald-400 shrink-0" />
+                  <span>{addedFeedback}</span>
+                </div>
+                <span className="text-[10px] text-gray-300 font-mono">Ver arriba 👆</span>
+              </div>
+            )}
+
             {/* PRECIO ESTIMADO DEL SERVICIO (Card de Tarifa Dinámica - Foto 1) */}
             <div className="p-4 sm:p-5 rounded-2xl bg-emerald-950/30 border border-emerald-500/40 text-left space-y-1">
               <span className="block text-xs font-semibold text-emerald-400">
-                Precio estimado del servicio
+                {selectedItems.length > 0 ? 'Precio de esta pieza a agregar' : 'Precio estimado del servicio'}
               </span>
               <span className="block text-2xl sm:text-3xl font-extrabold text-white font-mono my-1">
                 {formatRD(currentItemTotal)}
@@ -1280,25 +1480,57 @@ Por favor confírmenme disponibilidad para mi zona (San Pedro / La Romana / Sant
               </p>
             </div>
 
-            {/* Botones de Acción del Customizador (Foto 1) */}
+            {/* Botones de Acción del Customizador */}
             <div className="space-y-3 pt-1">
-              <button
-                type="button"
-                onClick={handleProceedFromCustomizer}
-                className="w-full flex items-center justify-center gap-2 py-4 px-6 rounded-full bg-gradient-to-r from-brand-500 to-cyan-500 text-dark-bg font-extrabold text-sm sm:text-base tech-glow shadow-xl active:scale-95 hover:opacity-95 transition-all"
-              >
-                <span>Continuar a fecha y dirección</span>
-                <ArrowRight className="w-4 h-4 stroke-[2.5]" />
-              </button>
+              {selectedItems.length === 0 ? (
+                <>
+                  <button
+                    type="button"
+                    onClick={handleProceedFromCustomizer}
+                    className="w-full flex items-center justify-center gap-2 py-4 px-6 rounded-full bg-gradient-to-r from-brand-500 to-cyan-500 text-dark-bg font-extrabold text-sm sm:text-base tech-glow shadow-xl active:scale-95 hover:opacity-95 transition-all cursor-pointer"
+                  >
+                    <span>Continuar a fecha y dirección</span>
+                    <ArrowRight className="w-4 h-4 stroke-[2.5]" />
+                  </button>
 
-              <button
-                type="button"
-                onClick={handleAddCurrentItem}
-                className="w-full flex items-center justify-center gap-2 py-3 px-6 rounded-2xl bg-dark-surface/90 hover:bg-dark-hover border border-dark-border text-xs sm:text-sm font-bold text-gray-200 transition-all"
-              >
-                <Plus className="w-4 h-4 text-brand-400" />
-                <span>+ Agregar otra pieza a mi cotización (+{formatRD(currentItemTotal)})</span>
-              </button>
+                  <button
+                    type="button"
+                    onClick={handleAddCurrentItem}
+                    className="w-full flex items-center justify-center gap-2 py-3.5 px-6 rounded-2xl bg-brand-500/15 hover:bg-brand-500/25 border border-brand-500/40 text-xs sm:text-sm font-bold text-brand-300 transition-all active:scale-95 cursor-pointer"
+                  >
+                    <Plus className="w-4 h-4 text-brand-400" />
+                    <span>+ Añadir esta pieza y agregar otra (+{formatRD(currentItemTotal)})</span>
+                  </button>
+                </>
+              ) : (
+                <div className="space-y-2.5">
+                  <button
+                    type="button"
+                    onClick={handleAddCurrentItem}
+                    className="w-full flex items-center justify-center gap-2 py-4 px-6 rounded-full bg-gradient-to-r from-emerald-500 to-brand-500 text-dark-bg font-extrabold text-sm sm:text-base tech-glow shadow-xl active:scale-95 hover:opacity-95 transition-all cursor-pointer"
+                  >
+                    <Plus className="w-4 h-4 stroke-[2.5]" />
+                    <span>✓ Agregar {currentCatalogItem.name} a mi orden (+{formatRD(currentItemTotal)})</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (!isMinimumOrderMet) {
+                        alert(
+                          `El servicio a domicilio requiere un consumo mínimo de RD$ 1,500. Te faltan RD$ ${amountMissingForMinimum.toLocaleString('es-DO')}.`,
+                        );
+                        return;
+                      }
+                      setCurrentStep(2);
+                    }}
+                    className="w-full flex items-center justify-center gap-2 py-3 px-6 rounded-2xl bg-dark-surface/90 hover:bg-dark-hover border border-dark-border text-xs sm:text-sm font-bold text-gray-200 transition-all cursor-pointer"
+                  >
+                    <span>Continuar a fecha y dirección con mis {totalItemsCount} piezas ({formatRD(activeSubtotal)})</span>
+                    <ArrowRight className="w-4 h-4" />
+                  </button>
+                </div>
+              )}
             </div>
 
             {/* Footer de Mite Free Clean (Foto 1) */}
@@ -1306,159 +1538,6 @@ Por favor confírmenme disponibilidad para mi zona (San Pedro / La Romana / Sant
               <span className="block text-xs font-bold text-emerald-400">Mite Free Clean</span>
               <span className="block text-[11px] text-gray-400">Tu hogar merece una limpieza profunda.</span>
             </div>
-          </div>
-
-          {/* ================= CARRITO / RESUMEN DE TU SELECCIÓN ================= */}
-          <div className="glass-card rounded-2xl p-5 border border-brand-500/30 tech-glow space-y-4">
-            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-brand-500/20 text-brand-400 flex items-center justify-center">
-                  <ShoppingCart className="w-5 h-5" />
-                </div>
-                <div>
-                  <span className="text-xs text-gray-400 block">Tu Selección Actual:</span>
-                  <span className="text-base sm:text-lg font-extrabold text-white">
-                    {totalItemsCount}{' '}
-                    {totalItemsCount === 1 ? 'pieza agregada' : 'piezas agregadas'} ·{' '}
-                    <span className="text-brand-400 font-mono">{formatRD(activeSubtotal)}</span>
-                  </span>
-                </div>
-              </div>
-
-              <button
-                type="button"
-                onClick={() => {
-                  if (selectedItems.length === 0) {
-                    alert('Por favor agrega al menos un artículo a tu cotización.');
-                    return;
-                  }
-                  if (!isMinimumOrderMet) {
-                    alert(
-                      `El servicio a domicilio requiere un consumo mínimo de RD$ 1,500. Te faltan RD$ ${amountMissingForMinimum.toLocaleString('es-DO')} para completar tu visita.`,
-                    );
-                    return;
-                  }
-                  setCurrentStep(2);
-                }}
-                disabled={!isMinimumOrderMet}
-                className={`w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-extrabold text-xs transition-all ${
-                  isMinimumOrderMet
-                    ? 'bg-gradient-to-r from-brand-500 to-cyan-500 text-dark-bg tech-glow shadow-md active:scale-95'
-                    : 'bg-dark-surface border border-dark-border text-gray-500 cursor-not-allowed opacity-75'
-                }`}
-              >
-                <span>
-                  {isMinimumOrderMet
-                    ? `Continuar (${totalItemsCount} piezas)`
-                    : `Mínimo RD$ 1,500 (Faltan ${formatRD(amountMissingForMinimum)})`}
-                </span>
-                <ArrowRight className="w-4 h-4" />
-              </button>
-            </div>
-
-            {/* Barra de Progreso del Mínimo */}
-            {!isMinimumOrderMet ? (
-              <div className="p-3 rounded-xl bg-amber-500/10 border border-amber-500/30 text-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2.5">
-                <div className="flex items-center gap-2 text-amber-300">
-                  <ShieldAlert className="w-4 h-4 text-amber-400 shrink-0" />
-                  <span>
-                    El servicio a domicilio inicia en <strong>RD$ 1,500</strong>. Te faltan{' '}
-                    <strong className="text-white font-mono">
-                      {formatRD(amountMissingForMinimum)}
-                    </strong>{' '}
-                    (puedes agregar sillas por RD$ 300 o una alfombra pequeña).
-                  </span>
-                </div>
-                <div className="w-full sm:w-32 bg-dark-bg h-2 rounded-full overflow-hidden border border-amber-500/30 shrink-0">
-                  <div
-                    className="bg-gradient-to-r from-amber-500 to-brand-400 h-full transition-all duration-300"
-                    style={{ width: `${minProgressPercentage}%` }}
-                  />
-                </div>
-              </div>
-            ) : (
-              <div className="p-2.5 rounded-xl bg-emerald-500/10 border border-emerald-500/25 text-xs flex items-center gap-2 text-emerald-300">
-                <CheckCircle className="w-4 h-4 text-emerald-400 shrink-0" />
-                <span>
-                  <strong>¡Mínimo alcanzado!</strong> Tu orden incluye visita a domicilio y cuadrilla
-                  técnica sin costo de traslado.
-                </span>
-              </div>
-            )}
-
-            {/* Lista de Artículos en el Carrito */}
-            {selectedItems.length > 0 && (
-              <div className="pt-2 divide-y divide-dark-border/40">
-                {selectedItems.map((item) => (
-                  <div
-                    key={item.cartId}
-                    className="py-3 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs"
-                  >
-                    <div className="flex items-center gap-3 min-w-0 flex-1">
-                      <span className="text-2xl shrink-0 p-1.5 rounded-lg bg-dark-surface border border-dark-border">
-                        {item.iconText}
-                      </span>
-                      <div className="min-w-0 flex-1">
-                        <div className="font-bold text-white text-sm flex flex-wrap items-center gap-1.5">
-                          <span>{item.name}</span>
-                          {item.bothSides && (
-                            <span className="px-1.5 py-0.5 rounded text-[10px] bg-brand-500/20 text-brand-300 font-semibold border border-brand-500/30">
-                              Ambos Lados
-                            </span>
-                          )}
-                          {item.extraSeats > 0 && (
-                            <span className="px-1.5 py-0.5 rounded text-[10px] bg-indigo-500/20 text-indigo-300 font-semibold border border-indigo-500/30">
-                              +{item.extraSeats} Plazas
-                            </span>
-                          )}
-                        </div>
-                        <span className="text-[11px] text-gray-400">
-                          {formatRD(item.unitPrice)} unitario
-                        </span>
-                      </div>
-                    </div>
-
-                    <div className="flex items-center justify-between sm:justify-end w-full sm:w-auto gap-3">
-                      {/* Stepper del Carrito */}
-                      <div className="flex items-center gap-2 bg-dark-bg border border-dark-border rounded-xl p-1">
-                        <button
-                          type="button"
-                          onClick={() => handleUpdateItemQuantity(item.cartId, -1)}
-                          className="w-7 h-7 rounded-lg bg-dark-surface hover:bg-dark-hover text-white flex items-center justify-center transition-colors"
-                        >
-                          <Minus className="w-3.5 h-3.5" />
-                        </button>
-                        <span className="w-6 text-center font-bold text-white font-mono text-xs">
-                          {item.quantity}
-                        </span>
-                        <button
-                          type="button"
-                          onClick={() => handleUpdateItemQuantity(item.cartId, 1)}
-                          className="w-7 h-7 rounded-lg bg-dark-surface hover:bg-dark-hover text-white flex items-center justify-center transition-colors"
-                        >
-                          <Plus className="w-3.5 h-3.5" />
-                        </button>
-                      </div>
-
-                      {/* Total del Item */}
-                      <span className="font-mono font-bold text-brand-400 text-sm min-w-[85px] text-right">
-                        {formatRD(item.itemTotal)}
-                      </span>
-
-                      {/* Botón Eliminar */}
-                      <button
-                        type="button"
-                        onClick={() => handleRemoveItem(item.cartId)}
-                        className="text-gray-500 hover:text-rose-400 transition-colors p-1"
-                        title="Eliminar artículo"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </button>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
           </div>
         </div>
       )}
