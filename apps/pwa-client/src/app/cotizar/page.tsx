@@ -531,7 +531,7 @@ ALR COMPANY — División de Ingeniería de Software`;
 
     try {
       const quotationPayload = {
-        clientId: user?.id || 'a0000000-0000-0000-0000-000000000001',
+        clientId: user?.id || 'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa',
         items: selectedItems.map((item) => ({
           furnitureType: item.name,
           fabricType: selectedFabric.id as FabricType,
@@ -565,7 +565,7 @@ ALR COMPANY — División de Ingeniería de Software`;
     setIsSubmittingQuotation(true);
     try {
       const quotationPayload = {
-        clientId: user?.id || 'a0000000-0000-0000-0000-000000000001',
+        clientId: user?.id || 'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa',
         items: selectedItems.map((item) => ({
           furnitureType: item.name,
           fabricType: selectedFabric.id as FabricType,

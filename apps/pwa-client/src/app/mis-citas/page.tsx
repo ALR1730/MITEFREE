@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import {
   Calendar,
@@ -14,22 +14,138 @@ import {
   Sparkles,
   ArrowRight,
   Download,
+  RefreshCw,
 } from 'lucide-react';
+import { apiClient } from '@/lib/api-client';
+import type { AppointmentResponseDto } from '@mitefree/shared-types';
 
 export default function MisCitasPage() {
+  const [appointment, setAppointment] = useState<AppointmentResponseDto | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
   const [isApproved, setIsApproved] = useState<boolean>(false);
 
-  const steps = [
-    { label: 'Cita Agendada', done: true, time: '10:00 AM' },
-    { label: 'Cita Confirmada (Sin Anticipo)', done: true, time: '10:05 AM' },
-    { label: 'Técnico en Ruta (ETA: 18 min)', current: true, time: '11:15 AM' },
-    { label: 'Desinfección Quirúrgica UV-C', pending: true, time: 'Estimado 11:45 AM' },
-    { label: 'Inspección & Aprobación', pending: true, time: 'Final' },
-  ];
+  useEffect(() => {
+    async function fetchAppointment() {
+      try {
+        const lastId =
+          typeof window !== 'undefined'
+            ? localStorage.getItem('mitefree_last_appointment_id')
+            : null;
+
+        if (lastId) {
+          const res = await apiClient.appointments.getById(lastId);
+          if (res.success && res.data) {
+            setAppointment(res.data);
+            if (res.data.status === 'Completed') {
+              setIsApproved(true);
+            }
+          }
+        }
+      } catch {
+        // Fallback to demo default
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchAppointment();
+  }, []);
 
   const handleApprove = () => {
     setIsApproved(true);
   };
+
+  const status = appointment?.status || 'EnRoute';
+
+  const getStatusBadge = () => {
+    switch (status) {
+      case 'PendingPayment':
+        return {
+          label: 'Pendiente de Pago',
+          className: 'bg-amber-500/15 text-amber-400 border-amber-500/30',
+          dotClass: 'bg-amber-400',
+        };
+      case 'Confirmed':
+        return {
+          label: 'Cita Confirmada',
+          className: 'bg-emerald-500/15 text-emerald-400 border-emerald-500/30',
+          dotClass: 'bg-emerald-400',
+        };
+      case 'EnRoute':
+        return {
+          label: 'Técnico en Ruta',
+          className: 'bg-cyan-500/15 text-cyan-400 border-cyan-500/30 tech-glow-blue',
+          dotClass: 'bg-cyan-400 animate-ping',
+        };
+      case 'InProgress':
+        return {
+          label: 'En Servicio (UV-C Activo)',
+          className: 'bg-purple-500/15 text-purple-400 border-purple-500/30',
+          dotClass: 'bg-purple-400 animate-pulse',
+        };
+      case 'Completed':
+        return {
+          label: 'Servicio Completado',
+          className: 'bg-emerald-500/15 text-emerald-400 border-emerald-500/30',
+          dotClass: 'bg-emerald-400',
+        };
+      default:
+        return {
+          label: 'En Proceso',
+          className: 'bg-blue-500/15 text-blue-400 border-blue-500/30',
+          dotClass: 'bg-blue-400',
+        };
+    }
+  };
+
+  const badge = getStatusBadge();
+
+  const steps = [
+    {
+      label: 'Cita Agendada',
+      done: true,
+      time: 'Registrada',
+    },
+    {
+      label: 'Cita Confirmada (Sin Anticipo)',
+      done: status !== 'PendingPayment',
+      current: status === 'PendingPayment',
+      time: status === 'PendingPayment' ? 'Pendiente' : 'Aprobada',
+    },
+    {
+      label: 'Técnico en Ruta',
+      done: status === 'InProgress' || status === 'Completed',
+      current: status === 'EnRoute',
+      time: status === 'EnRoute' ? 'ETA: 18 min' : status === 'InProgress' || status === 'Completed' ? 'Completado' : 'Próximamente',
+    },
+    {
+      label: 'Desinfección Quirúrgica UV-C',
+      done: status === 'Completed',
+      current: status === 'InProgress',
+      time: status === 'InProgress' ? 'En ejecución' : status === 'Completed' ? 'Finalizado' : 'Estimado',
+    },
+    {
+      label: 'Inspección & Aprobación',
+      done: isApproved || status === 'Completed',
+      current: status === 'InProgress' && !isApproved,
+      pending: status !== 'Completed' && !isApproved,
+      time: isApproved || status === 'Completed' ? 'Certificado' : 'Al finalizar',
+    },
+  ];
+
+  const formattedDate = appointment?.scheduledDate
+    ? new Date(appointment.scheduledDate).toLocaleDateString('es-DO', {
+        weekday: 'short',
+        day: '2-digit',
+        month: 'long',
+        year: 'numeric',
+      })
+    : 'Hoy, 01 Octubre 2026';
+
+  const timeSlotLabel = appointment?.timeSlotId
+    ? appointment.timeSlotId.includes('MORNING') || appointment.timeSlotId === 'MORNING'
+      ? 'Mañana (08:30 – 11:30 AM)'
+      : 'Tarde (01:00 – 04:00 PM)'
+    : 'Mañana (08:30 – 11:30 AM)';
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-8 sm:py-12 space-y-8 animate-fadeIn">
@@ -51,14 +167,18 @@ export default function MisCitasPage() {
       <div className="glass-card rounded-3xl p-6 sm:p-8 border border-dark-border space-y-6">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 pb-6 border-b border-dark-border/60">
           <div>
-            <span className="text-xs font-mono text-gray-500 uppercase">Orden #MF-2026-9812</span>
+            <span className="text-xs font-mono text-gray-500 uppercase">
+              {appointment ? `Cita #${appointment.id.substring(0, 8).toUpperCase()}` : 'Orden #MF-2026-9812'}
+            </span>
             <h2 className="text-xl font-bold text-white mt-0.5">
-              Desinfección Sofá Modular L + Colchón Queen
+              {appointment?.serviceDescription || 'Desinfección Sofá Modular L + Colchón Queen'}
             </h2>
           </div>
-          <span className="px-3.5 py-1.5 rounded-full bg-cyan-500/15 text-cyan-400 text-xs font-bold border border-cyan-500/30 flex items-center gap-1.5 tech-glow-blue">
-            <span className="w-2 h-2 rounded-full bg-cyan-400 animate-ping" />
-            <span>Técnico en Ruta</span>
+          <span
+            className={`px-3.5 py-1.5 rounded-full text-xs font-bold border flex items-center gap-1.5 ${badge.className}`}
+          >
+            <span className={`w-2 h-2 rounded-full ${badge.dotClass}`} />
+            <span>{badge.label}</span>
           </span>
         </div>
 
@@ -68,7 +188,7 @@ export default function MisCitasPage() {
             <Calendar className="w-5 h-5 text-brand-400 shrink-0" />
             <div>
               <span className="text-gray-400 block">Fecha Programada</span>
-              <span className="font-semibold text-white">Hoy, 01 Octubre 2026</span>
+              <span className="font-semibold text-white capitalize">{formattedDate}</span>
             </div>
           </div>
 
@@ -76,15 +196,17 @@ export default function MisCitasPage() {
             <Clock className="w-5 h-5 text-cyan-400 shrink-0" />
             <div>
               <span className="text-gray-400 block">Bloque Horario</span>
-              <span className="font-semibold text-white">Mañana (08:30 – 11:30 AM)</span>
+              <span className="font-semibold text-white">{timeSlotLabel}</span>
             </div>
           </div>
 
           <div className="flex items-center gap-3 p-3.5 rounded-xl bg-dark-surface/60 border border-dark-border">
             <MapPin className="w-5 h-5 text-emerald-400 shrink-0" />
             <div>
-              <span className="text-gray-400 block">Ubicación</span>
-              <span className="font-semibold text-white">Piantini, Santo Domingo</span>
+              <span className="text-gray-400 block">Ubicación / Dirección</span>
+              <span className="font-semibold text-white truncate max-w-[180px] block">
+                {appointment?.address || 'Piantini, Santo Domingo'}
+              </span>
             </div>
           </div>
         </div>
@@ -132,17 +254,25 @@ export default function MisCitasPage() {
         <div className="p-5 rounded-2xl bg-dark-surface/80 border border-dark-border flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-4">
             <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-brand-600 to-cyan-500 text-dark-bg font-extrabold text-xl flex items-center justify-center tech-glow shadow-md">
-              KR
+              {appointment?.technicianName
+                ? appointment.technicianName
+                    .split(' ')
+                    .map((n) => n[0])
+                    .join('')
+                    .substring(0, 2)
+                : 'KR'}
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <h4 className="text-base font-bold text-white">Ing. Kelvin Rosario</h4>
+                <h4 className="text-base font-bold text-white">
+                  {appointment?.technicianName || 'Ing. Kelvin Rosario'}
+                </h4>
                 <span className="text-[10px] font-semibold px-2 py-0.5 rounded bg-brand-500/10 text-brand-400 border border-brand-500/20">
-                  Cuadrilla #04
+                  Cuadrilla Activa
                 </span>
               </div>
               <p className="text-xs text-gray-400 mt-0.5">
-                Especialista Certificado en Protocolo UV-C
+                Especialista Certificado en Protocolo UV-C & Higienización
               </p>
               <div className="flex items-center gap-1 text-xs text-amber-400 mt-1">
                 <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />

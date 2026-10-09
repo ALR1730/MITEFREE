@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { useAuth } from '@/context/AuthContext';
 import { apiClient } from '@/lib/api-client';
 import {
   Wallet as WalletIcon,
@@ -56,17 +57,21 @@ const DEFAULT_TRANSACTIONS: Transaction[] = [
 ];
 
 export default function WalletPage() {
+  const { user } = useAuth();
   const [copied, setCopied] = useState<boolean>(false);
   const [balance, setBalance] = useState<number>(42.5);
   const [transactions, setTransactions] = useState<Transaction[]>(DEFAULT_TRANSACTIONS);
-  const referralCode = 'MITE-ANGEL-2026';
+  const referralCode = user?.fullName
+    ? `MITE-${user.fullName.split(' ')[0]!.toUpperCase()}-2026`
+    : 'MITE-ANGEL-2026';
 
   const balanceDop = Math.round(balance * 60.5);
 
   useEffect(() => {
     async function loadWallet() {
       try {
-        const res = await apiClient.wallets.getByUserId('a0000000-0000-0000-0000-000000000001');
+        const targetUserId = user?.id || 'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa';
+        const res = await apiClient.wallets.getByUserId(targetUserId);
         if (res.success && res.data) {
           setBalance(res.data.balance);
           if (res.data.transactions && res.data.transactions.length > 0) {
@@ -95,7 +100,7 @@ export default function WalletPage() {
       }
     }
     loadWallet();
-  }, []);
+  }, [user?.id]);
 
   const handleCopy = () => {
     navigator.clipboard.writeText(referralCode);

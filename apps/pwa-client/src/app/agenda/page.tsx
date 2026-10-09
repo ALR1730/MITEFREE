@@ -178,9 +178,13 @@ function AgendaContent() {
 
   const totalPromoDiscountPct = zoneDiscountPct + slotDiscountPct;
 
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
   const handleConfirm = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!fullName || !phone || !address) {
+    setErrorMessage(null);
+
+    if (!fullName.trim() || !phone.trim() || !address.trim()) {
       alert('Por favor completa tu nombre, teléfono y dirección.');
       return;
     }
@@ -188,27 +192,41 @@ function AgendaContent() {
     setIsSubmitting(true);
     try {
       const schedulePayload = {
-        quotationId:
-          quotationId && quotationId.length === 36
-            ? quotationId
-            : '00000000-0000-0000-0000-000000000001',
-        clientId: user?.id || 'a0000000-0000-0000-0000-000000000001',
-        timeSlotId:
-          selectedSlot && selectedSlot.length === 36
-            ? selectedSlot
-            : 'b0000000-0000-0000-0000-000000000001',
+        quotationId: quotationId && quotationId.length === 36 ? quotationId : undefined,
+        clientId: user?.id,
+        clientName: fullName.trim(),
+        clientPhone: phone.trim(),
+        address: address.trim(),
+        zoneCode: selectedZone,
+        timeSlotId: selectedSlot,
         scheduledDate: new Date(selectedDateObj.dateStr).toISOString(),
+        serviceDescription: quotationId
+          ? 'Servicio de Desinfección según Cotización'
+          : 'Desinfección y Limpieza de Tapicería',
+        totalAmount: totalParam ? Number(totalParam) : 3500,
+        depositAmount: totalParam ? Math.round(Number(totalParam) * 0.3) : 1050,
       };
 
       const res = await apiClient.appointments.schedule(schedulePayload);
       if (res.success) {
         setBookedAppointmentId(res.data.id);
+        if (typeof window !== 'undefined') {
+          localStorage.setItem('mitefree_last_appointment_id', res.data.id);
+        }
+        setIsBooked(true);
+      } else {
+        const detail =
+          res.error?.detail ||
+          'No fue posible registrar la cita en el servidor. Por favor verifique los datos.';
+        setErrorMessage(detail);
+        alert(`Error al agendar: ${detail}`);
       }
-    } catch {
-      // Fallback
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Error inesperado al conectar con el servidor.';
+      setErrorMessage(msg);
+      alert(`Error al agendar: ${msg}`);
     } finally {
       setIsSubmitting(false);
-      setIsBooked(true);
     }
   };
 
@@ -440,6 +458,11 @@ function AgendaContent() {
             <p className="text-xs sm:text-sm text-gray-400 mt-1">
               Hemos asignado la ventana horaria en el sistema de despacho de MITEFREE.
             </p>
+            {bookedAppointmentId && (
+              <div className="mt-2 inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-400 font-mono text-xs border border-emerald-500/30">
+                <span>Cita ID: #{bookedAppointmentId.substring(0, 8).toUpperCase()}</span>
+              </div>
+            )}
           </div>
 
           <div className="p-5 rounded-xl bg-dark-surface/80 border border-dark-border text-left space-y-3 max-w-md mx-auto text-xs">

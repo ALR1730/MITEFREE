@@ -1,6 +1,6 @@
 import { Injectable, Inject, Logger } from '@nestjs/common';
 import { type IAppointmentRepository, Appointment, AppointmentStatus } from '@mitefree/domain-core';
-import { type DatabaseClient, appointments, SEED_DATA } from '@mitefree/database';
+import { type DatabaseClient, appointments, SEED_DATA, SEED_IDS } from '@mitefree/database';
 import { eq } from 'drizzle-orm';
 import { DRIZZLE_DB } from '../database/database.tokens.js';
 
@@ -53,6 +53,13 @@ export class DrizzleAppointmentRepository implements IAppointmentRepository {
         id: row.id,
         quotationId: row.quotationId,
         clientId: row.clientId,
+        clientName: row.clientName ?? undefined,
+        clientPhone: row.clientPhone ?? undefined,
+        address: row.address ?? undefined,
+        zoneCode: row.zoneCode ?? undefined,
+        serviceDescription: row.serviceDescription ?? undefined,
+        totalAmount: row.totalAmount ? Number(row.totalAmount) : undefined,
+        depositAmount: row.depositAmount ? Number(row.depositAmount) : undefined,
         technicianId: row.technicianId ?? undefined,
         timeSlotId: row.timeSlotId,
         scheduledDate: row.scheduledDate,
@@ -79,6 +86,13 @@ export class DrizzleAppointmentRepository implements IAppointmentRepository {
             id: row.id,
             quotationId: row.quotationId,
             clientId: row.clientId,
+            clientName: row.clientName ?? undefined,
+            clientPhone: row.clientPhone ?? undefined,
+            address: row.address ?? undefined,
+            zoneCode: row.zoneCode ?? undefined,
+            serviceDescription: row.serviceDescription ?? undefined,
+            totalAmount: row.totalAmount ? Number(row.totalAmount) : undefined,
+            depositAmount: row.depositAmount ? Number(row.depositAmount) : undefined,
             technicianId: row.technicianId ?? undefined,
             timeSlotId: row.timeSlotId,
             scheduledDate: row.scheduledDate,
@@ -171,12 +185,26 @@ export class DrizzleAppointmentRepository implements IAppointmentRepository {
     if (!this.db) return;
 
     try {
+      const dbSlotId =
+        appointment.timeSlotId.length === 36 && appointment.timeSlotId.includes('-')
+          ? appointment.timeSlotId
+          : appointment.timeSlotId === 'AFTERNOON'
+            ? SEED_IDS.SLOT_AFTERNOON_SPM
+            : SEED_IDS.SLOT_MORNING_SPM;
+
       await this.db.insert(appointments).values({
         id: appointment.id,
         quotationId: appointment.quotationId,
         clientId: appointment.clientId,
+        clientName: appointment.clientName ?? null,
+        clientPhone: appointment.clientPhone ?? null,
+        address: appointment.address ?? null,
+        zoneCode: appointment.zoneCode ?? null,
+        serviceDescription: appointment.serviceDescription ?? null,
+        totalAmount: appointment.totalAmount ? appointment.totalAmount.toString() : null,
+        depositAmount: appointment.depositAmount ? appointment.depositAmount.toString() : null,
         technicianId: appointment.technicianId ?? null,
-        timeSlotId: appointment.timeSlotId,
+        timeSlotId: dbSlotId,
         scheduledDate: appointment.scheduledDate,
         status: appointment.status,
         createdAt: appointment.createdAt,

@@ -162,31 +162,41 @@ export default function CitasPage() {
       try {
         const res = await adminApiClient.appointments.listAll();
         if (res.success && res.data.length > 0) {
-          const apiCards: KanbanAppointment[] = res.data.map((apt) => ({
-            id: apt.id,
-            client: `Cliente #${apt.clientId.substring(0, 6)}`,
-            phone: '+1 809-555-0100',
-            zone: 'Santo Domingo Este',
-            zoneCode: 'ZONE-SDE',
-            address: `Servicio programado (${apt.scheduledDate})`,
-            timeSlot: apt.timeSlotId === 'MORNING' ? '08:30 – 11:30 AM' : '01:00 – 04:00 PM',
-            service: `Cotización Ref #${apt.quotationId.substring(0, 6)}`,
-            total: 3500.0,
-            deposit: 1050.0,
-            status:
-              apt.status === 'Confirmed'
-                ? 'CONFIRMED'
-                : apt.status === 'EnRoute'
-                  ? 'IN_ROUTE'
-                  : apt.status === 'InProgress'
-                    ? 'IN_SERVICE'
-                    : apt.status === 'Completed'
-                      ? 'COMPLETED'
-                      : 'PENDING_DEPOSIT',
-            technician: apt.technicianId
-              ? `Técnico #${apt.technicianId.substring(0, 6)}`
-              : undefined,
-          }));
+          const zoneNameMap: Record<string, string> = {
+            'ZONE-SPM': 'San Pedro de Macorís',
+            'ZONE-LR': 'La Romana',
+            'ZONE-SDE': 'Santo Domingo Este',
+            'ZONE-DN': 'Distrito Nacional',
+          };
+
+          const apiCards: KanbanAppointment[] = res.data.map((apt) => {
+            const zCode = (apt.zoneCode as any) || 'ZONE-SPM';
+            return {
+              id: apt.id,
+              client: apt.clientName || `Cliente #${apt.clientId.substring(0, 6)}`,
+              phone: apt.clientPhone || '+1 809-555-0100',
+              zone: zoneNameMap[zCode] || 'San Pedro de Macorís',
+              zoneCode: zCode,
+              address: apt.address || `Servicio programado (${apt.scheduledDate})`,
+              timeSlot: apt.timeSlotLabel || (apt.timeSlotId.includes('MORNING') ? '08:30 – 11:30 AM' : '01:00 – 04:00 PM'),
+              service: apt.serviceDescription || `Cotización Ref #${apt.quotationId.substring(0, 6)}`,
+              total: apt.totalAmount ?? 3500.0,
+              deposit: apt.depositAmount ?? 1050.0,
+              status:
+                apt.status === 'Confirmed'
+                  ? 'CONFIRMED'
+                  : apt.status === 'EnRoute'
+                    ? 'IN_ROUTE'
+                    : apt.status === 'InProgress'
+                      ? 'IN_SERVICE'
+                      : apt.status === 'Completed'
+                        ? 'COMPLETED'
+                        : 'PENDING_DEPOSIT',
+              technician: apt.technicianName || (apt.technicianId
+                ? `Cuadrilla #${apt.technicianId.substring(0, 6)}`
+                : undefined),
+            };
+          });
 
           setAppointments((prev) => {
             const apiIds = new Set(apiCards.map((c) => c.id));
