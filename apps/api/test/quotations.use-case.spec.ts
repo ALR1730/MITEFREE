@@ -88,6 +88,29 @@ describe('Quotations Use Cases (Unit Tests & Phase 2 Services)', () => {
     expect(quotation.depositRequired).toBe(10.5);
   });
 
+  it('GivenGuestClientWithoutId_WhenCreatingQuotation_ThenResolvesCanonicalClientAndPersistsSuccessfully', async () => {
+    const input: CreateQuotationRequestDto = {
+      // clientId omitido para cliente invitado
+      items: [
+        {
+          furnitureType: 'Colchón Queen',
+          fabricType: 'SYNTHETIC',
+          stainSeverity: 'LIGHT',
+          basePriceAmount: 2000,
+          photoUrls: [],
+        },
+      ],
+    };
+
+    const result = await createUseCase.execute(input);
+
+    expect(result.isSuccess).toBe(true);
+    expect(result.value.id).toBeDefined();
+    expect(result.value.clientId).toBeDefined();
+    expect(result.value.total).toBe(2000);
+    expect(result.value.depositRequired).toBe(600);
+  });
+
   it('GivenSavedQuotation_WhenRetrievingById_ThenReturnsCorrectQuotation', async () => {
     const input: CreateQuotationRequestDto = {
       clientId: '22222222-2222-2222-2222-222222222222',

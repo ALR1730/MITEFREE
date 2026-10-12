@@ -12,7 +12,9 @@ import {
   NotFoundException,
   HttpStatus,
   HttpCode,
+  Res,
 } from '@nestjs/common';
+import type { Response } from 'express';
 import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiQuery, ApiBearerAuth } from '@nestjs/swagger';
 import {
   CreateAppointmentSchema,
@@ -33,6 +35,9 @@ import { ListAppointmentsUseCase } from '../../application/appointments/list-app
 import { GetAvailableSlotsUseCase } from '../../application/appointments/get-available-slots.use-case.js';
 import { TransitionAppointmentStatusUseCase } from '../../application/appointments/transition-status.use-case.js';
 import { AssignTechnicianUseCase } from '../../application/appointments/assign-technician.use-case.js';
+import { LookupAppointmentsUseCase } from '../../application/appointments/lookup-appointments.use-case.js';
+import { GetFinalInvoiceUseCase } from '../../application/appointments/get-final-invoice.use-case.js';
+import { FinalInvoicePdfService } from '../../infrastructure/pdf/final-invoice-pdf.service.js';
 
 @ApiTags('Appointments (Citas & Logística por Zonas)')
 @Controller('appointments')
@@ -44,6 +49,9 @@ export class AppointmentsController {
     private readonly getAvailableSlotsUseCase: GetAvailableSlotsUseCase,
     private readonly transitionStatusUseCase: TransitionAppointmentStatusUseCase,
     private readonly assignTechnicianUseCase: AssignTechnicianUseCase,
+    private readonly lookupAppointmentsUseCase: LookupAppointmentsUseCase,
+    private readonly getFinalInvoiceUseCase: GetFinalInvoiceUseCase,
+    private readonly finalInvoicePdfService: FinalInvoicePdfService,
   ) {}
 
   @Get()
@@ -151,6 +159,23 @@ export class AppointmentsController {
     return result.value;
   }
 
+  @Get('lookup')
+  @ApiOperation({ summary: 'Lookup guest appointments by phone or appointment code' })
+  @ApiQuery({ name: 'phone', required: false, description: 'Dominican phone number (WhatsApp)' })
+  @ApiQuery({ name: 'code', required: false, description: 'Appointment code or partial UUID' })
+  @ApiResponse({ status: 200, description: 'Matched appointments found.' })
+  @ApiResponse({ status: 400, description: 'Invalid query parameters.' })
+  async lookup(
+    @Query('phone') phone?: string,
+    @Query('code') code?: string,
+  ): Promise<AppointmentResponseDto[]> {
+    const result = await this.lookupAppointmentsUseCase.execute({ phone, code });
+    if (result.isFailure) {
+      throw new BadRequestException(result.error);
+    }
+    return result.value;
+  }
+
   @Get(':id')
   @ApiOperation({ summary: 'Get appointment details by ID' })
   @ApiParam({ name: 'id', description: 'UUID of the appointment' })
@@ -164,5 +189,33 @@ export class AppointmentsController {
     }
 
     return result.value;
+  }
+
+  @Get(':id/invoice')
+  @ApiOperation({ summary: 'Download final thermal invoice PDF for completed service' })
+  @ApiParam({ name: 'id', description: 'UUID of the appointment' })
+  @ApiResponse({ status: 200, description: 'Final invoice PDF stream' })
+  @ApiResponse({ status: 404, description: 'Appointment not found' })
+  async downloadFinalInvoice(@Param('id') id: string, @Res() res: Response): Promise<void> {
+    const result = await this.getFinalInvoiceUseCase.execute(id);
+    if (result.isFailure) {
+      throw new NotFoundException(result.error);
+    }
+
+    const pdfBuffer = await this.finalInvoicePdfService.generateFinalInvoicePdf(result.value);
+    const shortCode = id.substring(0, 8).toUpperCase();
+    res.setHeader('Content-Type', 'application/pdf');
+    res.setHeader(
+      'Content-Disposition',
+      `attachment; filename="Factura-Final-MITEFREE-FAC-${shortCode}.pdf"`,
+    );
+    res.send(pdfBuffer);
+  }
+
+  @Get(':id/invoice/pdf')
+  @ApiOperation({ summary: 'Alias for download final thermal invoice PDF' })
+  @ApiParam({ name: 'id', description: 'UUID of the appointment' })
+  async downloadFinalInvoicePdfAlias(@Param('id') id: string, @Res() res: Response): Promise<void> {
+    return this.downloadFinalInvoice(id, res);
   }
 }

@@ -18,6 +18,7 @@ interface BookingConfirmSectionProps {
   phone: string;
   isSubmitting: boolean;
   errorMessage: string | null;
+  isSlotAvailable?: boolean;
 }
 
 export function BookingConfirmSection({
@@ -30,6 +31,7 @@ export function BookingConfirmSection({
   phone,
   isSubmitting,
   errorMessage,
+  isSlotAvailable = true,
 }: BookingConfirmSectionProps) {
   return (
     <div
@@ -55,7 +57,9 @@ export function BookingConfirmSection({
           <strong className="text-white block">
             {selectedDateObj.dayName} {selectedDateObj.dayNum} de {selectedDateObj.month}
           </strong>
-          <span className="text-cyan-300 font-mono text-[11px]">{displaySlotLabel}</span>
+          <span className={isSlotAvailable ? "text-cyan-300 font-mono text-[11px]" : "text-rose-400 font-mono text-[11px] font-bold"}>
+            {displaySlotLabel} {!isSlotAvailable && "(Cupo Lleno)"}
+          </span>
         </div>
 
         <div className="space-y-1">
@@ -85,6 +89,15 @@ export function BookingConfirmSection({
         </div>
       </div>
 
+      {!isSlotAvailable && (
+        <div className="p-3.5 rounded-xl bg-rose-500/20 border border-rose-500/40 text-rose-300 text-xs font-medium flex items-center gap-2">
+          <span>⚠️</span>
+          <span>
+            El turno seleccionado actualmente no tiene cuadrillas disponibles. Por favor selecciona otro turno con cupo en la sección 3.
+          </span>
+        </div>
+      )}
+
       {errorMessage && (
         <div className="p-3 rounded-xl bg-rose-500/20 border border-rose-500/40 text-rose-300 text-xs">
           {errorMessage}
@@ -94,11 +107,19 @@ export function BookingConfirmSection({
       {/* Botón de Confirmación Principal */}
       <button
         type="submit"
-        disabled={isSubmitting}
-        className="w-full flex items-center justify-center gap-2 py-4 px-8 rounded-full bg-gradient-to-r from-brand-500 via-cyan-500 to-brand-400 text-dark-bg font-extrabold text-base tech-glow shadow-xl active:scale-95 hover:opacity-95 transition-all cursor-pointer disabled:opacity-50"
+        disabled={isSubmitting || !isSlotAvailable}
+        className={`w-full flex items-center justify-center gap-2 py-4 px-8 rounded-full font-extrabold text-base transition-all shadow-xl ${
+          !isSlotAvailable
+            ? 'bg-dark-surface border border-rose-500/30 text-rose-300/80 cursor-not-allowed opacity-60'
+            : isSubmitting
+            ? 'bg-dark-surface border border-brand-500/30 text-gray-400 cursor-wait opacity-60'
+            : 'bg-gradient-to-r from-brand-500 via-cyan-500 to-brand-400 text-dark-bg tech-glow active:scale-95 hover:opacity-95 cursor-pointer'
+        }`}
       >
         {isSubmitting ? (
           <span>Registrando cita en el despachador...</span>
+        ) : !isSlotAvailable ? (
+          <span>🚫 Turno Sin Cuadrilla — Selecciona Otro Horario</span>
         ) : (
           <>
             <CalendarCheck className="w-5 h-5 stroke-[2.5]" />

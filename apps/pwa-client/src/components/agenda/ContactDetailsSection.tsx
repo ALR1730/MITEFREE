@@ -2,11 +2,13 @@
 
 import React from 'react';
 import { User, ChevronDown } from 'lucide-react';
+import { LocationMapPicker } from './LocationMapPicker';
 
 interface ContactDetailsSectionProps {
   fullName: string;
   phone: string;
   address: string;
+  selectedZoneCode?: string;
   onChangeFullName: (val: string) => void;
   onChangePhone: (val: string) => void;
   onChangeAddress: (val: string) => void;
@@ -17,6 +19,7 @@ export function ContactDetailsSection({
   fullName,
   phone,
   address,
+  selectedZoneCode,
   onChangeFullName,
   onChangePhone,
   onChangeAddress,
@@ -27,7 +30,7 @@ export function ContactDetailsSection({
   return (
     <div
       id="agenda-address-section"
-      className="glass-card rounded-2xl p-6 border border-dark-border scroll-mt-24 space-y-4"
+      className="glass-card rounded-2xl p-6 border border-dark-border scroll-mt-24 space-y-5"
     >
       <div className="flex items-center justify-between flex-wrap gap-2">
         <h2 className="text-sm font-bold uppercase tracking-wider text-gray-300 flex items-center gap-2">
@@ -67,20 +70,24 @@ export function ContactDetailsSection({
             className="w-full px-3.5 py-2.5 rounded-xl glass-input text-xs text-white placeholder-gray-500 focus:outline-none focus:border-brand-500"
           />
         </div>
+      </div>
 
-        <div className="sm:col-span-2">
-          <label className="text-xs font-semibold text-gray-400 block mb-1">
-            Dirección Exacta (Calle, Edificio, Apto, Residencial, Sector)
-          </label>
-          <input
-            type="text"
-            required
-            placeholder="ej: Av. Winston Churchill #105, Torre Empresarial, Apto 4B, Piantini"
-            value={address}
-            onChange={(e) => onChangeAddress(e.target.value)}
-            className="w-full px-3.5 py-2.5 rounded-xl glass-input text-xs text-white placeholder-gray-500 focus:outline-none focus:border-brand-500"
-          />
+      {/* Selector de Ubicación con Mapa Google Maps e Interactivo */}
+      <div className="pt-2 border-t border-dark-border/60">
+        <div className="mb-3">
+          <h3 className="text-xs font-bold text-gray-300 flex items-center gap-1.5 uppercase tracking-wide">
+            <span>Ubicación Exacta en el Mapa de Google</span>
+          </h3>
+          <p className="text-[11px] text-gray-400 mt-0.5">
+            Puedes detectar tu ubicación vía GPS con 1 toque o mover el pin en el mapa hacia tu residencia.
+          </p>
         </div>
+
+        <LocationMapPicker
+          currentAddress={address}
+          selectedZoneCode={selectedZoneCode}
+          onChangeAddress={onChangeAddress}
+        />
       </div>
 
       <div className="pt-2 text-right">

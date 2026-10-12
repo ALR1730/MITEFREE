@@ -6,9 +6,13 @@ import { ListAppointmentsUseCase } from '../application/appointments/list-appoin
 import { GetAvailableSlotsUseCase } from '../application/appointments/get-available-slots.use-case.js';
 import { TransitionAppointmentStatusUseCase } from '../application/appointments/transition-status.use-case.js';
 import { AssignTechnicianUseCase } from '../application/appointments/assign-technician.use-case.js';
+import { LookupAppointmentsUseCase } from '../application/appointments/lookup-appointments.use-case.js';
 import { DrizzleAppointmentRepository } from '../infrastructure/repositories/drizzle-appointment.repository.js';
 import { APPOINTMENT_REPOSITORY } from '../infrastructure/database/database.tokens.js';
 import { QuotationsModule } from './quotations.module.js';
+
+import { FinalInvoicePdfService } from '../infrastructure/pdf/final-invoice-pdf.service.js';
+import { GetFinalInvoiceUseCase } from '../application/appointments/get-final-invoice.use-case.js';
 
 @Module({
   imports: [QuotationsModule],
@@ -20,6 +24,9 @@ import { QuotationsModule } from './quotations.module.js';
     GetAvailableSlotsUseCase,
     TransitionAppointmentStatusUseCase,
     AssignTechnicianUseCase,
+    LookupAppointmentsUseCase,
+    GetFinalInvoiceUseCase,
+    FinalInvoicePdfService,
     {
       provide: APPOINTMENT_REPOSITORY,
       useClass: DrizzleAppointmentRepository,
@@ -33,6 +40,9 @@ import { QuotationsModule } from './quotations.module.js';
     GetAvailableSlotsUseCase,
     TransitionAppointmentStatusUseCase,
     AssignTechnicianUseCase,
+    LookupAppointmentsUseCase,
+    GetFinalInvoiceUseCase,
+    FinalInvoicePdfService,
   ],
 })
 export class AppointmentsModule {}

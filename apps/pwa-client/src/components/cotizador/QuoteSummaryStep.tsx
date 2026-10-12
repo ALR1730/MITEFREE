@@ -8,6 +8,8 @@ import {
   ArrowLeft,
   ArrowRight,
   MessageCircle,
+  FileDown,
+  FileText,
 } from 'lucide-react';
 import type { SelectedQuoteItem, FabricOption, StainOption } from './cotizador.types';
 import { formatRD } from './cotizador.constants';
@@ -27,6 +29,8 @@ interface QuoteSummaryStepProps {
   onGoToStep: (step: number) => void;
   onProceedToSchedule: () => void;
   whatsappMessage: string;
+  persistedQuotationId?: string | null;
+  pdfDownloadUrl?: string | null;
 }
 
 export function QuoteSummaryStep({
@@ -44,12 +48,14 @@ export function QuoteSummaryStep({
   onGoToStep,
   onProceedToSchedule,
   whatsappMessage,
+  persistedQuotationId,
+  pdfDownloadUrl,
 }: QuoteSummaryStepProps) {
   return (
     <div id="step3-container" className="space-y-6 animate-fadeIn scroll-mt-20">
       {/* Big Summary Card */}
       <div className="glass-card rounded-3xl p-6 sm:p-8 border border-dark-border space-y-6">
-        <div className="flex items-center justify-between pb-4 border-b border-dark-border/60">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-dark-border/60 gap-2">
           <div>
             <span className="text-xs font-mono uppercase tracking-wider text-brand-400 font-bold block">
               Resumen de tu Cotización
@@ -58,9 +64,17 @@ export function QuoteSummaryStep({
               Desinfección & Lavado a Domicilio
             </h3>
           </div>
-          <div className="px-3.5 py-1.5 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 text-xs font-bold flex items-center gap-1.5">
-            <CheckCircle className="w-3.5 h-3.5" />
-            <span>0% Anticipo</span>
+          <div className="flex items-center gap-2 flex-wrap">
+            {persistedQuotationId && (
+              <span className="px-3 py-1 rounded-full bg-brand-500/15 border border-brand-500/30 text-brand-300 text-xs font-mono font-bold flex items-center gap-1.5 shadow-sm">
+                <FileText className="w-3.5 h-3.5 text-brand-400" />
+                <span>#COT-{persistedQuotationId.slice(0, 8).toUpperCase()}</span>
+              </span>
+            )}
+            <div className="px-3.5 py-1.5 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 text-xs font-bold flex items-center gap-1.5">
+              <CheckCircle className="w-3.5 h-3.5" />
+              <span>0% Anticipo</span>
+            </div>
           </div>
         </div>
 
@@ -85,16 +99,17 @@ export function QuoteSummaryStep({
           </div>
         </div>
 
-        {/* Treatment Specifications */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-3 border-t border-dark-border/60 text-xs">
-          <div className="p-3 rounded-xl bg-dark-surface/60 border border-dark-border">
-            <span className="text-gray-400 block">Tipo de Tapicería:</span>
-            <span className="font-bold text-white">{selectedFabric.name}</span>
+        {/* Garantía de Servicio & Diagnóstico Profesional */}
+        <div className="p-3.5 rounded-xl bg-dark-surface/60 border border-dark-border text-xs flex items-center justify-between gap-3">
+          <div className="flex items-center gap-2.5">
+            <ShieldCheck className="w-4 h-4 text-emerald-400 shrink-0" />
+            <span className="text-gray-300">
+              <strong className="text-white">Servicio Todo Incluido:</strong> Inspección de tejido, desmanchado profundo y sanitización UV-C en tu domicilio.
+            </span>
           </div>
-          <div className="p-3 rounded-xl bg-dark-surface/60 border border-dark-border">
-            <span className="text-gray-400 block">Tratamiento de Manchas:</span>
-            <span className="font-bold text-white">{selectedStain.name}</span>
-          </div>
+          <span className="text-[11px] font-mono text-emerald-400 font-semibold shrink-0 hidden sm:inline-block">
+            Garantía 100%
+          </span>
         </div>
 
         {/* Coupon & Cashback */}
@@ -155,7 +170,7 @@ export function QuoteSummaryStep({
           </p>
         </div>
 
-        {/* Actions: Agendar Online / Pedir por WhatsApp */}
+        {/* Actions: Agendar Online / Pedir por WhatsApp / Descargar PDF */}
         <div className="flex flex-col sm:flex-row gap-3 pt-2">
           <button
             type="button"
@@ -166,8 +181,25 @@ export function QuoteSummaryStep({
             <span>Atrás</span>
           </button>
 
+          {pdfDownloadUrl && (
+            <a
+              href={pdfDownloadUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center justify-center gap-2 py-3.5 px-4 rounded-2xl bg-dark-surface/90 hover:bg-dark-hover border border-dark-border hover:border-brand-500/50 text-brand-300 font-bold text-xs sm:text-sm transition-all shadow-md active:scale-95 cursor-pointer"
+              title="Descargar Factura Proforma y Presupuesto Oficial congelado con validez de 7 días"
+            >
+              <FileDown className="w-4 h-4 text-brand-400" />
+              <span>Descargar Factura (PDF)</span>
+            </a>
+          )}
+
           <a
-            href={`https://wa.me/18095134773?text=${whatsappMessage}`}
+            href={
+              whatsappMessage.startsWith('https://wa.me')
+                ? whatsappMessage
+                : `https://wa.me/18095134773?text=${whatsappMessage}`
+            }
             target="_blank"
             rel="noreferrer"
             className="flex items-center justify-center gap-2.5 py-3.5 px-6 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs sm:text-sm transition-all shadow-md active:scale-95 cursor-pointer"

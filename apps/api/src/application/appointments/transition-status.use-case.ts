@@ -15,6 +15,8 @@ export interface TransitionStatusInput {
   nextStatus: AppointmentStatus;
 }
 
+import { resolveTechnicianName } from './technician-name.helper.js';
+
 @Injectable()
 export class TransitionAppointmentStatusUseCase implements IUseCase<
   TransitionStatusInput,
@@ -51,6 +53,7 @@ export class TransitionAppointmentStatusUseCase implements IUseCase<
       totalAmount: updated.totalAmount,
       depositAmount: updated.depositAmount,
       technicianId: updated.technicianId,
+      technicianName: resolveTechnicianName(updated.technicianId),
       timeSlotId: updated.timeSlotId,
       scheduledDate: updated.scheduledDate.toISOString(),
       status: updated.status,

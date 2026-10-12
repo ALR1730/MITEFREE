@@ -4,6 +4,7 @@ import { GetAppointmentUseCase } from '../src/application/appointments/get-appoi
 import { GetAvailableSlotsUseCase } from '../src/application/appointments/get-available-slots.use-case.js';
 import { TransitionAppointmentStatusUseCase } from '../src/application/appointments/transition-status.use-case.js';
 import { AssignTechnicianUseCase } from '../src/application/appointments/assign-technician.use-case.js';
+import { LookupAppointmentsUseCase } from '../src/application/appointments/lookup-appointments.use-case.js';
 import { DrizzleAppointmentRepository } from '../src/infrastructure/repositories/drizzle-appointment.repository.js';
 import { DrizzleQuotationRepository } from '../src/infrastructure/repositories/drizzle-quotation.repository.js';
 import {
@@ -22,6 +23,7 @@ describe('Appointments Use Cases (Unit Tests & Phase 3 Services)', () => {
   let getSlotsUseCase: GetAvailableSlotsUseCase;
   let transitionUseCase: TransitionAppointmentStatusUseCase;
   let assignTechnicianUseCase: AssignTechnicianUseCase;
+  let lookupUseCase: LookupAppointmentsUseCase;
 
   const validQuoteId = '11111111-1111-1111-1111-111111111111';
   const clientId = '22222222-2222-2222-2222-222222222222';
@@ -52,6 +54,7 @@ describe('Appointments Use Cases (Unit Tests & Phase 3 Services)', () => {
     getSlotsUseCase = new GetAvailableSlotsUseCase(appointmentRepo);
     transitionUseCase = new TransitionAppointmentStatusUseCase(appointmentRepo);
     assignTechnicianUseCase = new AssignTechnicianUseCase(appointmentRepo);
+    lookupUseCase = new LookupAppointmentsUseCase(appointmentRepo);
   });
 
   it('GivenValidQuotation_WhenSchedulingAppointment_ThenSucceedsAndSetsPendingPayment', async () => {
@@ -149,5 +152,60 @@ describe('Appointments Use Cases (Unit Tests & Phase 3 Services)', () => {
     expect(found.isSuccess).toBe(true);
     expect(found.value.id).toBe(created.id);
     expect(found.value.timeSlotId).toBe('AFTERNOON');
+  });
+
+  describe('LookupAppointmentsUseCase (Guest Tracking & Security)', () => {
+    it('GivenDominicanPhone_WhenLookingUp_ThenNormalizesAndReturnsAppointments', async () => {
+      // Creamos dos citas con teléfono dominicano con y sin prefijo internacional
+      await scheduleUseCase.execute({
+        quotationId: validQuoteId,
+        clientId,
+        timeSlotId: 'MORNING',
+        scheduledDate: '2026-10-22T09:00:00Z',
+        clientPhone: '+1 809-555-0188',
+        clientName: 'Angel Rosario',
+      });
+
+      // Consultar sin prefijo +1 y con guiones
+      const lookupResult = await lookupUseCase.execute({
+        phone: '809-555-0188',
+      });
+
+      expect(lookupResult.isSuccess).toBe(true);
+      expect(lookupResult.value.length).toBeGreaterThanOrEqual(1);
+      expect(lookupResult.value[0].clientPhone).toContain('809-555-0188');
+    });
+
+    it('GivenAppointmentCodeWithHash_WhenLookingUp_ThenNormalizesAndFindsMatch', async () => {
+      const created = (
+        await scheduleUseCase.execute({
+          quotationId: validQuoteId,
+          clientId,
+          timeSlotId: 'AFTERNOON',
+          scheduledDate: '2026-10-23T14:00:00Z',
+          clientPhone: '829-444-1234',
+        })
+      ).value;
+
+      // Buscar por código con prefijo '#' y substring de 8 caracteres
+      const shortCode = `#${created.id.substring(0, 8)}`;
+      const result = await lookupUseCase.execute({ code: shortCode });
+
+      expect(result.isSuccess).toBe(true);
+      expect(result.value.length).toBe(1);
+      expect(result.value[0].id).toBe(created.id);
+    });
+
+    it('GivenShortPhone_WhenLookingUp_ThenFailsValidation', async () => {
+      const result = await lookupUseCase.execute({ phone: '123' });
+      expect(result.isFailure).toBe(true);
+      expect(result.error).toContain('al menos 7 dígitos');
+    });
+
+    it('GivenEmptyQuery_WhenLookingUp_ThenFailsValidation', async () => {
+      const result = await lookupUseCase.execute({});
+      expect(result.isFailure).toBe(true);
+      expect(result.error).toContain('número de teléfono o código');
+    });
   });
 });

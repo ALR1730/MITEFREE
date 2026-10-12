@@ -4,6 +4,8 @@ import type { AppointmentResponseDto } from '@mitefree/shared-types';
 import { IUseCase } from '../common/use-case.interface.js';
 import { APPOINTMENT_REPOSITORY } from '../../infrastructure/database/database.tokens.js';
 
+import { resolveTechnicianName } from './technician-name.helper.js';
+
 @Injectable()
 export class ListAppointmentsUseCase
   implements IUseCase<void, Result<AppointmentResponseDto[], string>>
@@ -28,6 +30,7 @@ export class ListAppointmentsUseCase
       totalAmount: apt.totalAmount,
       depositAmount: apt.depositAmount,
       technicianId: apt.technicianId,
+      technicianName: resolveTechnicianName(apt.technicianId),
       timeSlotId: apt.timeSlotId,
       scheduledDate: apt.scheduledDate.toISOString().split('T')[0]!,
       status: apt.status,

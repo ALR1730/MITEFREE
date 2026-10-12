@@ -22,7 +22,7 @@ export const CreateQuotationItemSchema = z.object({
 });
 
 export const CreateQuotationRequestSchema = z.object({
-  clientId: z.string().uuid('Client ID must be a valid UUID'),
+  clientId: z.string().uuid('Client ID must be a valid UUID').optional(),
   items: z.array(CreateQuotationItemSchema).min(1, 'At least one item is required'),
   discountCode: z.string().optional(),
 });
@@ -30,9 +30,23 @@ export const CreateQuotationRequestSchema = z.object({
 export type CreateQuotationItemDto = z.infer<typeof CreateQuotationItemSchema>;
 export type CreateQuotationRequestDto = z.infer<typeof CreateQuotationRequestSchema>;
 
+export interface QuotationItemResponseDto {
+  id: string;
+  furnitureType: string;
+  fabricType: string;
+  stainSeverity: string;
+  basePrice: number;
+  fabricMultiplier: number;
+  stainSurcharge: number;
+  subtotal: number;
+}
+
 export interface QuotationResponseDto {
   id: string;
   clientId: string;
+  clientName?: string;
+  clientPhone?: string;
+  items?: QuotationItemResponseDto[];
   subtotal: number;
   discountAmount: number;
   total: number;
@@ -42,3 +56,4 @@ export interface QuotationResponseDto {
   expiresAt: string;
   createdAt: string;
 }
+

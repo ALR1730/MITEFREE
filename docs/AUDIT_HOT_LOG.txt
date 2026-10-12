@@ -1,0 +1,944 @@
+[2026-10-12T17:08:33.041Z] [WARN] [PWA_CLIENT] Ruta / (Landing Page) (22196ms) - Renderizado 200 OK (162 KB transferidos)
+[2026-10-12T17:08:35.108Z] [WARN] [PWA_CLIENT] Ruta /cotizar (Cotizador Inteligente) (1967ms) - Renderizado 200 OK (64 KB transferidos)
+[2026-10-12T17:08:36.050Z] [PASS] [PWA_CLIENT] Ruta /agenda (Agendador de Citas & Despacho) (881ms) - Renderizado 200 OK (95 KB transferidos)
+[2026-10-12T17:08:36.762Z] [PASS] [PWA_CLIENT] Ruta /mis-citas (Live Tracking & Telemetría) (555ms) - Renderizado 200 OK (57 KB transferidos)
+[2026-10-12T17:08:37.536Z] [PASS] [PWA_CLIENT] Ruta /wallet (Billetera Cashback) (682ms) - Renderizado 200 OK (57 KB transferidos)
+[2026-10-12T17:08:38.343Z] [PASS] [PWA_CLIENT] Ruta /login (Acceso de Clientes) (757ms) - Renderizado 200 OK (53 KB transferidos)
+[2026-10-12T17:08:49.280Z] [WARN] [PWA_CLIENT] Ruta /registro (Registro de Clientes) (10907ms) - Renderizado 200 OK (55 KB transferidos)
+[2026-10-12T17:08:51.995Z] [WARN] [ADMIN_PORTAL] Ruta / (Tablero Kanban de Despacho) (2525ms) - Renderizado 200 OK (115 KB)
+[2026-10-12T17:08:58.925Z] [WARN] [ADMIN_PORTAL] Ruta /pagos (Revisión y Conciliación de Pagos) (6910ms) - Renderizado 200 OK (52 KB)
+[2026-10-12T17:09:03.488Z] [WARN] [ADMIN_PORTAL] Ruta /clientes (Directorio de Clientes) (4529ms) - Renderizado 200 OK (32 KB)
+[2026-10-12T17:09:05.514Z] [FAIL] [ADMIN_PORTAL] Ruta /catalogo (Catálogo de Muebles y Servicios) (2010ms) - Código HTTP 404 | Error: Respuesta inesperada
+[2026-10-12T17:09:05.750Z] [FAIL] [ADMIN_PORTAL] Ruta /rutas (Mapa de Rutas Técnicas) (221ms) - Código HTTP 404 | Error: Respuesta inesperada
+[2026-10-12T17:09:05.838Z] [PASS] [API_CORE] Health Check (/health) (81ms) - Core API saludable
+[2026-10-12T17:09:05.948Z] [PASS] [API_CORE] Catálogo de Servicios (GET /catalog) (57ms) - Catálogo cargó 14 ítems de tapicería
+[2026-10-12T17:09:06.023Z] [PASS] [API_CORE] Políticas de Descuento (GET /config/discounts) (74ms) - Políticas activas para 4 zonas y 3 bloques
+[2026-10-12T17:09:06.343Z] [PASS] [API_CORE] Matriz de Bloques y Rutas Dinámicas (16 combinaciones) (0ms) - 16/16 consultas evaluadas correctamente en tiempo real
+[2026-10-12T17:09:06.381Z] [FAIL] [API_CORE] Creación de Cotización Inteligente (POST /quotations) (35ms) - HTTP 400 | Error: {"type":"https://alrcompany.com/errors/http-400","title":"Validation Error","status":400,"detail":"The submitted request payload failed schema validation.","instance":"/api/v1/quotations","errors":{"clientId":["Required"],"items.0.furnitureType":["Required"],"items.0.basePriceAmount":["Required"]},"timestamp":"2026-10-12T17:09:06.380Z"}
+[2026-10-12T17:09:06.390Z] [PASS] [API_CORE] Agendamiento de Cita con Coordenadas GPS (POST /appointments) (8ms) - Cita #bfca81ac agendada con éxito para Ing. Test Auditor ALR
+[2026-10-12T17:09:06.405Z] [FAIL] [API_CORE] Transición de Estado de Cita ➔ Confirmed (3ms) - HTTP 400 | Error: {"type":"https://alrcompany.com/errors/http-400","title":"Validation Error","status":400,"detail":"The submitted request payload failed schema validation.","instance":"/api/v1/appointments/bfca81ac-dde8-47ac-a553-9a5124823d32/status","errors":{"body":["Expected object, received string"]},"timestamp":"2026-10-12T17:09:06.404Z"}
+[2026-10-12T17:09:06.407Z] [FAIL] [API_CORE] Transición de Estado de Cita ➔ EnRoute (2ms) - HTTP 400 | Error: {"type":"https://alrcompany.com/errors/http-400","title":"Validation Error","status":400,"detail":"The submitted request payload failed schema validation.","instance":"/api/v1/appointments/bfca81ac-dde8-47ac-a553-9a5124823d32/status","errors":{"body":["Expected object, received string"]},"timestamp":"2026-10-12T17:09:06.407Z"}
+[2026-10-12T17:09:06.413Z] [FAIL] [API_CORE] Transición de Estado de Cita ➔ InProgress (5ms) - HTTP 400 | Error: {"type":"https://alrcompany.com/errors/http-400","title":"Validation Error","status":400,"detail":"The submitted request payload failed schema validation.","instance":"/api/v1/appointments/bfca81ac-dde8-47ac-a553-9a5124823d32/status","errors":{"body":["Expected object, received string"]},"timestamp":"2026-10-12T17:09:06.409Z"}
+[2026-10-12T17:09:06.416Z] [FAIL] [API_CORE] Transición de Estado de Cita ➔ Completed (3ms) - HTTP 400 | Error: {"type":"https://alrcompany.com/errors/http-400","title":"Validation Error","status":400,"detail":"The submitted request payload failed schema validation.","instance":"/api/v1/appointments/bfca81ac-dde8-47ac-a553-9a5124823d32/status","errors":{"body":["Expected object, received string"]},"timestamp":"2026-10-12T17:09:06.415Z"}
+[2026-10-12T17:09:06.419Z] [PASS] [SECURITY] Invariante de Máquina de Estados (Completed ➔ Confirmed Reversion Block) (2ms) - El backend bloqueó exitosamente la transición ilegal con HTTP 400
+[2026-10-12T17:09:06.426Z] [PASS] [API_CORE] Validación de Código de Referidos (/wallets/referrals/validate) (6ms) - Endpoint respondió con código esperado 400
+[2026-10-12T17:09:06.428Z] [PASS] [SECURITY] Protección OWASP: Inyección SQL en clientName (2ms) - Validación Zod rechazó la carga hostil con HTTP 400 BadRequest
+[2026-10-12T17:09:06.432Z] [PASS] [SECURITY] Protección OWASP: XSS en Dirección (3ms) - Validación Zod rechazó la carga hostil con HTTP 400 BadRequest
+[2026-10-12T17:09:06.436Z] [PASS] [SECURITY] Protección OWASP: Monto Negativo en Total (3ms) - Validación Zod rechazó la carga hostil con HTTP 400 BadRequest
+[2026-10-12T17:09:52.259Z] [PASS] [PWA_CLIENT] Ruta / (Landing Page) (740ms) - Renderizado 200 OK (162 KB transferidos)
+[2026-10-12T17:09:52.780Z] [PASS] [PWA_CLIENT] Ruta /cotizar (Cotizador Inteligente) (492ms) - Renderizado 200 OK (64 KB transferidos)
+[2026-10-12T17:09:53.223Z] [PASS] [PWA_CLIENT] Ruta /agenda (Agendador de Citas & Despacho) (413ms) - Renderizado 200 OK (95 KB transferidos)
+[2026-10-12T17:09:53.959Z] [PASS] [PWA_CLIENT] Ruta /mis-citas (Live Tracking & Telemetría) (698ms) - Renderizado 200 OK (57 KB transferidos)
+[2026-10-12T17:09:54.357Z] [PASS] [PWA_CLIENT] Ruta /wallet (Billetera Cashback) (370ms) - Renderizado 200 OK (57 KB transferidos)
+[2026-10-12T17:09:54.768Z] [PASS] [PWA_CLIENT] Ruta /login (Acceso de Clientes) (385ms) - Renderizado 200 OK (53 KB transferidos)
+[2026-10-12T17:09:55.097Z] [PASS] [PWA_CLIENT] Ruta /registro (Registro de Clientes) (303ms) - Renderizado 200 OK (55 KB transferidos)
+[2026-10-12T17:09:55.494Z] [PASS] [ADMIN_PORTAL] Ruta / (Tablero Kanban de Despacho) (339ms) - Renderizado 200 OK (115 KB)
+[2026-10-12T17:09:55.927Z] [PASS] [ADMIN_PORTAL] Ruta /pagos (Revisión y Conciliación de Pagos) (419ms) - Renderizado 200 OK (52 KB)
+[2026-10-12T17:09:56.137Z] [PASS] [ADMIN_PORTAL] Ruta /clientes (Directorio de Clientes) (195ms) - Renderizado 200 OK (32 KB)
+[2026-10-12T17:09:56.294Z] [FAIL] [ADMIN_PORTAL] Ruta /catalogo (Catálogo de Muebles y Servicios) (140ms) - Código HTTP 404 | Error: Respuesta inesperada
+[2026-10-12T17:09:56.463Z] [FAIL] [ADMIN_PORTAL] Ruta /rutas (Mapa de Rutas Técnicas) (146ms) - Código HTTP 404 | Error: Respuesta inesperada
+[2026-10-12T17:09:56.468Z] [PASS] [API_CORE] Health Check (/health) (4ms) - Core API saludable
+[2026-10-12T17:09:56.473Z] [PASS] [API_CORE] Catálogo de Servicios (GET /catalog) (4ms) - Catálogo cargó 14 ítems de tapicería
+[2026-10-12T17:09:56.475Z] [PASS] [API_CORE] Políticas de Descuento (GET /config/discounts) (1ms) - Políticas activas para 4 zonas y 3 bloques
+[2026-10-12T17:09:56.507Z] [PASS] [API_CORE] Matriz de Bloques y Rutas Dinámicas (16 combinaciones) (0ms) - 16/16 consultas evaluadas correctamente en tiempo real
+[2026-10-12T17:09:56.519Z] [FAIL] [API_CORE] Creación de Cotización Inteligente (POST /quotations) (12ms) - HTTP 400 | Error: {"type":"https://alrcompany.com/errors/http-400","title":"Validation Error","status":400,"detail":"The submitted request payload failed schema validation.","instance":"/api/v1/quotations","errors":{"clientId":["Required"],"items.0.furnitureType":["Required"],"items.0.basePriceAmount":["Required"]},"timestamp":"2026-10-12T17:09:56.509Z"}
+[2026-10-12T17:09:56.526Z] [PASS] [API_CORE] Agendamiento de Cita con Coordenadas GPS (POST /appointments) (6ms) - Cita #217b7a64 agendada con éxito para Ing. Test Auditor ALR
+[2026-10-12T17:09:56.532Z] [FAIL] [API_CORE] Transición de Estado de Cita ➔ Confirmed (5ms) - HTTP 400 | Error: {"type":"https://alrcompany.com/errors/http-400","title":"Validation Error","status":400,"detail":"The submitted request payload failed schema validation.","instance":"/api/v1/appointments/217b7a64-2243-4825-9eb1-80e49b1ecc74/status","errors":{"body":["Expected object, received string"]},"timestamp":"2026-10-12T17:09:56.529Z"}
+[2026-10-12T17:09:56.535Z] [FAIL] [API_CORE] Transición de Estado de Cita ➔ EnRoute (2ms) - HTTP 400 | Error: {"type":"https://alrcompany.com/errors/http-400","title":"Validation Error","status":400,"detail":"The submitted request payload failed schema validation.","instance":"/api/v1/appointments/217b7a64-2243-4825-9eb1-80e49b1ecc74/status","errors":{"body":["Expected object, received string"]},"timestamp":"2026-10-12T17:09:56.534Z"}
+[2026-10-12T17:09:56.542Z] [FAIL] [API_CORE] Transición de Estado de Cita ➔ InProgress (6ms) - HTTP 400 | Error: {"type":"https://alrcompany.com/errors/http-400","title":"Validation Error","status":400,"detail":"The submitted request payload failed schema validation.","instance":"/api/v1/appointments/217b7a64-2243-4825-9eb1-80e49b1ecc74/status","errors":{"body":["Expected object, received string"]},"timestamp":"2026-10-12T17:09:56.537Z"}
+[2026-10-12T17:09:56.547Z] [FAIL] [API_CORE] Transición de Estado de Cita ➔ Completed (4ms) - HTTP 400 | Error: {"type":"https://alrcompany.com/errors/http-400","title":"Validation Error","status":400,"detail":"The submitted request payload failed schema validation.","instance":"/api/v1/appointments/217b7a64-2243-4825-9eb1-80e49b1ecc74/status","errors":{"body":["Expected object, received string"]},"timestamp":"2026-10-12T17:09:56.544Z"}
+[2026-10-12T17:09:56.552Z] [PASS] [SECURITY] Invariante de Máquina de Estados (Completed ➔ Confirmed Reversion Block) (5ms) - El backend bloqueó exitosamente la transición ilegal con HTTP 400
+[2026-10-12T17:09:56.557Z] [PASS] [API_CORE] Validación de Código de Referidos (/wallets/referrals/validate) (4ms) - Endpoint respondió con código esperado 400
+[2026-10-12T17:09:56.561Z] [PASS] [SECURITY] Protección OWASP: Inyección SQL en clientName (4ms) - Validación Zod rechazó la carga hostil con HTTP 400 BadRequest
+[2026-10-12T17:09:56.568Z] [PASS] [SECURITY] Protección OWASP: XSS en Dirección (1ms) - Validación Zod rechazó la carga hostil con HTTP 400 BadRequest
+[2026-10-12T17:09:56.570Z] [PASS] [SECURITY] Protección OWASP: Monto Negativo en Total (2ms) - Validación Zod rechazó la carga hostil con HTTP 400 BadRequest
+[2026-10-12T17:10:42.144Z] [PASS] [PWA_CLIENT] Ruta / (Landing Page) (510ms) - Renderizado 200 OK (162 KB transferidos)
+[2026-10-12T17:10:42.519Z] [PASS] [PWA_CLIENT] Ruta /cotizar (Cotizador Inteligente) (351ms) - Renderizado 200 OK (64 KB transferidos)
+[2026-10-12T17:10:42.917Z] [PASS] [PWA_CLIENT] Ruta /agenda (Agendador de Citas & Despacho) (379ms) - Renderizado 200 OK (95 KB transferidos)
+[2026-10-12T17:10:43.218Z] [PASS] [PWA_CLIENT] Ruta /mis-citas (Live Tracking & Telemetría) (283ms) - Renderizado 200 OK (57 KB transferidos)
+[2026-10-12T17:10:43.610Z] [PASS] [PWA_CLIENT] Ruta /wallet (Billetera Cashback) (355ms) - Renderizado 200 OK (57 KB transferidos)
+[2026-10-12T17:10:43.904Z] [PASS] [PWA_CLIENT] Ruta /login (Acceso de Clientes) (275ms) - Renderizado 200 OK (53 KB transferidos)
+[2026-10-12T17:10:44.156Z] [PASS] [PWA_CLIENT] Ruta /registro (Registro de Clientes) (235ms) - Renderizado 200 OK (55 KB transferidos)
+[2026-10-12T17:10:44.710Z] [PASS] [ADMIN_PORTAL] Ruta / (Tablero Kanban de Despacho) (501ms) - Renderizado 200 OK (115 KB)
+[2026-10-12T17:10:45.130Z] [PASS] [ADMIN_PORTAL] Ruta /pagos (Revisión y Conciliación de Pagos) (408ms) - Renderizado 200 OK (52 KB)
+[2026-10-12T17:10:45.387Z] [PASS] [ADMIN_PORTAL] Ruta /clientes (Directorio de Clientes) (245ms) - Renderizado 200 OK (32 KB)
+[2026-10-12T17:10:45.604Z] [FAIL] [ADMIN_PORTAL] Ruta /catalogo (Catálogo de Muebles y Servicios) (205ms) - Código HTTP 404 | Error: Respuesta inesperada
+[2026-10-12T17:10:45.854Z] [FAIL] [ADMIN_PORTAL] Ruta /rutas (Mapa de Rutas Técnicas) (236ms) - Código HTTP 404 | Error: Respuesta inesperada
+[2026-10-12T17:10:45.858Z] [PASS] [API_CORE] Health Check (/health) (3ms) - Core API saludable
+[2026-10-12T17:10:45.860Z] [PASS] [API_CORE] Catálogo de Servicios (GET /catalog) (1ms) - Catálogo cargó 14 ítems de tapicería
+[2026-10-12T17:10:45.862Z] [PASS] [API_CORE] Políticas de Descuento (GET /config/discounts) (1ms) - Políticas activas para 4 zonas y 3 bloques
+[2026-10-12T17:10:45.881Z] [PASS] [API_CORE] Matriz de Bloques y Rutas Dinámicas (16 combinaciones) (0ms) - 16/16 consultas evaluadas correctamente en tiempo real
+[2026-10-12T17:10:45.883Z] [FAIL] [API_CORE] Creación de Cotización Inteligente (POST /quotations) (2ms) - HTTP 400 | Error: {"type":"https://alrcompany.com/errors/http-400","title":"Validation Error","status":400,"detail":"The submitted request payload failed schema validation.","instance":"/api/v1/quotations","errors":{"clientId":["Required"],"items.0.furnitureType":["Required"],"items.0.basePriceAmount":["Required"]},"timestamp":"2026-10-12T17:10:45.883Z"}
+[2026-10-12T17:10:45.886Z] [PASS] [API_CORE] Agendamiento de Cita con Coordenadas GPS (POST /appointments) (2ms) - Cita #39553978 agendada con éxito para Ing. Test Auditor ALR
+[2026-10-12T17:10:45.888Z] [FAIL] [API_CORE] Transición de Estado de Cita ➔ Confirmed (2ms) - HTTP 400 | Error: {"type":"https://alrcompany.com/errors/http-400","title":"Validation Error","status":400,"detail":"The submitted request payload failed schema validation.","instance":"/api/v1/appointments/39553978-be9a-4359-9494-2bd06840669c/status","errors":{"body":["Expected object, received string"]},"timestamp":"2026-10-12T17:10:45.887Z"}
+[2026-10-12T17:10:45.891Z] [FAIL] [API_CORE] Transición de Estado de Cita ➔ EnRoute (2ms) - HTTP 400 | Error: {"type":"https://alrcompany.com/errors/http-400","title":"Validation Error","status":400,"detail":"The submitted request payload failed schema validation.","instance":"/api/v1/appointments/39553978-be9a-4359-9494-2bd06840669c/status","errors":{"body":["Expected object, received string"]},"timestamp":"2026-10-12T17:10:45.891Z"}
+[2026-10-12T17:10:45.894Z] [FAIL] [API_CORE] Transición de Estado de Cita ➔ InProgress (2ms) - HTTP 400 | Error: {"type":"https://alrcompany.com/errors/http-400","title":"Validation Error","status":400,"detail":"The submitted request payload failed schema validation.","instance":"/api/v1/appointments/39553978-be9a-4359-9494-2bd06840669c/status","errors":{"body":["Expected object, received string"]},"timestamp":"2026-10-12T17:10:45.893Z"}
+[2026-10-12T17:10:45.896Z] [FAIL] [API_CORE] Transición de Estado de Cita ➔ Completed (2ms) - HTTP 400 | Error: {"type":"https://alrcompany.com/errors/http-400","title":"Validation Error","status":400,"detail":"The submitted request payload failed schema validation.","instance":"/api/v1/appointments/39553978-be9a-4359-9494-2bd06840669c/status","errors":{"body":["Expected object, received string"]},"timestamp":"2026-10-12T17:10:45.895Z"}
+[2026-10-12T17:10:45.898Z] [PASS] [SECURITY] Invariante de Máquina de Estados (Completed ➔ Confirmed Reversion Block) (1ms) - El backend bloqueó exitosamente la transición ilegal con HTTP 400
+[2026-10-12T17:10:45.900Z] [PASS] [API_CORE] Validación de Código de Referidos (/wallets/referrals/validate) (1ms) - Endpoint respondió con código esperado 400
+[2026-10-12T17:10:45.902Z] [PASS] [SECURITY] Protección OWASP: Inyección SQL en clientName (2ms) - Validación Zod rechazó la carga hostil con HTTP 400 BadRequest
+[2026-10-12T17:10:45.904Z] [PASS] [SECURITY] Protección OWASP: XSS en Dirección (2ms) - Validación Zod rechazó la carga hostil con HTTP 400 BadRequest
+[2026-10-12T17:10:45.907Z] [PASS] [SECURITY] Protección OWASP: Monto Negativo en Total (2ms) - Validación Zod rechazó la carga hostil con HTTP 400 BadRequest
+[2026-10-12T17:11:31.444Z] [PASS] [PWA_CLIENT] Ruta / (Landing Page) (487ms) - Renderizado 200 OK (162 KB transferidos)
+[2026-10-12T17:11:31.823Z] [PASS] [PWA_CLIENT] Ruta /cotizar (Cotizador Inteligente) (360ms) - Renderizado 200 OK (64 KB transferidos)
+[2026-10-12T17:11:32.143Z] [PASS] [PWA_CLIENT] Ruta /agenda (Agendador de Citas & Despacho) (304ms) - Renderizado 200 OK (95 KB transferidos)
+[2026-10-12T17:11:32.385Z] [PASS] [PWA_CLIENT] Ruta /mis-citas (Live Tracking & Telemetría) (225ms) - Renderizado 200 OK (57 KB transferidos)
+[2026-10-12T17:11:32.675Z] [PASS] [PWA_CLIENT] Ruta /wallet (Billetera Cashback) (276ms) - Renderizado 200 OK (57 KB transferidos)
+[2026-10-12T17:11:32.901Z] [PASS] [PWA_CLIENT] Ruta /login (Acceso de Clientes) (207ms) - Renderizado 200 OK (53 KB transferidos)
+[2026-10-12T17:11:33.133Z] [PASS] [PWA_CLIENT] Ruta /registro (Registro de Clientes) (219ms) - Renderizado 200 OK (55 KB transferidos)
+[2026-10-12T17:11:35.482Z] [WARN] [ADMIN_PORTAL] Ruta / (Tablero Kanban de Despacho) (2287ms) - Renderizado 200 OK (115 KB)
+[2026-10-12T17:11:36.048Z] [PASS] [ADMIN_PORTAL] Ruta /pagos (Revisión y Conciliación de Pagos) (557ms) - Renderizado 200 OK (52 KB)
+[2026-10-12T17:11:36.268Z] [PASS] [ADMIN_PORTAL] Ruta /clientes (Directorio de Clientes) (203ms) - Renderizado 200 OK (32 KB)
+[2026-10-12T17:11:36.439Z] [FAIL] [ADMIN_PORTAL] Ruta /catalogo (Catálogo de Muebles y Servicios) (161ms) - Código HTTP 404 | Error: Respuesta inesperada
+[2026-10-12T17:11:36.605Z] [FAIL] [ADMIN_PORTAL] Ruta /rutas (Mapa de Rutas Técnicas) (157ms) - Código HTTP 404 | Error: Respuesta inesperada
+[2026-10-12T17:11:36.615Z] [PASS] [API_CORE] Health Check (/health) (10ms) - Core API saludable
+[2026-10-12T17:11:36.618Z] [PASS] [API_CORE] Catálogo de Servicios (GET /catalog) (2ms) - Catálogo cargó 14 ítems de tapicería
+[2026-10-12T17:11:36.619Z] [PASS] [API_CORE] Políticas de Descuento (GET /config/discounts) (1ms) - Políticas activas para 4 zonas y 3 bloques
+[2026-10-12T17:11:36.647Z] [PASS] [API_CORE] Matriz de Bloques y Rutas Dinámicas (16 combinaciones) (0ms) - 16/16 consultas evaluadas correctamente en tiempo real
+[2026-10-12T17:11:36.651Z] [FAIL] [API_CORE] Creación de Cotización Inteligente (POST /quotations) (3ms) - HTTP 400 | Error: {"type":"https://alrcompany.com/errors/http-400","title":"Validation Error","status":400,"detail":"The submitted request payload failed schema validation.","instance":"/api/v1/quotations","errors":{"clientId":["Required"],"items.0.furnitureType":["Required"],"items.0.basePriceAmount":["Required"]},"timestamp":"2026-10-12T17:11:36.650Z"}
+[2026-10-12T17:11:36.653Z] [PASS] [API_CORE] Agendamiento de Cita con Coordenadas GPS (POST /appointments) (2ms) - Cita #4dd2d0a9 agendada con éxito para Ing. Test Auditor ALR
+[2026-10-12T17:11:36.655Z] [FAIL] [API_CORE] Transición de Estado de Cita ➔ Confirmed (1ms) - HTTP 400 | Error: {"type":"https://alrcompany.com/errors/http-400","title":"Validation Error","status":400,"detail":"The submitted request payload failed schema validation.","instance":"/api/v1/appointments/4dd2d0a9-2621-470b-92e6-28215127f473/status","errors":{"body":["Expected object, received string"]},"timestamp":"2026-10-12T17:11:36.655Z"}
+[2026-10-12T17:11:36.657Z] [FAIL] [API_CORE] Transición de Estado de Cita ➔ EnRoute (1ms) - HTTP 400 | Error: {"type":"https://alrcompany.com/errors/http-400","title":"Validation Error","status":400,"detail":"The submitted request payload failed schema validation.","instance":"/api/v1/appointments/4dd2d0a9-2621-470b-92e6-28215127f473/status","errors":{"body":["Expected object, received string"]},"timestamp":"2026-10-12T17:11:36.657Z"}
+[2026-10-12T17:11:36.659Z] [FAIL] [API_CORE] Transición de Estado de Cita ➔ InProgress (1ms) - HTTP 400 | Error: {"type":"https://alrcompany.com/errors/http-400","title":"Validation Error","status":400,"detail":"The submitted request payload failed schema validation.","instance":"/api/v1/appointments/4dd2d0a9-2621-470b-92e6-28215127f473/status","errors":{"body":["Expected object, received string"]},"timestamp":"2026-10-12T17:11:36.659Z"}
+[2026-10-12T17:11:36.662Z] [FAIL] [API_CORE] Transición de Estado de Cita ➔ Completed (2ms) - HTTP 400 | Error: {"type":"https://alrcompany.com/errors/http-400","title":"Validation Error","status":400,"detail":"The submitted request payload failed schema validation.","instance":"/api/v1/appointments/4dd2d0a9-2621-470b-92e6-28215127f473/status","errors":{"body":["Expected object, received string"]},"timestamp":"2026-10-12T17:11:36.661Z"}
+[2026-10-12T17:11:36.666Z] [PASS] [SECURITY] Invariante de Máquina de Estados (Completed ➔ Confirmed Reversion Block) (2ms) - El backend bloqueó exitosamente la transición ilegal con HTTP 400
+[2026-10-12T17:11:36.668Z] [PASS] [API_CORE] Validación de Código de Referidos (/wallets/referrals/validate) (2ms) - Endpoint respondió con código esperado 400
+[2026-10-12T17:11:36.670Z] [PASS] [SECURITY] Protección OWASP: Inyección SQL en clientName (1ms) - Validación Zod rechazó la carga hostil con HTTP 400 BadRequest
+[2026-10-12T17:11:36.672Z] [PASS] [SECURITY] Protección OWASP: XSS en Dirección (1ms) - Validación Zod rechazó la carga hostil con HTTP 400 BadRequest
+[2026-10-12T17:11:36.673Z] [PASS] [SECURITY] Protección OWASP: Monto Negativo en Total (1ms) - Validación Zod rechazó la carga hostil con HTTP 400 BadRequest
+[2026-10-12T17:12:22.014Z] [PASS] [PWA_CLIENT] Ruta / (Landing Page) (294ms) - Renderizado 200 OK (162 KB transferidos)
+[2026-10-12T17:12:22.291Z] [PASS] [PWA_CLIENT] Ruta /cotizar (Cotizador Inteligente) (262ms) - Renderizado 200 OK (64 KB transferidos)
+[2026-10-12T17:12:22.663Z] [PASS] [PWA_CLIENT] Ruta /agenda (Agendador de Citas & Despacho) (358ms) - Renderizado 200 OK (95 KB transferidos)
+[2026-10-12T17:12:22.916Z] [PASS] [PWA_CLIENT] Ruta /mis-citas (Live Tracking & Telemetría) (237ms) - Renderizado 200 OK (57 KB transferidos)
+[2026-10-12T17:12:23.181Z] [PASS] [PWA_CLIENT] Ruta /wallet (Billetera Cashback) (250ms) - Renderizado 200 OK (57 KB transferidos)
+[2026-10-12T17:12:23.403Z] [PASS] [PWA_CLIENT] Ruta /login (Acceso de Clientes) (207ms) - Renderizado 200 OK (53 KB transferidos)
+[2026-10-12T17:12:23.654Z] [PASS] [PWA_CLIENT] Ruta /registro (Registro de Clientes) (236ms) - Renderizado 200 OK (55 KB transferidos)
+[2026-10-12T17:12:23.912Z] [PASS] [ADMIN_PORTAL] Ruta / (Tablero Kanban de Despacho) (224ms) - Renderizado 200 OK (115 KB)
+[2026-10-12T17:12:24.221Z] [PASS] [ADMIN_PORTAL] Ruta /pagos (Revisión y Conciliación de Pagos) (299ms) - Renderizado 200 OK (52 KB)
+[2026-10-12T17:12:24.416Z] [PASS] [ADMIN_PORTAL] Ruta /clientes (Directorio de Clientes) (184ms) - Renderizado 200 OK (32 KB)
+[2026-10-12T17:12:24.591Z] [FAIL] [ADMIN_PORTAL] Ruta /catalogo (Catálogo de Muebles y Servicios) (161ms) - Código HTTP 404 | Error: Respuesta inesperada
+[2026-10-12T17:12:24.768Z] [FAIL] [ADMIN_PORTAL] Ruta /rutas (Mapa de Rutas Técnicas) (166ms) - Código HTTP 404 | Error: Respuesta inesperada
+[2026-10-12T17:12:24.778Z] [PASS] [API_CORE] Health Check (/health) (9ms) - Core API saludable
+[2026-10-12T17:12:24.779Z] [PASS] [API_CORE] Catálogo de Servicios (GET /catalog) (1ms) - Catálogo cargó 14 ítems de tapicería
+[2026-10-12T17:12:24.782Z] [PASS] [API_CORE] Políticas de Descuento (GET /config/discounts) (2ms) - Políticas activas para 4 zonas y 3 bloques
+[2026-10-12T17:12:24.833Z] [PASS] [API_CORE] Matriz de Bloques y Rutas Dinámicas (16 combinaciones) (0ms) - 16/16 consultas evaluadas correctamente en tiempo real
+[2026-10-12T17:12:24.838Z] [FAIL] [API_CORE] Creación de Cotización Inteligente (POST /quotations) (4ms) - HTTP 400 | Error: {"type":"https://alrcompany.com/errors/http-400","title":"Validation Error","status":400,"detail":"The submitted request payload failed schema validation.","instance":"/api/v1/quotations","errors":{"clientId":["Required"],"items.0.furnitureType":["Required"],"items.0.basePriceAmount":["Required"]},"timestamp":"2026-10-12T17:12:24.835Z"}
+[2026-10-12T17:12:24.842Z] [FAIL] [API_CORE] Agendamiento de Cita con Coordenadas GPS (POST /appointments) (3ms) - HTTP 400 | Error: {"type":"https://alrcompany.com/errors/http-400","title":"Bad Request","status":400,"detail":"The requested time slot is completely booked for this date.","instance":"/api/v1/appointments","timestamp":"2026-10-12T17:12:24.842Z"}
+[2026-10-12T17:12:24.844Z] [PASS] [API_CORE] Validación de Código de Referidos (/wallets/referrals/validate) (1ms) - Endpoint respondió con código esperado 400
+[2026-10-12T17:12:24.847Z] [PASS] [SECURITY] Protección OWASP: Inyección SQL en clientName (2ms) - Validación Zod rechazó la carga hostil con HTTP 400 BadRequest
+[2026-10-12T17:12:24.850Z] [PASS] [SECURITY] Protección OWASP: XSS en Dirección (2ms) - Validación Zod rechazó la carga hostil con HTTP 400 BadRequest
+[2026-10-12T17:12:24.853Z] [PASS] [SECURITY] Protección OWASP: Monto Negativo en Total (2ms) - Validación Zod rechazó la carga hostil con HTTP 400 BadRequest
+[2026-10-12T17:13:10.201Z] [PASS] [PWA_CLIENT] Ruta / (Landing Page) (301ms) - Renderizado 200 OK (162 KB transferidos)
+[2026-10-12T17:13:10.490Z] [PASS] [PWA_CLIENT] Ruta /cotizar (Cotizador Inteligente) (271ms) - Renderizado 200 OK (64 KB transferidos)
+[2026-10-12T17:13:10.920Z] [PASS] [PWA_CLIENT] Ruta /agenda (Agendador de Citas & Despacho) (411ms) - Renderizado 200 OK (95 KB transferidos)
+[2026-10-12T17:13:11.165Z] [PASS] [PWA_CLIENT] Ruta /mis-citas (Live Tracking & Telemetría) (230ms) - Renderizado 200 OK (57 KB transferidos)
+[2026-10-12T17:13:11.429Z] [PASS] [PWA_CLIENT] Ruta /wallet (Billetera Cashback) (251ms) - Renderizado 200 OK (57 KB transferidos)
+[2026-10-12T17:13:11.656Z] [PASS] [PWA_CLIENT] Ruta /login (Acceso de Clientes) (211ms) - Renderizado 200 OK (53 KB transferidos)
+[2026-10-12T17:13:11.976Z] [PASS] [PWA_CLIENT] Ruta /registro (Registro de Clientes) (246ms) - Renderizado 200 OK (55 KB transferidos)
+[2026-10-12T17:13:12.437Z] [PASS] [ADMIN_PORTAL] Ruta / (Tablero Kanban de Despacho) (408ms) - Renderizado 200 OK (115 KB)
+[2026-10-12T17:13:12.893Z] [PASS] [ADMIN_PORTAL] Ruta /pagos (Revisión y Conciliación de Pagos) (447ms) - Renderizado 200 OK (52 KB)
+[2026-10-12T17:13:13.109Z] [PASS] [ADMIN_PORTAL] Ruta /clientes (Directorio de Clientes) (207ms) - Renderizado 200 OK (32 KB)
+[2026-10-12T17:13:13.308Z] [FAIL] [ADMIN_PORTAL] Ruta /catalogo (Catálogo de Muebles y Servicios) (191ms) - Código HTTP 404 | Error: Respuesta inesperada
+[2026-10-12T17:13:13.493Z] [FAIL] [ADMIN_PORTAL] Ruta /rutas (Mapa de Rutas Técnicas) (177ms) - Código HTTP 404 | Error: Respuesta inesperada
+[2026-10-12T17:13:13.497Z] [PASS] [API_CORE] Health Check (/health) (3ms) - Core API saludable
+[2026-10-12T17:13:13.499Z] [PASS] [API_CORE] Catálogo de Servicios (GET /catalog) (1ms) - Catálogo cargó 14 ítems de tapicería
+[2026-10-12T17:13:13.500Z] [PASS] [API_CORE] Políticas de Descuento (GET /config/discounts) (1ms) - Políticas activas para 4 zonas y 3 bloques
+[2026-10-12T17:13:13.539Z] [PASS] [API_CORE] Matriz de Bloques y Rutas Dinámicas (16 combinaciones) (0ms) - 16/16 consultas evaluadas correctamente en tiempo real
+[2026-10-12T17:13:13.541Z] [FAIL] [API_CORE] Creación de Cotización Inteligente (POST /quotations) (2ms) - HTTP 400 | Error: {"type":"https://alrcompany.com/errors/http-400","title":"Validation Error","status":400,"detail":"The submitted request payload failed schema validation.","instance":"/api/v1/quotations","errors":{"clientId":["Required"],"items.0.furnitureType":["Required"],"items.0.basePriceAmount":["Required"]},"timestamp":"2026-10-12T17:13:13.540Z"}
+[2026-10-12T17:13:13.543Z] [FAIL] [API_CORE] Agendamiento de Cita con Coordenadas GPS (POST /appointments) (2ms) - HTTP 400 | Error: {"type":"https://alrcompany.com/errors/http-400","title":"Bad Request","status":400,"detail":"The requested time slot is completely booked for this date.","instance":"/api/v1/appointments","timestamp":"2026-10-12T17:13:13.542Z"}
+[2026-10-12T17:13:13.547Z] [PASS] [API_CORE] Validación de Código de Referidos (/wallets/referrals/validate) (3ms) - Endpoint respondió con código esperado 400
+[2026-10-12T17:13:13.550Z] [PASS] [SECURITY] Protección OWASP: Inyección SQL en clientName (2ms) - Validación Zod rechazó la carga hostil con HTTP 400 BadRequest
+[2026-10-12T17:13:13.553Z] [PASS] [SECURITY] Protección OWASP: XSS en Dirección (2ms) - Validación Zod rechazó la carga hostil con HTTP 400 BadRequest
+[2026-10-12T17:13:13.556Z] [PASS] [SECURITY] Protección OWASP: Monto Negativo en Total (2ms) - Validación Zod rechazó la carga hostil con HTTP 400 BadRequest
+[2026-10-12T17:13:59.019Z] [PASS] [PWA_CLIENT] Ruta / (Landing Page) (415ms) - Renderizado 200 OK (162 KB transferidos)
+[2026-10-12T17:13:59.350Z] [PASS] [PWA_CLIENT] Ruta /cotizar (Cotizador Inteligente) (309ms) - Renderizado 200 OK (64 KB transferidos)
+[2026-10-12T17:13:59.914Z] [PASS] [PWA_CLIENT] Ruta /agenda (Agendador de Citas & Despacho) (542ms) - Renderizado 200 OK (95 KB transferidos)
+[2026-10-12T17:14:00.319Z] [PASS] [PWA_CLIENT] Ruta /mis-citas (Live Tracking & Telemetría) (383ms) - Renderizado 200 OK (57 KB transferidos)
+[2026-10-12T17:14:00.779Z] [PASS] [PWA_CLIENT] Ruta /wallet (Billetera Cashback) (431ms) - Renderizado 200 OK (57 KB transferidos)
+[2026-10-12T17:14:01.195Z] [PASS] [PWA_CLIENT] Ruta /login (Acceso de Clientes) (393ms) - Renderizado 200 OK (53 KB transferidos)
+[2026-10-12T17:14:01.653Z] [PASS] [PWA_CLIENT] Ruta /registro (Registro de Clientes) (434ms) - Renderizado 200 OK (55 KB transferidos)
+[2026-10-12T17:14:02.133Z] [PASS] [ADMIN_PORTAL] Ruta / (Tablero Kanban de Despacho) (437ms) - Renderizado 200 OK (115 KB)
+[2026-10-12T17:14:02.602Z] [PASS] [ADMIN_PORTAL] Ruta /pagos (Revisión y Conciliación de Pagos) (456ms) - Renderizado 200 OK (52 KB)
+[2026-10-12T17:14:02.901Z] [PASS] [ADMIN_PORTAL] Ruta /clientes (Directorio de Clientes) (290ms) - Renderizado 200 OK (32 KB)
+[2026-10-12T17:14:03.150Z] [FAIL] [ADMIN_PORTAL] Ruta /catalogo (Catálogo de Muebles y Servicios) (238ms) - Código HTTP 404 | Error: Respuesta inesperada
+[2026-10-12T17:14:03.358Z] [FAIL] [ADMIN_PORTAL] Ruta /rutas (Mapa de Rutas Técnicas) (197ms) - Código HTTP 404 | Error: Respuesta inesperada
+[2026-10-12T17:14:03.360Z] [PASS] [API_CORE] Health Check (/health) (2ms) - Core API saludable
+[2026-10-12T17:14:03.362Z] [PASS] [API_CORE] Catálogo de Servicios (GET /catalog) (1ms) - Catálogo cargó 14 ítems de tapicería
+[2026-10-12T17:14:03.364Z] [PASS] [API_CORE] Políticas de Descuento (GET /config/discounts) (1ms) - Políticas activas para 4 zonas y 3 bloques
+[2026-10-12T17:14:03.389Z] [PASS] [API_CORE] Matriz de Bloques y Rutas Dinámicas (16 combinaciones) (0ms) - 16/16 consultas evaluadas correctamente en tiempo real
+[2026-10-12T17:14:03.391Z] [FAIL] [API_CORE] Creación de Cotización Inteligente (POST /quotations) (2ms) - HTTP 400 | Error: {"type":"https://alrcompany.com/errors/http-400","title":"Validation Error","status":400,"detail":"The submitted request payload failed schema validation.","instance":"/api/v1/quotations","errors":{"clientId":["Required"],"items.0.furnitureType":["Required"],"items.0.basePriceAmount":["Required"]},"timestamp":"2026-10-12T17:14:03.391Z"}
+[2026-10-12T17:14:03.394Z] [FAIL] [API_CORE] Agendamiento de Cita con Coordenadas GPS (POST /appointments) (3ms) - HTTP 400 | Error: {"type":"https://alrcompany.com/errors/http-400","title":"Bad Request","status":400,"detail":"The requested time slot is completely booked for this date.","instance":"/api/v1/appointments","timestamp":"2026-10-12T17:14:03.393Z"}
+[2026-10-12T17:14:03.408Z] [PASS] [API_CORE] Validación de Código de Referidos (/wallets/referrals/validate) (14ms) - Endpoint respondió con código esperado 400
+[2026-10-12T17:14:03.411Z] [PASS] [SECURITY] Protección OWASP: Inyección SQL en clientName (1ms) - Validación Zod rechazó la carga hostil con HTTP 400 BadRequest
+[2026-10-12T17:14:03.415Z] [PASS] [SECURITY] Protección OWASP: XSS en Dirección (3ms) - Validación Zod rechazó la carga hostil con HTTP 400 BadRequest
+[2026-10-12T17:14:03.420Z] [PASS] [SECURITY] Protección OWASP: Monto Negativo en Total (5ms) - Validación Zod rechazó la carga hostil con HTTP 400 BadRequest
+[2026-10-12T17:14:48.785Z] [PASS] [PWA_CLIENT] Ruta / (Landing Page) (315ms) - Renderizado 200 OK (162 KB transferidos)
+[2026-10-12T17:14:49.069Z] [PASS] [PWA_CLIENT] Ruta /cotizar (Cotizador Inteligente) (268ms) - Renderizado 200 OK (64 KB transferidos)
+[2026-10-12T17:14:49.421Z] [PASS] [PWA_CLIENT] Ruta /agenda (Agendador de Citas & Despacho) (335ms) - Renderizado 200 OK (95 KB transferidos)
+[2026-10-12T17:14:49.667Z] [PASS] [PWA_CLIENT] Ruta /mis-citas (Live Tracking & Telemetría) (232ms) - Renderizado 200 OK (57 KB transferidos)
+[2026-10-12T17:14:49.931Z] [PASS] [PWA_CLIENT] Ruta /wallet (Billetera Cashback) (249ms) - Renderizado 200 OK (57 KB transferidos)
+[2026-10-12T17:14:50.160Z] [PASS] [PWA_CLIENT] Ruta /login (Acceso de Clientes) (215ms) - Renderizado 200 OK (53 KB transferidos)
+[2026-10-12T17:14:50.399Z] [PASS] [PWA_CLIENT] Ruta /registro (Registro de Clientes) (224ms) - Renderizado 200 OK (55 KB transferidos)
+[2026-10-12T17:14:50.685Z] [PASS] [ADMIN_PORTAL] Ruta / (Tablero Kanban de Despacho) (255ms) - Renderizado 200 OK (115 KB)
+[2026-10-12T17:14:51.033Z] [PASS] [ADMIN_PORTAL] Ruta /pagos (Revisión y Conciliación de Pagos) (339ms) - Renderizado 200 OK (52 KB)
+[2026-10-12T17:14:51.269Z] [PASS] [ADMIN_PORTAL] Ruta /clientes (Directorio de Clientes) (228ms) - Renderizado 200 OK (32 KB)
+[2026-10-12T17:14:51.525Z] [FAIL] [ADMIN_PORTAL] Ruta /catalogo (Catálogo de Muebles y Servicios) (185ms) - Código HTTP 404 | Error: Respuesta inesperada
+[2026-10-12T17:14:51.795Z] [FAIL] [ADMIN_PORTAL] Ruta /rutas (Mapa de Rutas Técnicas) (261ms) - Código HTTP 404 | Error: Respuesta inesperada
+[2026-10-12T17:14:51.804Z] [PASS] [API_CORE] Health Check (/health) (9ms) - Core API saludable
+[2026-10-12T17:14:51.806Z] [PASS] [API_CORE] Catálogo de Servicios (GET /catalog) (1ms) - Catálogo cargó 14 ítems de tapicería
+[2026-10-12T17:14:51.809Z] [PASS] [API_CORE] Políticas de Descuento (GET /config/discounts) (2ms) - Políticas activas para 4 zonas y 3 bloques
+[2026-10-12T17:14:51.823Z] [PASS] [API_CORE] Matriz de Bloques y Rutas Dinámicas (16 combinaciones) (0ms) - 16/16 consultas evaluadas correctamente en tiempo real
+[2026-10-12T17:14:51.826Z] [FAIL] [API_CORE] Creación de Cotización Inteligente (POST /quotations) (3ms) - HTTP 400 | Error: {"type":"https://alrcompany.com/errors/http-400","title":"Validation Error","status":400,"detail":"The submitted request payload failed schema validation.","instance":"/api/v1/quotations","errors":{"clientId":["Required"],"items.0.furnitureType":["Required"],"items.0.basePriceAmount":["Required"]},"timestamp":"2026-10-12T17:14:51.824Z"}
+[2026-10-12T17:14:51.830Z] [FAIL] [API_CORE] Agendamiento de Cita con Coordenadas GPS (POST /appointments) (3ms) - HTTP 400 | Error: {"type":"https://alrcompany.com/errors/http-400","title":"Bad Request","status":400,"detail":"The requested time slot is completely booked for this date.","instance":"/api/v1/appointments","timestamp":"2026-10-12T17:14:51.828Z"}
+[2026-10-12T17:14:51.833Z] [PASS] [API_CORE] Validación de Código de Referidos (/wallets/referrals/validate) (3ms) - Endpoint respondió con código esperado 400
+[2026-10-12T17:14:51.837Z] [PASS] [SECURITY] Protección OWASP: Inyección SQL en clientName (3ms) - Validación Zod rechazó la carga hostil con HTTP 400 BadRequest
+[2026-10-12T17:14:51.841Z] [PASS] [SECURITY] Protección OWASP: XSS en Dirección (3ms) - Validación Zod rechazó la carga hostil con HTTP 400 BadRequest
+[2026-10-12T17:14:51.845Z] [PASS] [SECURITY] Protección OWASP: Monto Negativo en Total (3ms) - Validación Zod rechazó la carga hostil con HTTP 400 BadRequest
+[2026-10-12T17:15:37.227Z] [PASS] [PWA_CLIENT] Ruta / (Landing Page) (336ms) - Renderizado 200 OK (162 KB transferidos)
+[2026-10-12T17:15:37.517Z] [PASS] [PWA_CLIENT] Ruta /cotizar (Cotizador Inteligente) (275ms) - Renderizado 200 OK (64 KB transferidos)
+[2026-10-12T17:15:37.873Z] [PASS] [PWA_CLIENT] Ruta /agenda (Agendador de Citas & Despacho) (340ms) - Renderizado 200 OK (95 KB transferidos)
+[2026-10-12T17:15:38.124Z] [PASS] [PWA_CLIENT] Ruta /mis-citas (Live Tracking & Telemetría) (236ms) - Renderizado 200 OK (57 KB transferidos)
+[2026-10-12T17:15:38.500Z] [PASS] [PWA_CLIENT] Ruta /wallet (Billetera Cashback) (364ms) - Renderizado 200 OK (57 KB transferidos)
+[2026-10-12T17:15:38.937Z] [PASS] [PWA_CLIENT] Ruta /login (Acceso de Clientes) (424ms) - Renderizado 200 OK (53 KB transferidos)
+[2026-10-12T17:15:39.183Z] [PASS] [PWA_CLIENT] Ruta /registro (Registro de Clientes) (228ms) - Renderizado 200 OK (55 KB transferidos)
+[2026-10-12T17:15:39.492Z] [PASS] [ADMIN_PORTAL] Ruta / (Tablero Kanban de Despacho) (279ms) - Renderizado 200 OK (115 KB)
+[2026-10-12T17:15:39.838Z] [PASS] [ADMIN_PORTAL] Ruta /pagos (Revisión y Conciliación de Pagos) (336ms) - Renderizado 200 OK (52 KB)
+[2026-10-12T17:15:40.067Z] [PASS] [ADMIN_PORTAL] Ruta /clientes (Directorio de Clientes) (206ms) - Renderizado 200 OK (32 KB)
+[2026-10-12T17:15:40.259Z] [FAIL] [ADMIN_PORTAL] Ruta /catalogo (Catálogo de Muebles y Servicios) (183ms) - Código HTTP 404 | Error: Respuesta inesperada
+[2026-10-12T17:15:40.471Z] [FAIL] [ADMIN_PORTAL] Ruta /rutas (Mapa de Rutas Técnicas) (203ms) - Código HTTP 404 | Error: Respuesta inesperada
+[2026-10-12T17:15:40.475Z] [PASS] [API_CORE] Health Check (/health) (3ms) - Core API saludable
+[2026-10-12T17:15:40.477Z] [PASS] [API_CORE] Catálogo de Servicios (GET /catalog) (1ms) - Catálogo cargó 14 ítems de tapicería
+[2026-10-12T17:15:40.484Z] [PASS] [API_CORE] Políticas de Descuento (GET /config/discounts) (1ms) - Políticas activas para 4 zonas y 3 bloques
+[2026-10-12T17:15:40.504Z] [PASS] [API_CORE] Matriz de Bloques y Rutas Dinámicas (16 combinaciones) (0ms) - 16/16 consultas evaluadas correctamente en tiempo real
+[2026-10-12T17:15:40.507Z] [FAIL] [API_CORE] Creación de Cotización Inteligente (POST /quotations) (3ms) - HTTP 400 | Error: {"type":"https://alrcompany.com/errors/http-400","title":"Validation Error","status":400,"detail":"The submitted request payload failed schema validation.","instance":"/api/v1/quotations","errors":{"clientId":["Required"],"items.0.furnitureType":["Required"],"items.0.basePriceAmount":["Required"]},"timestamp":"2026-10-12T17:15:40.506Z"}
+[2026-10-12T17:15:40.510Z] [FAIL] [API_CORE] Agendamiento de Cita con Coordenadas GPS (POST /appointments) (2ms) - HTTP 400 | Error: {"type":"https://alrcompany.com/errors/http-400","title":"Bad Request","status":400,"detail":"The requested time slot is completely booked for this date.","instance":"/api/v1/appointments","timestamp":"2026-10-12T17:15:40.510Z"}
+[2026-10-12T17:15:40.513Z] [PASS] [API_CORE] Validación de Código de Referidos (/wallets/referrals/validate) (2ms) - Endpoint respondió con código esperado 400
+[2026-10-12T17:15:40.517Z] [PASS] [SECURITY] Protección OWASP: Inyección SQL en clientName (3ms) - Validación Zod rechazó la carga hostil con HTTP 400 BadRequest
+[2026-10-12T17:15:40.521Z] [PASS] [SECURITY] Protección OWASP: XSS en Dirección (3ms) - Validación Zod rechazó la carga hostil con HTTP 400 BadRequest
+[2026-10-12T17:15:40.523Z] [PASS] [SECURITY] Protección OWASP: Monto Negativo en Total (1ms) - Validación Zod rechazó la carga hostil con HTTP 400 BadRequest
+[2026-10-12T17:16:25.902Z] [PASS] [PWA_CLIENT] Ruta / (Landing Page) (326ms) - Renderizado 200 OK (162 KB transferidos)
+[2026-10-12T17:16:26.205Z] [PASS] [PWA_CLIENT] Ruta /cotizar (Cotizador Inteligente) (288ms) - Renderizado 200 OK (64 KB transferidos)
+[2026-10-12T17:16:26.580Z] [PASS] [PWA_CLIENT] Ruta /agenda (Agendador de Citas & Despacho) (360ms) - Renderizado 200 OK (95 KB transferidos)
+[2026-10-12T17:16:26.843Z] [PASS] [PWA_CLIENT] Ruta /mis-citas (Live Tracking & Telemetría) (248ms) - Renderizado 200 OK (57 KB transferidos)
+[2026-10-12T17:16:27.121Z] [PASS] [PWA_CLIENT] Ruta /wallet (Billetera Cashback) (252ms) - Renderizado 200 OK (57 KB transferidos)
+[2026-10-12T17:16:27.360Z] [PASS] [PWA_CLIENT] Ruta /login (Acceso de Clientes) (224ms) - Renderizado 200 OK (53 KB transferidos)
+[2026-10-12T17:16:27.618Z] [PASS] [PWA_CLIENT] Ruta /registro (Registro de Clientes) (241ms) - Renderizado 200 OK (55 KB transferidos)
+[2026-10-12T17:16:27.908Z] [PASS] [ADMIN_PORTAL] Ruta / (Tablero Kanban de Despacho) (259ms) - Renderizado 200 OK (115 KB)
+[2026-10-12T17:16:28.258Z] [PASS] [ADMIN_PORTAL] Ruta /pagos (Revisión y Conciliación de Pagos) (341ms) - Renderizado 200 OK (52 KB)
+[2026-10-12T17:16:28.497Z] [PASS] [ADMIN_PORTAL] Ruta /clientes (Directorio de Clientes) (231ms) - Renderizado 200 OK (32 KB)
+[2026-10-12T17:16:28.757Z] [FAIL] [ADMIN_PORTAL] Ruta /catalogo (Catálogo de Muebles y Servicios) (259ms) - Código HTTP 404 | Error: Respuesta inesperada
+[2026-10-12T17:16:29.021Z] [FAIL] [ADMIN_PORTAL] Ruta /rutas (Mapa de Rutas Técnicas) (256ms) - Código HTTP 404 | Error: Respuesta inesperada
+[2026-10-12T17:16:29.024Z] [PASS] [API_CORE] Health Check (/health) (2ms) - Core API saludable
+[2026-10-12T17:16:29.025Z] [PASS] [API_CORE] Catálogo de Servicios (GET /catalog) (1ms) - Catálogo cargó 14 ítems de tapicería
+[2026-10-12T17:16:29.029Z] [PASS] [API_CORE] Políticas de Descuento (GET /config/discounts) (3ms) - Políticas activas para 4 zonas y 3 bloques
+[2026-10-12T17:16:29.056Z] [PASS] [API_CORE] Matriz de Bloques y Rutas Dinámicas (16 combinaciones) (0ms) - 16/16 consultas evaluadas correctamente en tiempo real
+[2026-10-12T17:16:29.060Z] [FAIL] [API_CORE] Creación de Cotización Inteligente (POST /quotations) (3ms) - HTTP 400 | Error: {"type":"https://alrcompany.com/errors/http-400","title":"Validation Error","status":400,"detail":"The submitted request payload failed schema validation.","instance":"/api/v1/quotations","errors":{"clientId":["Required"],"items.0.furnitureType":["Required"],"items.0.basePriceAmount":["Required"]},"timestamp":"2026-10-12T17:16:29.059Z"}
+[2026-10-12T17:16:29.066Z] [FAIL] [API_CORE] Agendamiento de Cita con Coordenadas GPS (POST /appointments) (5ms) - HTTP 400 | Error: {"type":"https://alrcompany.com/errors/http-400","title":"Bad Request","status":400,"detail":"The requested time slot is completely booked for this date.","instance":"/api/v1/appointments","timestamp":"2026-10-12T17:16:29.063Z"}
+[2026-10-12T17:16:29.070Z] [PASS] [API_CORE] Validación de Código de Referidos (/wallets/referrals/validate) (3ms) - Endpoint respondió con código esperado 400
+[2026-10-12T17:16:29.074Z] [PASS] [SECURITY] Protección OWASP: Inyección SQL en clientName (2ms) - Validación Zod rechazó la carga hostil con HTTP 400 BadRequest
+[2026-10-12T17:16:29.080Z] [PASS] [SECURITY] Protección OWASP: XSS en Dirección (5ms) - Validación Zod rechazó la carga hostil con HTTP 400 BadRequest
+[2026-10-12T17:16:29.083Z] [PASS] [SECURITY] Protección OWASP: Monto Negativo en Total (2ms) - Validación Zod rechazó la carga hostil con HTTP 400 BadRequest
+[2026-10-12T17:17:14.451Z] [PASS] [PWA_CLIENT] Ruta / (Landing Page) (321ms) - Renderizado 200 OK (162 KB transferidos)
+[2026-10-12T17:17:14.752Z] [PASS] [PWA_CLIENT] Ruta /cotizar (Cotizador Inteligente) (283ms) - Renderizado 200 OK (64 KB transferidos)
+[2026-10-12T17:17:15.104Z] [PASS] [PWA_CLIENT] Ruta /agenda (Agendador de Citas & Despacho) (336ms) - Renderizado 200 OK (95 KB transferidos)
+[2026-10-12T17:17:15.364Z] [PASS] [PWA_CLIENT] Ruta /mis-citas (Live Tracking & Telemetría) (246ms) - Renderizado 200 OK (57 KB transferidos)
+[2026-10-12T17:17:15.657Z] [PASS] [PWA_CLIENT] Ruta /wallet (Billetera Cashback) (278ms) - Renderizado 200 OK (57 KB transferidos)
+[2026-10-12T17:17:15.882Z] [PASS] [PWA_CLIENT] Ruta /login (Acceso de Clientes) (210ms) - Renderizado 200 OK (53 KB transferidos)
+[2026-10-12T17:17:16.149Z] [PASS] [PWA_CLIENT] Ruta /registro (Registro de Clientes) (250ms) - Renderizado 200 OK (55 KB transferidos)
+[2026-10-12T17:17:16.451Z] [PASS] [ADMIN_PORTAL] Ruta / (Tablero Kanban de Despacho) (258ms) - Renderizado 200 OK (115 KB)
+[2026-10-12T17:17:16.808Z] [PASS] [ADMIN_PORTAL] Ruta /pagos (Revisión y Conciliación de Pagos) (348ms) - Renderizado 200 OK (52 KB)
+[2026-10-12T17:17:17.039Z] [PASS] [ADMIN_PORTAL] Ruta /clientes (Directorio de Clientes) (222ms) - Renderizado 200 OK (32 KB)
+[2026-10-12T17:17:17.226Z] [FAIL] [ADMIN_PORTAL] Ruta /catalogo (Catálogo de Muebles y Servicios) (178ms) - Código HTTP 404 | Error: Respuesta inesperada
+[2026-10-12T17:17:17.655Z] [FAIL] [ADMIN_PORTAL] Ruta /rutas (Mapa de Rutas Técnicas) (422ms) - Código HTTP 404 | Error: Respuesta inesperada
+[2026-10-12T17:17:17.659Z] [PASS] [API_CORE] Health Check (/health) (2ms) - Core API saludable
+[2026-10-12T17:17:17.660Z] [PASS] [API_CORE] Catálogo de Servicios (GET /catalog) (1ms) - Catálogo cargó 14 ítems de tapicería
+[2026-10-12T17:17:17.661Z] [PASS] [API_CORE] Políticas de Descuento (GET /config/discounts) (1ms) - Políticas activas para 4 zonas y 3 bloques
+[2026-10-12T17:17:17.691Z] [PASS] [API_CORE] Matriz de Bloques y Rutas Dinámicas (16 combinaciones) (0ms) - 16/16 consultas evaluadas correctamente en tiempo real
+[2026-10-12T17:17:17.705Z] [FAIL] [API_CORE] Creación de Cotización Inteligente (POST /quotations) (13ms) - HTTP 400 | Error: {"type":"https://alrcompany.com/errors/http-400","title":"Validation Error","status":400,"detail":"The submitted request payload failed schema validation.","instance":"/api/v1/quotations","errors":{"clientId":["Required"],"items.0.furnitureType":["Required"],"items.0.basePriceAmount":["Required"]},"timestamp":"2026-10-12T17:17:17.705Z"}
+[2026-10-12T17:17:17.709Z] [FAIL] [API_CORE] Agendamiento de Cita con Coordenadas GPS (POST /appointments) (3ms) - HTTP 400 | Error: {"type":"https://alrcompany.com/errors/http-400","title":"Bad Request","status":400,"detail":"The requested time slot is completely booked for this date.","instance":"/api/v1/appointments","timestamp":"2026-10-12T17:17:17.708Z"}
+[2026-10-12T17:17:17.711Z] [PASS] [API_CORE] Validación de Código de Referidos (/wallets/referrals/validate) (1ms) - Endpoint respondió con código esperado 400
+[2026-10-12T17:17:17.715Z] [PASS] [SECURITY] Protección OWASP: Inyección SQL en clientName (3ms) - Validación Zod rechazó la carga hostil con HTTP 400 BadRequest
+[2026-10-12T17:17:17.717Z] [PASS] [SECURITY] Protección OWASP: XSS en Dirección (2ms) - Validación Zod rechazó la carga hostil con HTTP 400 BadRequest
+[2026-10-12T17:17:17.718Z] [PASS] [SECURITY] Protección OWASP: Monto Negativo en Total (1ms) - Validación Zod rechazó la carga hostil con HTTP 400 BadRequest
+[2026-10-12T17:18:03.260Z] [PASS] [PWA_CLIENT] Ruta / (Landing Page) (486ms) - Renderizado 200 OK (162 KB transferidos)
+[2026-10-12T17:18:03.695Z] [PASS] [PWA_CLIENT] Ruta /cotizar (Cotizador Inteligente) (414ms) - Renderizado 200 OK (64 KB transferidos)
+[2026-10-12T17:18:04.339Z] [PASS] [PWA_CLIENT] Ruta /agenda (Agendador de Citas & Despacho) (549ms) - Renderizado 200 OK (95 KB transferidos)
+[2026-10-12T17:18:04.943Z] [PASS] [PWA_CLIENT] Ruta /mis-citas (Live Tracking & Telemetría) (590ms) - Renderizado 200 OK (57 KB transferidos)
+[2026-10-12T17:18:05.294Z] [PASS] [PWA_CLIENT] Ruta /wallet (Billetera Cashback) (330ms) - Renderizado 200 OK (57 KB transferidos)
+[2026-10-12T17:18:05.676Z] [PASS] [PWA_CLIENT] Ruta /login (Acceso de Clientes) (363ms) - Renderizado 200 OK (53 KB transferidos)
+[2026-10-12T17:18:06.176Z] [PASS] [PWA_CLIENT] Ruta /registro (Registro de Clientes) (476ms) - Renderizado 200 OK (55 KB transferidos)
+[2026-10-12T17:18:06.698Z] [PASS] [ADMIN_PORTAL] Ruta / (Tablero Kanban de Despacho) (476ms) - Renderizado 200 OK (115 KB)
+[2026-10-12T17:18:07.348Z] [PASS] [ADMIN_PORTAL] Ruta /pagos (Revisión y Conciliación de Pagos) (637ms) - Renderizado 200 OK (52 KB)
+[2026-10-12T17:18:07.793Z] [PASS] [ADMIN_PORTAL] Ruta /clientes (Directorio de Clientes) (427ms) - Renderizado 200 OK (32 KB)
+[2026-10-12T17:18:08.155Z] [FAIL] [ADMIN_PORTAL] Ruta /catalogo (Catálogo de Muebles y Servicios) (352ms) - Código HTTP 404 | Error: Respuesta inesperada
+[2026-10-12T17:18:08.489Z] [FAIL] [ADMIN_PORTAL] Ruta /rutas (Mapa de Rutas Técnicas) (321ms) - Código HTTP 404 | Error: Respuesta inesperada
+[2026-10-12T17:18:08.494Z] [PASS] [API_CORE] Health Check (/health) (4ms) - Core API saludable
+[2026-10-12T17:18:08.495Z] [PASS] [API_CORE] Catálogo de Servicios (GET /catalog) (1ms) - Catálogo cargó 14 ítems de tapicería
+[2026-10-12T17:18:08.496Z] [PASS] [API_CORE] Políticas de Descuento (GET /config/discounts) (1ms) - Políticas activas para 4 zonas y 3 bloques
+[2026-10-12T17:18:08.508Z] [PASS] [API_CORE] Matriz de Bloques y Rutas Dinámicas (16 combinaciones) (0ms) - 16/16 consultas evaluadas correctamente en tiempo real
+[2026-10-12T17:18:08.510Z] [FAIL] [API_CORE] Creación de Cotización Inteligente (POST /quotations) (1ms) - HTTP 400 | Error: {"type":"https://alrcompany.com/errors/http-400","title":"Validation Error","status":400,"detail":"The submitted request payload failed schema validation.","instance":"/api/v1/quotations","errors":{"clientId":["Required"],"items.0.furnitureType":["Required"],"items.0.basePriceAmount":["Required"]},"timestamp":"2026-10-12T17:18:08.510Z"}
+[2026-10-12T17:18:08.513Z] [FAIL] [API_CORE] Agendamiento de Cita con Coordenadas GPS (POST /appointments) (2ms) - HTTP 400 | Error: {"type":"https://alrcompany.com/errors/http-400","title":"Bad Request","status":400,"detail":"The requested time slot is completely booked for this date.","instance":"/api/v1/appointments","timestamp":"2026-10-12T17:18:08.512Z"}
+[2026-10-12T17:18:08.515Z] [PASS] [API_CORE] Validación de Código de Referidos (/wallets/referrals/validate) (2ms) - Endpoint respondió con código esperado 400
+[2026-10-12T17:18:08.516Z] [PASS] [SECURITY] Protección OWASP: Inyección SQL en clientName (1ms) - Validación Zod rechazó la carga hostil con HTTP 400 BadRequest
+[2026-10-12T17:18:08.518Z] [PASS] [SECURITY] Protección OWASP: XSS en Dirección (1ms) - Validación Zod rechazó la carga hostil con HTTP 400 BadRequest
+[2026-10-12T17:18:08.520Z] [PASS] [SECURITY] Protección OWASP: Monto Negativo en Total (1ms) - Validación Zod rechazó la carga hostil con HTTP 400 BadRequest
+[2026-10-12T17:18:53.886Z] [PASS] [PWA_CLIENT] Ruta / (Landing Page) (318ms) - Renderizado 200 OK (162 KB transferidos)
+[2026-10-12T17:18:54.180Z] [PASS] [PWA_CLIENT] Ruta /cotizar (Cotizador Inteligente) (275ms) - Renderizado 200 OK (64 KB transferidos)
+[2026-10-12T17:18:54.540Z] [PASS] [PWA_CLIENT] Ruta /agenda (Agendador de Citas & Despacho) (345ms) - Renderizado 200 OK (95 KB transferidos)
+[2026-10-12T17:18:54.823Z] [PASS] [PWA_CLIENT] Ruta /mis-citas (Live Tracking & Telemetría) (267ms) - Renderizado 200 OK (57 KB transferidos)
+[2026-10-12T17:18:55.104Z] [PASS] [PWA_CLIENT] Ruta /wallet (Billetera Cashback) (262ms) - Renderizado 200 OK (57 KB transferidos)
+[2026-10-12T17:18:55.337Z] [PASS] [PWA_CLIENT] Ruta /login (Acceso de Clientes) (218ms) - Renderizado 200 OK (53 KB transferidos)
+[2026-10-12T17:18:55.589Z] [PASS] [PWA_CLIENT] Ruta /registro (Registro de Clientes) (238ms) - Renderizado 200 OK (55 KB transferidos)
+[2026-10-12T17:18:55.912Z] [PASS] [ADMIN_PORTAL] Ruta / (Tablero Kanban de Despacho) (253ms) - Renderizado 200 OK (115 KB)
+[2026-10-12T17:18:56.346Z] [PASS] [ADMIN_PORTAL] Ruta /pagos (Revisión y Conciliación de Pagos) (426ms) - Renderizado 200 OK (52 KB)
+[2026-10-12T17:18:56.569Z] [PASS] [ADMIN_PORTAL] Ruta /clientes (Directorio de Clientes) (214ms) - Renderizado 200 OK (32 KB)
+[2026-10-12T17:18:56.773Z] [FAIL] [ADMIN_PORTAL] Ruta /catalogo (Catálogo de Muebles y Servicios) (196ms) - Código HTTP 404 | Error: Respuesta inesperada
+[2026-10-12T17:18:56.970Z] [FAIL] [ADMIN_PORTAL] Ruta /rutas (Mapa de Rutas Técnicas) (189ms) - Código HTTP 404 | Error: Respuesta inesperada
+[2026-10-12T17:18:56.974Z] [PASS] [API_CORE] Health Check (/health) (4ms) - Core API saludable
+[2026-10-12T17:18:56.976Z] [PASS] [API_CORE] Catálogo de Servicios (GET /catalog) (1ms) - Catálogo cargó 14 ítems de tapicería
+[2026-10-12T17:18:56.978Z] [PASS] [API_CORE] Políticas de Descuento (GET /config/discounts) (1ms) - Políticas activas para 4 zonas y 3 bloques
+[2026-10-12T17:18:56.991Z] [PASS] [API_CORE] Matriz de Bloques y Rutas Dinámicas (16 combinaciones) (0ms) - 16/16 consultas evaluadas correctamente en tiempo real
+[2026-10-12T17:18:56.993Z] [FAIL] [API_CORE] Creación de Cotización Inteligente (POST /quotations) (1ms) - HTTP 400 | Error: {"type":"https://alrcompany.com/errors/http-400","title":"Validation Error","status":400,"detail":"The submitted request payload failed schema validation.","instance":"/api/v1/quotations","errors":{"clientId":["Required"],"items.0.furnitureType":["Required"],"items.0.basePriceAmount":["Required"]},"timestamp":"2026-10-12T17:18:56.993Z"}
+[2026-10-12T17:18:56.995Z] [FAIL] [API_CORE] Agendamiento de Cita con Coordenadas GPS (POST /appointments) (1ms) - HTTP 400 | Error: {"type":"https://alrcompany.com/errors/http-400","title":"Bad Request","status":400,"detail":"The requested time slot is completely booked for this date.","instance":"/api/v1/appointments","timestamp":"2026-10-12T17:18:56.995Z"}
+[2026-10-12T17:18:56.997Z] [PASS] [API_CORE] Validación de Código de Referidos (/wallets/referrals/validate) (1ms) - Endpoint respondió con código esperado 400
+[2026-10-12T17:18:56.998Z] [PASS] [SECURITY] Protección OWASP: Inyección SQL en clientName (1ms) - Validación Zod rechazó la carga hostil con HTTP 400 BadRequest
+[2026-10-12T17:18:57.000Z] [PASS] [SECURITY] Protección OWASP: XSS en Dirección (1ms) - Validación Zod rechazó la carga hostil con HTTP 400 BadRequest
+[2026-10-12T17:18:57.001Z] [PASS] [SECURITY] Protección OWASP: Monto Negativo en Total (1ms) - Validación Zod rechazó la carga hostil con HTTP 400 BadRequest
+[2026-10-12T17:19:42.384Z] [PASS] [PWA_CLIENT] Ruta / (Landing Page) (339ms) - Renderizado 200 OK (162 KB transferidos)
+[2026-10-12T17:19:42.694Z] [PASS] [PWA_CLIENT] Ruta /cotizar (Cotizador Inteligente) (295ms) - Renderizado 200 OK (64 KB transferidos)
+[2026-10-12T17:19:43.060Z] [PASS] [PWA_CLIENT] Ruta /agenda (Agendador de Citas & Despacho) (350ms) - Renderizado 200 OK (95 KB transferidos)
+[2026-10-12T17:19:43.326Z] [PASS] [PWA_CLIENT] Ruta /mis-citas (Live Tracking & Telemetría) (253ms) - Renderizado 200 OK (57 KB transferidos)
+[2026-10-12T17:19:43.591Z] [PASS] [PWA_CLIENT] Ruta /wallet (Billetera Cashback) (249ms) - Renderizado 200 OK (57 KB transferidos)
+[2026-10-12T17:19:43.836Z] [PASS] [PWA_CLIENT] Ruta /login (Acceso de Clientes) (231ms) - Renderizado 200 OK (53 KB transferidos)
+[2026-10-12T17:19:44.090Z] [PASS] [PWA_CLIENT] Ruta /registro (Registro de Clientes) (238ms) - Renderizado 200 OK (55 KB transferidos)
+[2026-10-12T17:19:44.380Z] [PASS] [ADMIN_PORTAL] Ruta / (Tablero Kanban de Despacho) (256ms) - Renderizado 200 OK (115 KB)
+[2026-10-12T17:19:44.748Z] [PASS] [ADMIN_PORTAL] Ruta /pagos (Revisión y Conciliación de Pagos) (360ms) - Renderizado 200 OK (52 KB)
+[2026-10-12T17:19:44.971Z] [PASS] [ADMIN_PORTAL] Ruta /clientes (Directorio de Clientes) (214ms) - Renderizado 200 OK (32 KB)
+[2026-10-12T17:19:45.158Z] [FAIL] [ADMIN_PORTAL] Ruta /catalogo (Catálogo de Muebles y Servicios) (178ms) - Código HTTP 404 | Error: Respuesta inesperada
+[2026-10-12T17:19:45.351Z] [FAIL] [ADMIN_PORTAL] Ruta /rutas (Mapa de Rutas Técnicas) (184ms) - Código HTTP 404 | Error: Respuesta inesperada
+[2026-10-12T17:19:45.363Z] [PASS] [API_CORE] Health Check (/health) (11ms) - Core API saludable
+[2026-10-12T17:19:45.365Z] [PASS] [API_CORE] Catálogo de Servicios (GET /catalog) (2ms) - Catálogo cargó 14 ítems de tapicería
+[2026-10-12T17:19:45.370Z] [PASS] [API_CORE] Políticas de Descuento (GET /config/discounts) (4ms) - Políticas activas para 4 zonas y 3 bloques
+[2026-10-12T17:19:45.391Z] [PASS] [API_CORE] Matriz de Bloques y Rutas Dinámicas (16 combinaciones) (0ms) - 16/16 consultas evaluadas correctamente en tiempo real
+[2026-10-12T17:19:45.396Z] [FAIL] [API_CORE] Creación de Cotización Inteligente (POST /quotations) (4ms) - HTTP 400 | Error: {"type":"https://alrcompany.com/errors/http-400","title":"Validation Error","status":400,"detail":"The submitted request payload failed schema validation.","instance":"/api/v1/quotations","errors":{"clientId":["Required"],"items.0.furnitureType":["Required"],"items.0.basePriceAmount":["Required"]},"timestamp":"2026-10-12T17:19:45.393Z"}
+[2026-10-12T17:19:45.404Z] [FAIL] [API_CORE] Agendamiento de Cita con Coordenadas GPS (POST /appointments) (7ms) - HTTP 400 | Error: {"type":"https://alrcompany.com/errors/http-400","title":"Bad Request","status":400,"detail":"The requested time slot is completely booked for this date.","instance":"/api/v1/appointments","timestamp":"2026-10-12T17:19:45.402Z"}
+[2026-10-12T17:19:45.407Z] [PASS] [API_CORE] Validación de Código de Referidos (/wallets/referrals/validate) (2ms) - Endpoint respondió con código esperado 400
+[2026-10-12T17:19:45.412Z] [PASS] [SECURITY] Protección OWASP: Inyección SQL en clientName (4ms) - Validación Zod rechazó la carga hostil con HTTP 400 BadRequest
+[2026-10-12T17:19:45.420Z] [PASS] [SECURITY] Protección OWASP: XSS en Dirección (7ms) - Validación Zod rechazó la carga hostil con HTTP 400 BadRequest
+[2026-10-12T17:19:45.424Z] [PASS] [SECURITY] Protección OWASP: Monto Negativo en Total (3ms) - Validación Zod rechazó la carga hostil con HTTP 400 BadRequest
+[2026-10-12T17:20:31.190Z] [PASS] [PWA_CLIENT] Ruta / (Landing Page) (701ms) - Renderizado 200 OK (162 KB transferidos)
+[2026-10-12T17:20:31.744Z] [PASS] [PWA_CLIENT] Ruta /cotizar (Cotizador Inteligente) (526ms) - Renderizado 200 OK (64 KB transferidos)
+[2026-10-12T17:20:32.617Z] [PASS] [PWA_CLIENT] Ruta /agenda (Agendador de Citas & Despacho) (778ms) - Renderizado 200 OK (95 KB transferidos)
+[2026-10-12T17:20:33.316Z] [PASS] [PWA_CLIENT] Ruta /mis-citas (Live Tracking & Telemetría) (671ms) - Renderizado 200 OK (57 KB transferidos)
+[2026-10-12T17:20:33.831Z] [PASS] [PWA_CLIENT] Ruta /wallet (Billetera Cashback) (486ms) - Renderizado 200 OK (57 KB transferidos)
+[2026-10-12T17:20:34.371Z] [PASS] [PWA_CLIENT] Ruta /login (Acceso de Clientes) (519ms) - Renderizado 200 OK (53 KB transferidos)
+[2026-10-12T17:20:34.830Z] [PASS] [PWA_CLIENT] Ruta /registro (Registro de Clientes) (435ms) - Renderizado 200 OK (55 KB transferidos)
+[2026-10-12T17:20:35.304Z] [PASS] [ADMIN_PORTAL] Ruta / (Tablero Kanban de Despacho) (436ms) - Renderizado 200 OK (115 KB)
+[2026-10-12T17:20:35.948Z] [PASS] [ADMIN_PORTAL] Ruta /pagos (Revisión y Conciliación de Pagos) (633ms) - Renderizado 200 OK (52 KB)
+[2026-10-12T17:20:36.356Z] [PASS] [ADMIN_PORTAL] Ruta /clientes (Directorio de Clientes) (407ms) - Renderizado 200 OK (32 KB)
+[2026-10-12T17:20:36.942Z] [FAIL] [ADMIN_PORTAL] Ruta /catalogo (Catálogo de Muebles y Servicios) (576ms) - Código HTTP 404 | Error: Respuesta inesperada
+[2026-10-12T17:20:37.271Z] [FAIL] [ADMIN_PORTAL] Ruta /rutas (Mapa de Rutas Técnicas) (318ms) - Código HTTP 404 | Error: Respuesta inesperada
+[2026-10-12T17:20:37.274Z] [PASS] [API_CORE] Health Check (/health) (3ms) - Core API saludable
+[2026-10-12T17:20:37.276Z] [PASS] [API_CORE] Catálogo de Servicios (GET /catalog) (1ms) - Catálogo cargó 14 ítems de tapicería
+[2026-10-12T17:20:37.277Z] [PASS] [API_CORE] Políticas de Descuento (GET /config/discounts) (1ms) - Políticas activas para 4 zonas y 3 bloques
+[2026-10-12T17:20:37.295Z] [PASS] [API_CORE] Matriz de Bloques y Rutas Dinámicas (16 combinaciones) (0ms) - 16/16 consultas evaluadas correctamente en tiempo real
+[2026-10-12T17:20:37.297Z] [FAIL] [API_CORE] Creación de Cotización Inteligente (POST /quotations) (1ms) - HTTP 400 | Error: {"type":"https://alrcompany.com/errors/http-400","title":"Validation Error","status":400,"detail":"The submitted request payload failed schema validation.","instance":"/api/v1/quotations","errors":{"clientId":["Required"],"items.0.furnitureType":["Required"],"items.0.basePriceAmount":["Required"]},"timestamp":"2026-10-12T17:20:37.296Z"}
+[2026-10-12T17:20:37.304Z] [FAIL] [API_CORE] Agendamiento de Cita con Coordenadas GPS (POST /appointments) (7ms) - HTTP 400 | Error: {"type":"https://alrcompany.com/errors/http-400","title":"Bad Request","status":400,"detail":"The requested time slot is completely booked for this date.","instance":"/api/v1/appointments","timestamp":"2026-10-12T17:20:37.303Z"}
+[2026-10-12T17:20:37.306Z] [PASS] [API_CORE] Validación de Código de Referidos (/wallets/referrals/validate) (1ms) - Endpoint respondió con código esperado 400
+[2026-10-12T17:20:37.307Z] [PASS] [SECURITY] Protección OWASP: Inyección SQL en clientName (1ms) - Validación Zod rechazó la carga hostil con HTTP 400 BadRequest
+[2026-10-12T17:20:37.309Z] [PASS] [SECURITY] Protección OWASP: XSS en Dirección (1ms) - Validación Zod rechazó la carga hostil con HTTP 400 BadRequest
+[2026-10-12T17:20:37.311Z] [PASS] [SECURITY] Protección OWASP: Monto Negativo en Total (1ms) - Validación Zod rechazó la carga hostil con HTTP 400 BadRequest
+[2026-10-12T17:21:22.729Z] [PASS] [PWA_CLIENT] Ruta / (Landing Page) (372ms) - Renderizado 200 OK (162 KB transferidos)
+[2026-10-12T17:21:23.060Z] [PASS] [PWA_CLIENT] Ruta /cotizar (Cotizador Inteligente) (317ms) - Renderizado 200 OK (64 KB transferidos)
+[2026-10-12T17:21:23.505Z] [PASS] [PWA_CLIENT] Ruta /agenda (Agendador de Citas & Despacho) (422ms) - Renderizado 200 OK (95 KB transferidos)
+[2026-10-12T17:21:23.806Z] [PASS] [PWA_CLIENT] Ruta /mis-citas (Live Tracking & Telemetría) (284ms) - Renderizado 200 OK (57 KB transferidos)
+[2026-10-12T17:21:24.125Z] [PASS] [PWA_CLIENT] Ruta /wallet (Billetera Cashback) (304ms) - Renderizado 200 OK (57 KB transferidos)
+[2026-10-12T17:21:24.401Z] [PASS] [PWA_CLIENT] Ruta /login (Acceso de Clientes) (260ms) - Renderizado 200 OK (53 KB transferidos)
+[2026-10-12T17:21:24.688Z] [PASS] [PWA_CLIENT] Ruta /registro (Registro de Clientes) (273ms) - Renderizado 200 OK (55 KB transferidos)
+[2026-10-12T17:21:25.043Z] [PASS] [ADMIN_PORTAL] Ruta / (Tablero Kanban de Despacho) (309ms) - Renderizado 200 OK (115 KB)
+[2026-10-12T17:21:25.495Z] [PASS] [ADMIN_PORTAL] Ruta /pagos (Revisión y Conciliación de Pagos) (443ms) - Renderizado 200 OK (52 KB)
+[2026-10-12T17:21:25.757Z] [PASS] [ADMIN_PORTAL] Ruta /clientes (Directorio de Clientes) (252ms) - Renderizado 200 OK (32 KB)
+[2026-10-12T17:21:25.979Z] [FAIL] [ADMIN_PORTAL] Ruta /catalogo (Catálogo de Muebles y Servicios) (212ms) - Código HTTP 404 | Error: Respuesta inesperada
+[2026-10-12T17:21:26.198Z] [FAIL] [ADMIN_PORTAL] Ruta /rutas (Mapa de Rutas Técnicas) (211ms) - Código HTTP 404 | Error: Respuesta inesperada
+[2026-10-12T17:21:26.214Z] [PASS] [API_CORE] Health Check (/health) (3ms) - Core API saludable
+[2026-10-12T17:21:26.216Z] [PASS] [API_CORE] Catálogo de Servicios (GET /catalog) (1ms) - Catálogo cargó 14 ítems de tapicería
+[2026-10-12T17:21:26.220Z] [PASS] [API_CORE] Políticas de Descuento (GET /config/discounts) (3ms) - Políticas activas para 4 zonas y 3 bloques
+[2026-10-12T17:21:26.237Z] [PASS] [API_CORE] Matriz de Bloques y Rutas Dinámicas (16 combinaciones) (0ms) - 16/16 consultas evaluadas correctamente en tiempo real
+[2026-10-12T17:21:26.261Z] [FAIL] [API_CORE] Creación de Cotización Inteligente (POST /quotations) (24ms) - HTTP 400 | Error: {"type":"https://alrcompany.com/errors/http-400","title":"Validation Error","status":400,"detail":"The submitted request payload failed schema validation.","instance":"/api/v1/quotations","errors":{"clientId":["Required"],"items.0.furnitureType":["Required"],"items.0.basePriceAmount":["Required"]},"timestamp":"2026-10-12T17:21:26.261Z"}
+[2026-10-12T17:21:26.275Z] [FAIL] [API_CORE] Agendamiento de Cita con Coordenadas GPS (POST /appointments) (5ms) - HTTP 400 | Error: {"type":"https://alrcompany.com/errors/http-400","title":"Bad Request","status":400,"detail":"The requested time slot is completely booked for this date.","instance":"/api/v1/appointments","timestamp":"2026-10-12T17:21:26.274Z"}
+[2026-10-12T17:21:26.278Z] [PASS] [API_CORE] Validación de Código de Referidos (/wallets/referrals/validate) (3ms) - Endpoint respondió con código esperado 400
+[2026-10-12T17:21:26.281Z] [PASS] [SECURITY] Protección OWASP: Inyección SQL en clientName (2ms) - Validación Zod rechazó la carga hostil con HTTP 400 BadRequest
+[2026-10-12T17:21:26.284Z] [PASS] [SECURITY] Protección OWASP: XSS en Dirección (2ms) - Validación Zod rechazó la carga hostil con HTTP 400 BadRequest
+[2026-10-12T17:21:26.286Z] [PASS] [SECURITY] Protección OWASP: Monto Negativo en Total (1ms) - Validación Zod rechazó la carga hostil con HTTP 400 BadRequest
+[2026-10-12T17:22:11.735Z] [PASS] [PWA_CLIENT] Ruta / (Landing Page) (391ms) - Renderizado 200 OK (162 KB transferidos)
+[2026-10-12T17:22:12.212Z] [PASS] [PWA_CLIENT] Ruta /cotizar (Cotizador Inteligente) (413ms) - Renderizado 200 OK (64 KB transferidos)
+[2026-10-12T17:22:12.639Z] [PASS] [PWA_CLIENT] Ruta /agenda (Agendador de Citas & Despacho) (395ms) - Renderizado 200 OK (95 KB transferidos)
+[2026-10-12T17:22:12.943Z] [PASS] [PWA_CLIENT] Ruta /mis-citas (Live Tracking & Telemetría) (290ms) - Renderizado 200 OK (57 KB transferidos)
+[2026-10-12T17:22:13.236Z] [PASS] [PWA_CLIENT] Ruta /wallet (Billetera Cashback) (269ms) - Renderizado 200 OK (57 KB transferidos)
+[2026-10-12T17:22:13.494Z] [PASS] [PWA_CLIENT] Ruta /login (Acceso de Clientes) (244ms) - Renderizado 200 OK (53 KB transferidos)
+[2026-10-12T17:22:13.790Z] [PASS] [PWA_CLIENT] Ruta /registro (Registro de Clientes) (279ms) - Renderizado 200 OK (55 KB transferidos)
+[2026-10-12T17:22:14.144Z] [PASS] [ADMIN_PORTAL] Ruta / (Tablero Kanban de Despacho) (321ms) - Renderizado 200 OK (115 KB)
+[2026-10-12T17:22:14.560Z] [PASS] [ADMIN_PORTAL] Ruta /pagos (Revisión y Conciliación de Pagos) (406ms) - Renderizado 200 OK (52 KB)
+[2026-10-12T17:22:14.855Z] [PASS] [ADMIN_PORTAL] Ruta /clientes (Directorio de Clientes) (283ms) - Renderizado 200 OK (32 KB)
+[2026-10-12T17:22:15.178Z] [FAIL] [ADMIN_PORTAL] Ruta /catalogo (Catálogo de Muebles y Servicios) (247ms) - Código HTTP 404 | Error: Respuesta inesperada
+[2026-10-12T17:22:15.466Z] [FAIL] [ADMIN_PORTAL] Ruta /rutas (Mapa de Rutas Técnicas) (280ms) - Código HTTP 404 | Error: Respuesta inesperada
+[2026-10-12T17:22:15.477Z] [PASS] [API_CORE] Health Check (/health) (11ms) - Core API saludable
+[2026-10-12T17:22:15.479Z] [PASS] [API_CORE] Catálogo de Servicios (GET /catalog) (1ms) - Catálogo cargó 14 ítems de tapicería
+[2026-10-12T17:22:15.480Z] [PASS] [API_CORE] Políticas de Descuento (GET /config/discounts) (1ms) - Políticas activas para 4 zonas y 3 bloques
+[2026-10-12T17:22:15.617Z] [PASS] [API_CORE] Matriz de Bloques y Rutas Dinámicas (16 combinaciones) (0ms) - 16/16 consultas evaluadas correctamente en tiempo real
+[2026-10-12T17:22:15.697Z] [FAIL] [API_CORE] Creación de Cotización Inteligente (POST /quotations) (79ms) - HTTP 400 | Error: {"type":"https://alrcompany.com/errors/http-400","title":"Validation Error","status":400,"detail":"The submitted request payload failed schema validation.","instance":"/api/v1/quotations","errors":{"clientId":["Required"],"items.0.furnitureType":["Required"],"items.0.basePriceAmount":["Required"]},"timestamp":"2026-10-12T17:22:15.686Z"}
+[2026-10-12T17:22:15.746Z] [FAIL] [API_CORE] Agendamiento de Cita con Coordenadas GPS (POST /appointments) (23ms) - HTTP 400 | Error: {"type":"https://alrcompany.com/errors/http-400","title":"Bad Request","status":400,"detail":"The requested time slot is completely booked for this date.","instance":"/api/v1/appointments","timestamp":"2026-10-12T17:22:15.725Z"}
+[2026-10-12T17:22:15.771Z] [PASS] [API_CORE] Validación de Código de Referidos (/wallets/referrals/validate) (24ms) - Endpoint respondió con código esperado 400
+[2026-10-12T17:22:15.806Z] [PASS] [SECURITY] Protección OWASP: Inyección SQL en clientName (35ms) - Validación Zod rechazó la carga hostil con HTTP 400 BadRequest
+[2026-10-12T17:22:15.808Z] [PASS] [SECURITY] Protección OWASP: XSS en Dirección (2ms) - Validación Zod rechazó la carga hostil con HTTP 400 BadRequest
+[2026-10-12T17:22:15.812Z] [PASS] [SECURITY] Protección OWASP: Monto Negativo en Total (3ms) - Validación Zod rechazó la carga hostil con HTTP 400 BadRequest
+[2026-10-12T17:23:01.256Z] [PASS] [PWA_CLIENT] Ruta / (Landing Page) (385ms) - Renderizado 200 OK (162 KB transferidos)
+[2026-10-12T17:23:01.671Z] [PASS] [PWA_CLIENT] Ruta /cotizar (Cotizador Inteligente) (374ms) - Renderizado 200 OK (64 KB transferidos)
+[2026-10-12T17:23:02.356Z] [PASS] [PWA_CLIENT] Ruta /agenda (Agendador de Citas & Despacho) (669ms) - Renderizado 200 OK (95 KB transferidos)
+[2026-10-12T17:23:02.651Z] [PASS] [PWA_CLIENT] Ruta /mis-citas (Live Tracking & Telemetría) (281ms) - Renderizado 200 OK (57 KB transferidos)
+[2026-10-12T17:23:02.941Z] [PASS] [PWA_CLIENT] Ruta /wallet (Billetera Cashback) (273ms) - Renderizado 200 OK (57 KB transferidos)
+[2026-10-12T17:23:03.273Z] [PASS] [PWA_CLIENT] Ruta /login (Acceso de Clientes) (307ms) - Renderizado 200 OK (53 KB transferidos)
+[2026-10-12T17:23:03.640Z] [PASS] [PWA_CLIENT] Ruta /registro (Registro de Clientes) (341ms) - Renderizado 200 OK (55 KB transferidos)
+[2026-10-12T17:23:04.026Z] [PASS] [ADMIN_PORTAL] Ruta / (Tablero Kanban de Despacho) (350ms) - Renderizado 200 OK (115 KB)
+[2026-10-12T17:23:04.462Z] [PASS] [ADMIN_PORTAL] Ruta /pagos (Revisión y Conciliación de Pagos) (424ms) - Renderizado 200 OK (52 KB)
+[2026-10-12T17:23:04.756Z] [PASS] [ADMIN_PORTAL] Ruta /clientes (Directorio de Clientes) (282ms) - Renderizado 200 OK (32 KB)
+[2026-10-12T17:23:04.996Z] [FAIL] [ADMIN_PORTAL] Ruta /catalogo (Catálogo de Muebles y Servicios) (230ms) - Código HTTP 404 | Error: Respuesta inesperada
+[2026-10-12T17:23:05.215Z] [FAIL] [ADMIN_PORTAL] Ruta /rutas (Mapa de Rutas Técnicas) (210ms) - Código HTTP 404 | Error: Respuesta inesperada
+[2026-10-12T17:23:05.218Z] [PASS] [API_CORE] Health Check (/health) (2ms) - Core API saludable
+[2026-10-12T17:23:05.219Z] [PASS] [API_CORE] Catálogo de Servicios (GET /catalog) (1ms) - Catálogo cargó 14 ítems de tapicería
+[2026-10-12T17:23:05.221Z] [PASS] [API_CORE] Políticas de Descuento (GET /config/discounts) (1ms) - Políticas activas para 4 zonas y 3 bloques
+[2026-10-12T17:23:05.239Z] [PASS] [API_CORE] Matriz de Bloques y Rutas Dinámicas (16 combinaciones) (0ms) - 16/16 consultas evaluadas correctamente en tiempo real
+[2026-10-12T17:23:05.241Z] [FAIL] [API_CORE] Creación de Cotización Inteligente (POST /quotations) (2ms) - HTTP 400 | Error: {"type":"https://alrcompany.com/errors/http-400","title":"Validation Error","status":400,"detail":"The submitted request payload failed schema validation.","instance":"/api/v1/quotations","errors":{"clientId":["Required"],"items.0.furnitureType":["Required"],"items.0.basePriceAmount":["Required"]},"timestamp":"2026-10-12T17:23:05.240Z"}
+[2026-10-12T17:23:05.244Z] [FAIL] [API_CORE] Agendamiento de Cita con Coordenadas GPS (POST /appointments) (2ms) - HTTP 400 | Error: {"type":"https://alrcompany.com/errors/http-400","title":"Bad Request","status":400,"detail":"The requested time slot is completely booked for this date.","instance":"/api/v1/appointments","timestamp":"2026-10-12T17:23:05.243Z"}
+[2026-10-12T17:23:05.253Z] [PASS] [API_CORE] Validación de Código de Referidos (/wallets/referrals/validate) (8ms) - Endpoint respondió con código esperado 400
+[2026-10-12T17:23:05.255Z] [PASS] [SECURITY] Protección OWASP: Inyección SQL en clientName (2ms) - Validación Zod rechazó la carga hostil con HTTP 400 BadRequest
+[2026-10-12T17:23:05.257Z] [PASS] [SECURITY] Protección OWASP: XSS en Dirección (1ms) - Validación Zod rechazó la carga hostil con HTTP 400 BadRequest
+[2026-10-12T17:23:05.259Z] [PASS] [SECURITY] Protección OWASP: Monto Negativo en Total (1ms) - Validación Zod rechazó la carga hostil con HTTP 400 BadRequest
+[2026-10-12T17:23:50.723Z] [PASS] [PWA_CLIENT] Ruta / (Landing Page) (409ms) - Renderizado 200 OK (162 KB transferidos)
+[2026-10-12T17:23:51.012Z] [PASS] [PWA_CLIENT] Ruta /cotizar (Cotizador Inteligente) (270ms) - Renderizado 200 OK (64 KB transferidos)
+[2026-10-12T17:23:51.499Z] [PASS] [PWA_CLIENT] Ruta /agenda (Agendador de Citas & Despacho) (467ms) - Renderizado 200 OK (95 KB transferidos)
+[2026-10-12T17:23:51.727Z] [PASS] [PWA_CLIENT] Ruta /mis-citas (Live Tracking & Telemetría) (210ms) - Renderizado 200 OK (57 KB transferidos)
+[2026-10-12T17:23:51.969Z] [PASS] [PWA_CLIENT] Ruta /wallet (Billetera Cashback) (227ms) - Renderizado 200 OK (57 KB transferidos)
+[2026-10-12T17:23:52.180Z] [PASS] [PWA_CLIENT] Ruta /login (Acceso de Clientes) (191ms) - Renderizado 200 OK (53 KB transferidos)
+[2026-10-12T17:23:52.424Z] [PASS] [PWA_CLIENT] Ruta /registro (Registro de Clientes) (228ms) - Renderizado 200 OK (55 KB transferidos)
+[2026-10-12T17:23:52.763Z] [PASS] [ADMIN_PORTAL] Ruta / (Tablero Kanban de Despacho) (303ms) - Renderizado 200 OK (115 KB)
+[2026-10-12T17:23:53.161Z] [PASS] [ADMIN_PORTAL] Ruta /pagos (Revisión y Conciliación de Pagos) (389ms) - Renderizado 200 OK (52 KB)
+[2026-10-12T17:23:53.438Z] [PASS] [ADMIN_PORTAL] Ruta /clientes (Directorio de Clientes) (269ms) - Renderizado 200 OK (32 KB)
+[2026-10-12T17:23:53.675Z] [FAIL] [ADMIN_PORTAL] Ruta /catalogo (Catálogo de Muebles y Servicios) (227ms) - Código HTTP 404 | Error: Respuesta inesperada
+[2026-10-12T17:23:53.881Z] [FAIL] [ADMIN_PORTAL] Ruta /rutas (Mapa de Rutas Técnicas) (196ms) - Código HTTP 404 | Error: Respuesta inesperada
+[2026-10-12T17:23:53.884Z] [PASS] [API_CORE] Health Check (/health) (2ms) - Core API saludable
+[2026-10-12T17:23:53.886Z] [PASS] [API_CORE] Catálogo de Servicios (GET /catalog) (1ms) - Catálogo cargó 14 ítems de tapicería
+[2026-10-12T17:23:53.888Z] [PASS] [API_CORE] Políticas de Descuento (GET /config/discounts) (1ms) - Políticas activas para 4 zonas y 3 bloques
+[2026-10-12T17:23:53.905Z] [PASS] [API_CORE] Matriz de Bloques y Rutas Dinámicas (16 combinaciones) (0ms) - 16/16 consultas evaluadas correctamente en tiempo real
+[2026-10-12T17:23:53.908Z] [FAIL] [API_CORE] Creación de Cotización Inteligente (POST /quotations) (3ms) - HTTP 400 | Error: {"type":"https://alrcompany.com/errors/http-400","title":"Validation Error","status":400,"detail":"The submitted request payload failed schema validation.","instance":"/api/v1/quotations","errors":{"clientId":["Required"],"items.0.furnitureType":["Required"],"items.0.basePriceAmount":["Required"]},"timestamp":"2026-10-12T17:23:53.906Z"}
+[2026-10-12T17:23:53.913Z] [FAIL] [API_CORE] Agendamiento de Cita con Coordenadas GPS (POST /appointments) (4ms) - HTTP 400 | Error: {"type":"https://alrcompany.com/errors/http-400","title":"Bad Request","status":400,"detail":"The requested time slot is completely booked for this date.","instance":"/api/v1/appointments","timestamp":"2026-10-12T17:23:53.910Z"}
+[2026-10-12T17:23:54.041Z] [PASS] [API_CORE] Validación de Código de Referidos (/wallets/referrals/validate) (128ms) - Endpoint respondió con código esperado 400
+[2026-10-12T17:23:54.046Z] [PASS] [SECURITY] Protección OWASP: Inyección SQL en clientName (3ms) - Validación Zod rechazó la carga hostil con HTTP 400 BadRequest
+[2026-10-12T17:23:54.050Z] [PASS] [SECURITY] Protección OWASP: XSS en Dirección (2ms) - Validación Zod rechazó la carga hostil con HTTP 400 BadRequest
+[2026-10-12T17:23:54.053Z] [PASS] [SECURITY] Protección OWASP: Monto Negativo en Total (2ms) - Validación Zod rechazó la carga hostil con HTTP 400 BadRequest
+[2026-10-12T17:24:39.421Z] [PASS] [PWA_CLIENT] Ruta / (Landing Page) (317ms) - Renderizado 200 OK (162 KB transferidos)
+[2026-10-12T17:24:39.703Z] [PASS] [PWA_CLIENT] Ruta /cotizar (Cotizador Inteligente) (267ms) - Renderizado 200 OK (64 KB transferidos)
+[2026-10-12T17:24:40.086Z] [PASS] [PWA_CLIENT] Ruta /agenda (Agendador de Citas & Despacho) (365ms) - Renderizado 200 OK (95 KB transferidos)
+[2026-10-12T17:24:40.356Z] [PASS] [PWA_CLIENT] Ruta /mis-citas (Live Tracking & Telemetría) (254ms) - Renderizado 200 OK (57 KB transferidos)
+[2026-10-12T17:24:40.713Z] [PASS] [PWA_CLIENT] Ruta /wallet (Billetera Cashback) (342ms) - Renderizado 200 OK (57 KB transferidos)
+[2026-10-12T17:24:41.019Z] [PASS] [PWA_CLIENT] Ruta /login (Acceso de Clientes) (285ms) - Renderizado 200 OK (53 KB transferidos)
+[2026-10-12T17:24:41.315Z] [PASS] [PWA_CLIENT] Ruta /registro (Registro de Clientes) (280ms) - Renderizado 200 OK (55 KB transferidos)
+[2026-10-12T17:24:41.735Z] [PASS] [ADMIN_PORTAL] Ruta / (Tablero Kanban de Despacho) (288ms) - Renderizado 200 OK (115 KB)
+[2026-10-12T17:24:42.153Z] [PASS] [ADMIN_PORTAL] Ruta /pagos (Revisión y Conciliación de Pagos) (408ms) - Renderizado 200 OK (52 KB)
+[2026-10-12T17:24:42.390Z] [PASS] [ADMIN_PORTAL] Ruta /clientes (Directorio de Clientes) (230ms) - Renderizado 200 OK (32 KB)
+[2026-10-12T17:24:42.611Z] [FAIL] [ADMIN_PORTAL] Ruta /catalogo (Catálogo de Muebles y Servicios) (212ms) - Código HTTP 404 | Error: Respuesta inesperada
+[2026-10-12T17:24:42.820Z] [FAIL] [ADMIN_PORTAL] Ruta /rutas (Mapa de Rutas Técnicas) (201ms) - Código HTTP 404 | Error: Respuesta inesperada
+[2026-10-12T17:24:42.823Z] [PASS] [API_CORE] Health Check (/health) (2ms) - Core API saludable
+[2026-10-12T17:24:42.824Z] [PASS] [API_CORE] Catálogo de Servicios (GET /catalog) (1ms) - Catálogo cargó 14 ítems de tapicería
+[2026-10-12T17:24:42.825Z] [PASS] [API_CORE] Políticas de Descuento (GET /config/discounts) (1ms) - Políticas activas para 4 zonas y 3 bloques
+[2026-10-12T17:24:42.840Z] [PASS] [API_CORE] Matriz de Bloques y Rutas Dinámicas (16 combinaciones) (0ms) - 16/16 consultas evaluadas correctamente en tiempo real
+[2026-10-12T17:24:42.853Z] [FAIL] [API_CORE] Creación de Cotización Inteligente (POST /quotations) (3ms) - HTTP 400 | Error: {"type":"https://alrcompany.com/errors/http-400","title":"Validation Error","status":400,"detail":"The submitted request payload failed schema validation.","instance":"/api/v1/quotations","errors":{"clientId":["Required"],"items.0.furnitureType":["Required"],"items.0.basePriceAmount":["Required"]},"timestamp":"2026-10-12T17:24:42.852Z"}
+[2026-10-12T17:24:42.855Z] [FAIL] [API_CORE] Agendamiento de Cita con Coordenadas GPS (POST /appointments) (1ms) - HTTP 400 | Error: {"type":"https://alrcompany.com/errors/http-400","title":"Bad Request","status":400,"detail":"The requested time slot is completely booked for this date.","instance":"/api/v1/appointments","timestamp":"2026-10-12T17:24:42.855Z"}
+[2026-10-12T17:24:42.857Z] [PASS] [API_CORE] Validación de Código de Referidos (/wallets/referrals/validate) (1ms) - Endpoint respondió con código esperado 400
+[2026-10-12T17:24:42.858Z] [PASS] [SECURITY] Protección OWASP: Inyección SQL en clientName (1ms) - Validación Zod rechazó la carga hostil con HTTP 400 BadRequest
+[2026-10-12T17:24:42.860Z] [PASS] [SECURITY] Protección OWASP: XSS en Dirección (1ms) - Validación Zod rechazó la carga hostil con HTTP 400 BadRequest
+[2026-10-12T17:24:42.870Z] [PASS] [SECURITY] Protección OWASP: Monto Negativo en Total (10ms) - Validación Zod rechazó la carga hostil con HTTP 400 BadRequest
+[2026-10-12T17:25:28.259Z] [PASS] [PWA_CLIENT] Ruta / (Landing Page) (339ms) - Renderizado 200 OK (162 KB transferidos)
+[2026-10-12T17:25:28.605Z] [PASS] [PWA_CLIENT] Ruta /cotizar (Cotizador Inteligente) (332ms) - Renderizado 200 OK (64 KB transferidos)
+[2026-10-12T17:25:29.039Z] [PASS] [PWA_CLIENT] Ruta /agenda (Agendador de Citas & Despacho) (419ms) - Renderizado 200 OK (95 KB transferidos)
+[2026-10-12T17:25:29.369Z] [PASS] [PWA_CLIENT] Ruta /mis-citas (Live Tracking & Telemetría) (260ms) - Renderizado 200 OK (57 KB transferidos)
+[2026-10-12T17:25:29.947Z] [PASS] [PWA_CLIENT] Ruta /wallet (Billetera Cashback) (543ms) - Renderizado 200 OK (57 KB transferidos)
+[2026-10-12T17:25:30.285Z] [PASS] [PWA_CLIENT] Ruta /login (Acceso de Clientes) (305ms) - Renderizado 200 OK (53 KB transferidos)
+[2026-10-12T17:25:30.577Z] [PASS] [PWA_CLIENT] Ruta /registro (Registro de Clientes) (278ms) - Renderizado 200 OK (55 KB transferidos)
+[2026-10-12T17:25:30.944Z] [PASS] [ADMIN_PORTAL] Ruta / (Tablero Kanban de Despacho) (333ms) - Renderizado 200 OK (115 KB)
+[2026-10-12T17:25:31.325Z] [PASS] [ADMIN_PORTAL] Ruta /pagos (Revisión y Conciliación de Pagos) (372ms) - Renderizado 200 OK (52 KB)
+[2026-10-12T17:25:31.563Z] [PASS] [ADMIN_PORTAL] Ruta /clientes (Directorio de Clientes) (230ms) - Renderizado 200 OK (32 KB)
+[2026-10-12T17:25:31.765Z] [FAIL] [ADMIN_PORTAL] Ruta /catalogo (Catálogo de Muebles y Servicios) (193ms) - Código HTTP 404 | Error: Respuesta inesperada
+[2026-10-12T17:25:32.164Z] [FAIL] [ADMIN_PORTAL] Ruta /rutas (Mapa de Rutas Técnicas) (190ms) - Código HTTP 404 | Error: Respuesta inesperada
+[2026-10-12T17:25:32.203Z] [PASS] [API_CORE] Health Check (/health) (2ms) - Core API saludable
+[2026-10-12T17:25:32.204Z] [PASS] [API_CORE] Catálogo de Servicios (GET /catalog) (1ms) - Catálogo cargó 14 ítems de tapicería
+[2026-10-12T17:25:32.205Z] [PASS] [API_CORE] Políticas de Descuento (GET /config/discounts) (1ms) - Políticas activas para 4 zonas y 3 bloques
+[2026-10-12T17:25:32.248Z] [PASS] [API_CORE] Matriz de Bloques y Rutas Dinámicas (16 combinaciones) (0ms) - 16/16 consultas evaluadas correctamente en tiempo real
+[2026-10-12T17:25:32.251Z] [FAIL] [API_CORE] Creación de Cotización Inteligente (POST /quotations) (2ms) - HTTP 400 | Error: {"type":"https://alrcompany.com/errors/http-400","title":"Validation Error","status":400,"detail":"The submitted request payload failed schema validation.","instance":"/api/v1/quotations","errors":{"clientId":["Required"],"items.0.furnitureType":["Required"],"items.0.basePriceAmount":["Required"]},"timestamp":"2026-10-12T17:25:32.250Z"}
+[2026-10-12T17:25:32.253Z] [FAIL] [API_CORE] Agendamiento de Cita con Coordenadas GPS (POST /appointments) (1ms) - HTTP 400 | Error: {"type":"https://alrcompany.com/errors/http-400","title":"Bad Request","status":400,"detail":"The requested time slot is completely booked for this date.","instance":"/api/v1/appointments","timestamp":"2026-10-12T17:25:32.253Z"}
+[2026-10-12T17:25:32.255Z] [PASS] [API_CORE] Validación de Código de Referidos (/wallets/referrals/validate) (1ms) - Endpoint respondió con código esperado 400
+[2026-10-12T17:25:32.265Z] [PASS] [SECURITY] Protección OWASP: Inyección SQL en clientName (1ms) - Validación Zod rechazó la carga hostil con HTTP 400 BadRequest
+[2026-10-12T17:25:32.267Z] [PASS] [SECURITY] Protección OWASP: XSS en Dirección (1ms) - Validación Zod rechazó la carga hostil con HTTP 400 BadRequest
+[2026-10-12T17:25:32.287Z] [PASS] [SECURITY] Protección OWASP: Monto Negativo en Total (2ms) - Validación Zod rechazó la carga hostil con HTTP 400 BadRequest
+[2026-10-12T17:26:17.685Z] [PASS] [PWA_CLIENT] Ruta / (Landing Page) (340ms) - Renderizado 200 OK (162 KB transferidos)
+[2026-10-12T17:26:17.998Z] [PASS] [PWA_CLIENT] Ruta /cotizar (Cotizador Inteligente) (297ms) - Renderizado 200 OK (64 KB transferidos)
+[2026-10-12T17:26:18.677Z] [PASS] [PWA_CLIENT] Ruta /agenda (Agendador de Citas & Despacho) (351ms) - Renderizado 200 OK (95 KB transferidos)
+[2026-10-12T17:26:19.015Z] [PASS] [PWA_CLIENT] Ruta /mis-citas (Live Tracking & Telemetría) (321ms) - Renderizado 200 OK (57 KB transferidos)
+[2026-10-12T17:26:19.271Z] [PASS] [PWA_CLIENT] Ruta /wallet (Billetera Cashback) (240ms) - Renderizado 200 OK (57 KB transferidos)
+[2026-10-12T17:26:19.501Z] [PASS] [PWA_CLIENT] Ruta /login (Acceso de Clientes) (217ms) - Renderizado 200 OK (53 KB transferidos)
+[2026-10-12T17:26:19.748Z] [PASS] [PWA_CLIENT] Ruta /registro (Registro de Clientes) (231ms) - Renderizado 200 OK (55 KB transferidos)
+[2026-10-12T17:26:20.078Z] [PASS] [ADMIN_PORTAL] Ruta / (Tablero Kanban de Despacho) (294ms) - Renderizado 200 OK (115 KB)
+[2026-10-12T17:26:20.794Z] [PASS] [ADMIN_PORTAL] Ruta /pagos (Revisión y Conciliación de Pagos) (426ms) - Renderizado 200 OK (52 KB)
+[2026-10-12T17:26:21.129Z] [PASS] [ADMIN_PORTAL] Ruta /clientes (Directorio de Clientes) (326ms) - Renderizado 200 OK (32 KB)
+[2026-10-12T17:26:21.347Z] [FAIL] [ADMIN_PORTAL] Ruta /catalogo (Catálogo de Muebles y Servicios) (209ms) - Código HTTP 404 | Error: Respuesta inesperada
+[2026-10-12T17:26:21.569Z] [FAIL] [ADMIN_PORTAL] Ruta /rutas (Mapa de Rutas Técnicas) (209ms) - Código HTTP 404 | Error: Respuesta inesperada
+[2026-10-12T17:26:21.573Z] [PASS] [API_CORE] Health Check (/health) (2ms) - Core API saludable
+[2026-10-12T17:26:21.574Z] [PASS] [API_CORE] Catálogo de Servicios (GET /catalog) (1ms) - Catálogo cargó 14 ítems de tapicería
+[2026-10-12T17:26:21.575Z] [PASS] [API_CORE] Políticas de Descuento (GET /config/discounts) (1ms) - Políticas activas para 4 zonas y 3 bloques
+[2026-10-12T17:26:21.589Z] [PASS] [API_CORE] Matriz de Bloques y Rutas Dinámicas (16 combinaciones) (0ms) - 16/16 consultas evaluadas correctamente en tiempo real
+[2026-10-12T17:26:21.590Z] [FAIL] [API_CORE] Creación de Cotización Inteligente (POST /quotations) (1ms) - HTTP 400 | Error: {"type":"https://alrcompany.com/errors/http-400","title":"Validation Error","status":400,"detail":"The submitted request payload failed schema validation.","instance":"/api/v1/quotations","errors":{"clientId":["Required"],"items.0.furnitureType":["Required"],"items.0.basePriceAmount":["Required"]},"timestamp":"2026-10-12T17:26:21.590Z"}
+[2026-10-12T17:26:21.593Z] [FAIL] [API_CORE] Agendamiento de Cita con Coordenadas GPS (POST /appointments) (1ms) - HTTP 400 | Error: {"type":"https://alrcompany.com/errors/http-400","title":"Bad Request","status":400,"detail":"The requested time slot is completely booked for this date.","instance":"/api/v1/appointments","timestamp":"2026-10-12T17:26:21.592Z"}
+[2026-10-12T17:26:21.594Z] [PASS] [API_CORE] Validación de Código de Referidos (/wallets/referrals/validate) (1ms) - Endpoint respondió con código esperado 400
+[2026-10-12T17:26:21.597Z] [PASS] [SECURITY] Protección OWASP: Inyección SQL en clientName (2ms) - Validación Zod rechazó la carga hostil con HTTP 400 BadRequest
+[2026-10-12T17:26:21.598Z] [PASS] [SECURITY] Protección OWASP: XSS en Dirección (1ms) - Validación Zod rechazó la carga hostil con HTTP 400 BadRequest
+[2026-10-12T17:26:21.600Z] [PASS] [SECURITY] Protección OWASP: Monto Negativo en Total (1ms) - Validación Zod rechazó la carga hostil con HTTP 400 BadRequest
+[2026-10-12T17:27:07.009Z] [PASS] [PWA_CLIENT] Ruta / (Landing Page) (353ms) - Renderizado 200 OK (162 KB transferidos)
+[2026-10-12T17:27:07.387Z] [PASS] [PWA_CLIENT] Ruta /cotizar (Cotizador Inteligente) (339ms) - Renderizado 200 OK (64 KB transferidos)
+[2026-10-12T17:27:07.839Z] [PASS] [PWA_CLIENT] Ruta /agenda (Agendador de Citas & Despacho) (436ms) - Renderizado 200 OK (95 KB transferidos)
+[2026-10-12T17:27:08.270Z] [PASS] [PWA_CLIENT] Ruta /mis-citas (Live Tracking & Telemetría) (280ms) - Renderizado 200 OK (57 KB transferidos)
+[2026-10-12T17:27:08.596Z] [PASS] [PWA_CLIENT] Ruta /wallet (Billetera Cashback) (289ms) - Renderizado 200 OK (57 KB transferidos)
+[2026-10-12T17:27:08.908Z] [PASS] [PWA_CLIENT] Ruta /login (Acceso de Clientes) (289ms) - Renderizado 200 OK (53 KB transferidos)
+[2026-10-12T17:27:09.233Z] [PASS] [PWA_CLIENT] Ruta /registro (Registro de Clientes) (306ms) - Renderizado 200 OK (55 KB transferidos)
+[2026-10-12T17:27:09.622Z] [PASS] [ADMIN_PORTAL] Ruta / (Tablero Kanban de Despacho) (346ms) - Renderizado 200 OK (115 KB)
+[2026-10-12T17:27:10.114Z] [PASS] [ADMIN_PORTAL] Ruta /pagos (Revisión y Conciliación de Pagos) (483ms) - Renderizado 200 OK (52 KB)
+[2026-10-12T17:27:10.388Z] [PASS] [ADMIN_PORTAL] Ruta /clientes (Directorio de Clientes) (264ms) - Renderizado 200 OK (32 KB)
+[2026-10-12T17:27:10.625Z] [FAIL] [ADMIN_PORTAL] Ruta /catalogo (Catálogo de Muebles y Servicios) (228ms) - Código HTTP 404 | Error: Respuesta inesperada
+[2026-10-12T17:27:10.857Z] [FAIL] [ADMIN_PORTAL] Ruta /rutas (Mapa de Rutas Técnicas) (220ms) - Código HTTP 404 | Error: Respuesta inesperada
+[2026-10-12T17:27:10.862Z] [PASS] [API_CORE] Health Check (/health) (4ms) - Core API saludable
+[2026-10-12T17:27:10.864Z] [PASS] [API_CORE] Catálogo de Servicios (GET /catalog) (1ms) - Catálogo cargó 14 ítems de tapicería
+[2026-10-12T17:27:10.866Z] [PASS] [API_CORE] Políticas de Descuento (GET /config/discounts) (1ms) - Políticas activas para 4 zonas y 3 bloques
+[2026-10-12T17:27:10.890Z] [PASS] [API_CORE] Matriz de Bloques y Rutas Dinámicas (16 combinaciones) (0ms) - 16/16 consultas evaluadas correctamente en tiempo real
+[2026-10-12T17:27:10.891Z] [FAIL] [API_CORE] Creación de Cotización Inteligente (POST /quotations) (1ms) - HTTP 400 | Error: {"type":"https://alrcompany.com/errors/http-400","title":"Validation Error","status":400,"detail":"The submitted request payload failed schema validation.","instance":"/api/v1/quotations","errors":{"clientId":["Required"],"items.0.furnitureType":["Required"],"items.0.basePriceAmount":["Required"]},"timestamp":"2026-10-12T17:27:10.891Z"}
+[2026-10-12T17:27:10.893Z] [FAIL] [API_CORE] Agendamiento de Cita con Coordenadas GPS (POST /appointments) (1ms) - HTTP 400 | Error: {"type":"https://alrcompany.com/errors/http-400","title":"Bad Request","status":400,"detail":"The requested time slot is completely booked for this date.","instance":"/api/v1/appointments","timestamp":"2026-10-12T17:27:10.893Z"}
+[2026-10-12T17:27:10.896Z] [PASS] [API_CORE] Validación de Código de Referidos (/wallets/referrals/validate) (2ms) - Endpoint respondió con código esperado 400
+[2026-10-12T17:27:10.898Z] [PASS] [SECURITY] Protección OWASP: Inyección SQL en clientName (1ms) - Validación Zod rechazó la carga hostil con HTTP 400 BadRequest
+[2026-10-12T17:27:10.900Z] [PASS] [SECURITY] Protección OWASP: XSS en Dirección (1ms) - Validación Zod rechazó la carga hostil con HTTP 400 BadRequest
+[2026-10-12T17:27:10.902Z] [PASS] [SECURITY] Protección OWASP: Monto Negativo en Total (1ms) - Validación Zod rechazó la carga hostil con HTTP 400 BadRequest
+[2026-10-12T17:27:56.295Z] [PASS] [PWA_CLIENT] Ruta / (Landing Page) (345ms) - Renderizado 200 OK (162 KB transferidos)
+[2026-10-12T17:27:56.814Z] [PASS] [PWA_CLIENT] Ruta /cotizar (Cotizador Inteligente) (496ms) - Renderizado 200 OK (64 KB transferidos)
+[2026-10-12T17:27:57.405Z] [PASS] [PWA_CLIENT] Ruta /agenda (Agendador de Citas & Despacho) (507ms) - Renderizado 200 OK (95 KB transferidos)
+[2026-10-12T17:27:58.074Z] [PASS] [PWA_CLIENT] Ruta /mis-citas (Live Tracking & Telemetría) (655ms) - Renderizado 200 OK (57 KB transferidos)
+[2026-10-12T17:27:58.425Z] [PASS] [PWA_CLIENT] Ruta /wallet (Billetera Cashback) (333ms) - Renderizado 200 OK (57 KB transferidos)
+[2026-10-12T17:27:58.747Z] [PASS] [PWA_CLIENT] Ruta /login (Acceso de Clientes) (308ms) - Renderizado 200 OK (53 KB transferidos)
+[2026-10-12T17:27:59.084Z] [PASS] [PWA_CLIENT] Ruta /registro (Registro de Clientes) (320ms) - Renderizado 200 OK (55 KB transferidos)
+[2026-10-12T17:27:59.527Z] [PASS] [ADMIN_PORTAL] Ruta / (Tablero Kanban de Despacho) (405ms) - Renderizado 200 OK (115 KB)
+[2026-10-12T17:27:59.980Z] [PASS] [ADMIN_PORTAL] Ruta /pagos (Revisión y Conciliación de Pagos) (444ms) - Renderizado 200 OK (52 KB)
+[2026-10-12T17:28:00.307Z] [PASS] [ADMIN_PORTAL] Ruta /clientes (Directorio de Clientes) (315ms) - Renderizado 200 OK (32 KB)
+[2026-10-12T17:28:00.557Z] [FAIL] [ADMIN_PORTAL] Ruta /catalogo (Catálogo de Muebles y Servicios) (239ms) - Código HTTP 404 | Error: Respuesta inesperada
+[2026-10-12T17:28:00.878Z] [FAIL] [ADMIN_PORTAL] Ruta /rutas (Mapa de Rutas Técnicas) (252ms) - Código HTTP 404 | Error: Respuesta inesperada
+[2026-10-12T17:28:00.886Z] [PASS] [API_CORE] Health Check (/health) (8ms) - Core API saludable
+[2026-10-12T17:28:00.920Z] [PASS] [API_CORE] Catálogo de Servicios (GET /catalog) (33ms) - Catálogo cargó 14 ítems de tapicería
+[2026-10-12T17:28:00.924Z] [PASS] [API_CORE] Políticas de Descuento (GET /config/discounts) (3ms) - Políticas activas para 4 zonas y 3 bloques
+[2026-10-12T17:28:00.941Z] [PASS] [API_CORE] Matriz de Bloques y Rutas Dinámicas (16 combinaciones) (0ms) - 16/16 consultas evaluadas correctamente en tiempo real
+[2026-10-12T17:28:00.943Z] [FAIL] [API_CORE] Creación de Cotización Inteligente (POST /quotations) (1ms) - HTTP 400 | Error: {"type":"https://alrcompany.com/errors/http-400","title":"Validation Error","status":400,"detail":"The submitted request payload failed schema validation.","instance":"/api/v1/quotations","errors":{"clientId":["Required"],"items.0.furnitureType":["Required"],"items.0.basePriceAmount":["Required"]},"timestamp":"2026-10-12T17:28:00.942Z"}
+[2026-10-12T17:28:00.945Z] [FAIL] [API_CORE] Agendamiento de Cita con Coordenadas GPS (POST /appointments) (1ms) - HTTP 400 | Error: {"type":"https://alrcompany.com/errors/http-400","title":"Bad Request","status":400,"detail":"The requested time slot is completely booked for this date.","instance":"/api/v1/appointments","timestamp":"2026-10-12T17:28:00.944Z"}
+[2026-10-12T17:28:00.946Z] [PASS] [API_CORE] Validación de Código de Referidos (/wallets/referrals/validate) (1ms) - Endpoint respondió con código esperado 400
+[2026-10-12T17:28:01.001Z] [PASS] [SECURITY] Protección OWASP: Inyección SQL en clientName (54ms) - Validación Zod rechazó la carga hostil con HTTP 400 BadRequest
+[2026-10-12T17:28:01.007Z] [PASS] [SECURITY] Protección OWASP: XSS en Dirección (5ms) - Validación Zod rechazó la carga hostil con HTTP 400 BadRequest
+[2026-10-12T17:28:01.019Z] [PASS] [SECURITY] Protección OWASP: Monto Negativo en Total (11ms) - Validación Zod rechazó la carga hostil con HTTP 400 BadRequest
+[2026-10-12T17:28:46.451Z] [PASS] [PWA_CLIENT] Ruta / (Landing Page) (379ms) - Renderizado 200 OK (162 KB transferidos)
+[2026-10-12T17:28:46.827Z] [PASS] [PWA_CLIENT] Ruta /cotizar (Cotizador Inteligente) (356ms) - Renderizado 200 OK (64 KB transferidos)
+[2026-10-12T17:28:47.253Z] [PASS] [PWA_CLIENT] Ruta /agenda (Agendador de Citas & Despacho) (408ms) - Renderizado 200 OK (95 KB transferidos)
+[2026-10-12T17:28:47.562Z] [PASS] [PWA_CLIENT] Ruta /mis-citas (Live Tracking & Telemetría) (290ms) - Renderizado 200 OK (57 KB transferidos)
+[2026-10-12T17:28:47.879Z] [PASS] [PWA_CLIENT] Ruta /wallet (Billetera Cashback) (300ms) - Renderizado 200 OK (57 KB transferidos)
+[2026-10-12T17:28:48.131Z] [PASS] [PWA_CLIENT] Ruta /login (Acceso de Clientes) (238ms) - Renderizado 200 OK (53 KB transferidos)
+[2026-10-12T17:28:48.430Z] [PASS] [PWA_CLIENT] Ruta /registro (Registro de Clientes) (278ms) - Renderizado 200 OK (55 KB transferidos)
+[2026-10-12T17:28:48.771Z] [PASS] [ADMIN_PORTAL] Ruta / (Tablero Kanban de Despacho) (311ms) - Renderizado 200 OK (115 KB)
+[2026-10-12T17:28:49.297Z] [PASS] [ADMIN_PORTAL] Ruta /pagos (Revisión y Conciliación de Pagos) (515ms) - Renderizado 200 OK (52 KB)
+[2026-10-12T17:28:49.662Z] [PASS] [ADMIN_PORTAL] Ruta /clientes (Directorio de Clientes) (349ms) - Renderizado 200 OK (32 KB)
+[2026-10-12T17:28:49.935Z] [FAIL] [ADMIN_PORTAL] Ruta /catalogo (Catálogo de Muebles y Servicios) (263ms) - Código HTTP 404 | Error: Respuesta inesperada
+[2026-10-12T17:28:50.231Z] [FAIL] [ADMIN_PORTAL] Ruta /rutas (Mapa de Rutas Técnicas) (281ms) - Código HTTP 404 | Error: Respuesta inesperada
+[2026-10-12T17:28:50.235Z] [PASS] [API_CORE] Health Check (/health) (3ms) - Core API saludable
+[2026-10-12T17:28:50.237Z] [PASS] [API_CORE] Catálogo de Servicios (GET /catalog) (1ms) - Catálogo cargó 14 ítems de tapicería
+[2026-10-12T17:28:50.241Z] [PASS] [API_CORE] Políticas de Descuento (GET /config/discounts) (4ms) - Políticas activas para 4 zonas y 3 bloques
+[2026-10-12T17:28:50.274Z] [PASS] [API_CORE] Matriz de Bloques y Rutas Dinámicas (16 combinaciones) (0ms) - 16/16 consultas evaluadas correctamente en tiempo real
+[2026-10-12T17:28:50.278Z] [FAIL] [API_CORE] Creación de Cotización Inteligente (POST /quotations) (3ms) - HTTP 400 | Error: {"type":"https://alrcompany.com/errors/http-400","title":"Validation Error","status":400,"detail":"The submitted request payload failed schema validation.","instance":"/api/v1/quotations","errors":{"clientId":["Required"],"items.0.furnitureType":["Required"],"items.0.basePriceAmount":["Required"]},"timestamp":"2026-10-12T17:28:50.276Z"}
+[2026-10-12T17:28:50.286Z] [FAIL] [API_CORE] Agendamiento de Cita con Coordenadas GPS (POST /appointments) (6ms) - HTTP 400 | Error: {"type":"https://alrcompany.com/errors/http-400","title":"Bad Request","status":400,"detail":"The requested time slot is completely booked for this date.","instance":"/api/v1/appointments","timestamp":"2026-10-12T17:28:50.281Z"}
+[2026-10-12T17:28:50.293Z] [PASS] [API_CORE] Validación de Código de Referidos (/wallets/referrals/validate) (7ms) - Endpoint respondió con código esperado 400
+[2026-10-12T17:28:50.299Z] [PASS] [SECURITY] Protección OWASP: Inyección SQL en clientName (4ms) - Validación Zod rechazó la carga hostil con HTTP 400 BadRequest
+[2026-10-12T17:28:50.303Z] [PASS] [SECURITY] Protección OWASP: XSS en Dirección (3ms) - Validación Zod rechazó la carga hostil con HTTP 400 BadRequest
+[2026-10-12T17:28:50.311Z] [PASS] [SECURITY] Protección OWASP: Monto Negativo en Total (4ms) - Validación Zod rechazó la carga hostil con HTTP 400 BadRequest
+[2026-10-12T17:29:35.873Z] [PASS] [PWA_CLIENT] Ruta / (Landing Page) (496ms) - Renderizado 200 OK (162 KB transferidos)
+[2026-10-12T17:29:36.349Z] [PASS] [PWA_CLIENT] Ruta /cotizar (Cotizador Inteligente) (454ms) - Renderizado 200 OK (64 KB transferidos)
+[2026-10-12T17:29:36.982Z] [PASS] [PWA_CLIENT] Ruta /agenda (Agendador de Citas & Despacho) (611ms) - Renderizado 200 OK (95 KB transferidos)
+[2026-10-12T17:29:37.356Z] [PASS] [PWA_CLIENT] Ruta /mis-citas (Live Tracking & Telemetría) (355ms) - Renderizado 200 OK (57 KB transferidos)
+[2026-10-12T17:29:37.742Z] [PASS] [PWA_CLIENT] Ruta /wallet (Billetera Cashback) (362ms) - Renderizado 200 OK (57 KB transferidos)
+[2026-10-12T17:29:38.066Z] [PASS] [PWA_CLIENT] Ruta /login (Acceso de Clientes) (305ms) - Renderizado 200 OK (53 KB transferidos)
+[2026-10-12T17:29:38.366Z] [PASS] [PWA_CLIENT] Ruta /registro (Registro de Clientes) (285ms) - Renderizado 200 OK (55 KB transferidos)
+[2026-10-12T17:29:38.714Z] [PASS] [ADMIN_PORTAL] Ruta / (Tablero Kanban de Despacho) (315ms) - Renderizado 200 OK (115 KB)
+[2026-10-12T17:29:39.278Z] [PASS] [ADMIN_PORTAL] Ruta /pagos (Revisión y Conciliación de Pagos) (551ms) - Renderizado 200 OK (52 KB)
+[2026-10-12T17:29:39.647Z] [PASS] [ADMIN_PORTAL] Ruta /clientes (Directorio de Clientes) (354ms) - Renderizado 200 OK (32 KB)
+[2026-10-12T17:29:39.918Z] [FAIL] [ADMIN_PORTAL] Ruta /catalogo (Catálogo de Muebles y Servicios) (260ms) - Código HTTP 404 | Error: Respuesta inesperada
+[2026-10-12T17:29:40.193Z] [FAIL] [ADMIN_PORTAL] Ruta /rutas (Mapa de Rutas Técnicas) (201ms) - Código HTTP 404 | Error: Respuesta inesperada
+[2026-10-12T17:29:40.223Z] [PASS] [API_CORE] Health Check (/health) (2ms) - Core API saludable
+[2026-10-12T17:29:40.233Z] [PASS] [API_CORE] Catálogo de Servicios (GET /catalog) (9ms) - Catálogo cargó 14 ítems de tapicería
+[2026-10-12T17:29:40.267Z] [PASS] [API_CORE] Políticas de Descuento (GET /config/discounts) (34ms) - Políticas activas para 4 zonas y 3 bloques
+[2026-10-12T17:29:40.286Z] [PASS] [API_CORE] Matriz de Bloques y Rutas Dinámicas (16 combinaciones) (0ms) - 16/16 consultas evaluadas correctamente en tiempo real
+[2026-10-12T17:29:40.288Z] [FAIL] [API_CORE] Creación de Cotización Inteligente (POST /quotations) (1ms) - HTTP 400 | Error: {"type":"https://alrcompany.com/errors/http-400","title":"Validation Error","status":400,"detail":"The submitted request payload failed schema validation.","instance":"/api/v1/quotations","errors":{"clientId":["Required"],"items.0.furnitureType":["Required"],"items.0.basePriceAmount":["Required"]},"timestamp":"2026-10-12T17:29:40.288Z"}
+[2026-10-12T17:29:40.290Z] [FAIL] [API_CORE] Agendamiento de Cita con Coordenadas GPS (POST /appointments) (1ms) - HTTP 400 | Error: {"type":"https://alrcompany.com/errors/http-400","title":"Bad Request","status":400,"detail":"The requested time slot is completely booked for this date.","instance":"/api/v1/appointments","timestamp":"2026-10-12T17:29:40.290Z"}
+[2026-10-12T17:29:40.292Z] [PASS] [API_CORE] Validación de Código de Referidos (/wallets/referrals/validate) (1ms) - Endpoint respondió con código esperado 400
+[2026-10-12T17:29:40.293Z] [PASS] [SECURITY] Protección OWASP: Inyección SQL en clientName (1ms) - Validación Zod rechazó la carga hostil con HTTP 400 BadRequest
+[2026-10-12T17:29:40.295Z] [PASS] [SECURITY] Protección OWASP: XSS en Dirección (1ms) - Validación Zod rechazó la carga hostil con HTTP 400 BadRequest
+[2026-10-12T17:29:40.312Z] [PASS] [SECURITY] Protección OWASP: Monto Negativo en Total (17ms) - Validación Zod rechazó la carga hostil con HTTP 400 BadRequest
+[2026-10-12T17:30:25.811Z] [PASS] [PWA_CLIENT] Ruta / (Landing Page) (443ms) - Renderizado 200 OK (162 KB transferidos)
+[2026-10-12T17:30:26.223Z] [PASS] [PWA_CLIENT] Ruta /cotizar (Cotizador Inteligente) (389ms) - Renderizado 200 OK (64 KB transferidos)
+[2026-10-12T17:30:26.755Z] [PASS] [PWA_CLIENT] Ruta /agenda (Agendador de Citas & Despacho) (513ms) - Renderizado 200 OK (95 KB transferidos)
+[2026-10-12T17:30:27.221Z] [PASS] [PWA_CLIENT] Ruta /mis-citas (Live Tracking & Telemetría) (437ms) - Renderizado 200 OK (57 KB transferidos)
+[2026-10-12T17:30:28.089Z] [PASS] [PWA_CLIENT] Ruta /wallet (Billetera Cashback) (849ms) - Renderizado 200 OK (57 KB transferidos)
+[2026-10-12T17:30:28.431Z] [PASS] [PWA_CLIENT] Ruta /login (Acceso de Clientes) (323ms) - Renderizado 200 OK (53 KB transferidos)
+[2026-10-12T17:30:28.791Z] [PASS] [PWA_CLIENT] Ruta /registro (Registro de Clientes) (342ms) - Renderizado 200 OK (55 KB transferidos)
+[2026-10-12T17:30:29.224Z] [PASS] [ADMIN_PORTAL] Ruta / (Tablero Kanban de Despacho) (393ms) - Renderizado 200 OK (115 KB)
+[2026-10-12T17:30:29.772Z] [PASS] [ADMIN_PORTAL] Ruta /pagos (Revisión y Conciliación de Pagos) (534ms) - Renderizado 200 OK (52 KB)
+[2026-10-12T17:30:30.234Z] [PASS] [ADMIN_PORTAL] Ruta /clientes (Directorio de Clientes) (447ms) - Renderizado 200 OK (32 KB)
+[2026-10-12T17:30:30.520Z] [FAIL] [ADMIN_PORTAL] Ruta /catalogo (Catálogo de Muebles y Servicios) (275ms) - Código HTTP 404 | Error: Respuesta inesperada
+[2026-10-12T17:30:30.828Z] [FAIL] [ADMIN_PORTAL] Ruta /rutas (Mapa de Rutas Técnicas) (299ms) - Código HTTP 404 | Error: Respuesta inesperada
+[2026-10-12T17:30:30.832Z] [PASS] [API_CORE] Health Check (/health) (3ms) - Core API saludable
+[2026-10-12T17:30:30.835Z] [PASS] [API_CORE] Catálogo de Servicios (GET /catalog) (2ms) - Catálogo cargó 14 ítems de tapicería
+[2026-10-12T17:30:30.839Z] [PASS] [API_CORE] Políticas de Descuento (GET /config/discounts) (4ms) - Políticas activas para 4 zonas y 3 bloques
+[2026-10-12T17:30:30.861Z] [PASS] [API_CORE] Matriz de Bloques y Rutas Dinámicas (16 combinaciones) (0ms) - 16/16 consultas evaluadas correctamente en tiempo real
+[2026-10-12T17:30:30.937Z] [FAIL] [API_CORE] Creación de Cotización Inteligente (POST /quotations) (76ms) - HTTP 400 | Error: {"type":"https://alrcompany.com/errors/http-400","title":"Validation Error","status":400,"detail":"The submitted request payload failed schema validation.","instance":"/api/v1/quotations","errors":{"clientId":["Required"],"items.0.furnitureType":["Required"],"items.0.basePriceAmount":["Required"]},"timestamp":"2026-10-12T17:30:30.937Z"}
+[2026-10-12T17:30:30.941Z] [FAIL] [API_CORE] Agendamiento de Cita con Coordenadas GPS (POST /appointments) (2ms) - HTTP 400 | Error: {"type":"https://alrcompany.com/errors/http-400","title":"Bad Request","status":400,"detail":"The requested time slot is completely booked for this date.","instance":"/api/v1/appointments","timestamp":"2026-10-12T17:30:30.939Z"}
+[2026-10-12T17:30:30.945Z] [PASS] [API_CORE] Validación de Código de Referidos (/wallets/referrals/validate) (3ms) - Endpoint respondió con código esperado 400
+[2026-10-12T17:30:30.949Z] [PASS] [SECURITY] Protección OWASP: Inyección SQL en clientName (4ms) - Validación Zod rechazó la carga hostil con HTTP 400 BadRequest
+[2026-10-12T17:30:30.960Z] [PASS] [SECURITY] Protección OWASP: XSS en Dirección (10ms) - Validación Zod rechazó la carga hostil con HTTP 400 BadRequest
+[2026-10-12T17:30:31.010Z] [PASS] [SECURITY] Protección OWASP: Monto Negativo en Total (49ms) - Validación Zod rechazó la carga hostil con HTTP 400 BadRequest
+[2026-10-12T17:31:16.430Z] [PASS] [PWA_CLIENT] Ruta / (Landing Page) (336ms) - Renderizado 200 OK (162 KB transferidos)
+[2026-10-12T17:31:16.783Z] [PASS] [PWA_CLIENT] Ruta /cotizar (Cotizador Inteligente) (329ms) - Renderizado 200 OK (64 KB transferidos)
+[2026-10-12T17:31:17.235Z] [PASS] [PWA_CLIENT] Ruta /agenda (Agendador de Citas & Despacho) (432ms) - Renderizado 200 OK (95 KB transferidos)
+[2026-10-12T17:31:17.512Z] [PASS] [PWA_CLIENT] Ruta /mis-citas (Live Tracking & Telemetría) (254ms) - Renderizado 200 OK (57 KB transferidos)
+[2026-10-12T17:31:17.809Z] [PASS] [PWA_CLIENT] Ruta /wallet (Billetera Cashback) (281ms) - Renderizado 200 OK (57 KB transferidos)
+[2026-10-12T17:31:18.094Z] [PASS] [PWA_CLIENT] Ruta /login (Acceso de Clientes) (266ms) - Renderizado 200 OK (53 KB transferidos)
+[2026-10-12T17:31:18.455Z] [PASS] [PWA_CLIENT] Ruta /registro (Registro de Clientes) (340ms) - Renderizado 200 OK (55 KB transferidos)
+[2026-10-12T17:31:18.898Z] [PASS] [ADMIN_PORTAL] Ruta / (Tablero Kanban de Despacho) (406ms) - Renderizado 200 OK (115 KB)
+[2026-10-12T17:31:19.469Z] [PASS] [ADMIN_PORTAL] Ruta /pagos (Revisión y Conciliación de Pagos) (555ms) - Renderizado 200 OK (52 KB)
+[2026-10-12T17:31:19.887Z] [PASS] [ADMIN_PORTAL] Ruta /clientes (Directorio de Clientes) (370ms) - Renderizado 200 OK (32 KB)
+[2026-10-12T17:31:20.290Z] [FAIL] [ADMIN_PORTAL] Ruta /catalogo (Catálogo de Muebles y Servicios) (394ms) - Código HTTP 404 | Error: Respuesta inesperada
+[2026-10-12T17:31:20.584Z] [FAIL] [ADMIN_PORTAL] Ruta /rutas (Mapa de Rutas Técnicas) (228ms) - Código HTTP 404 | Error: Respuesta inesperada
+[2026-10-12T17:31:20.592Z] [PASS] [API_CORE] Health Check (/health) (8ms) - Core API saludable
+[2026-10-12T17:31:20.646Z] [PASS] [API_CORE] Catálogo de Servicios (GET /catalog) (53ms) - Catálogo cargó 14 ítems de tapicería
+[2026-10-12T17:31:20.686Z] [PASS] [API_CORE] Políticas de Descuento (GET /config/discounts) (39ms) - Políticas activas para 4 zonas y 3 bloques
+[2026-10-12T17:31:20.716Z] [PASS] [API_CORE] Matriz de Bloques y Rutas Dinámicas (16 combinaciones) (0ms) - 16/16 consultas evaluadas correctamente en tiempo real
+[2026-10-12T17:31:20.718Z] [FAIL] [API_CORE] Creación de Cotización Inteligente (POST /quotations) (1ms) - HTTP 400 | Error: {"type":"https://alrcompany.com/errors/http-400","title":"Validation Error","status":400,"detail":"The submitted request payload failed schema validation.","instance":"/api/v1/quotations","errors":{"clientId":["Required"],"items.0.furnitureType":["Required"],"items.0.basePriceAmount":["Required"]},"timestamp":"2026-10-12T17:31:20.718Z"}
+[2026-10-12T17:31:20.720Z] [FAIL] [API_CORE] Agendamiento de Cita con Coordenadas GPS (POST /appointments) (1ms) - HTTP 400 | Error: {"type":"https://alrcompany.com/errors/http-400","title":"Bad Request","status":400,"detail":"The requested time slot is completely booked for this date.","instance":"/api/v1/appointments","timestamp":"2026-10-12T17:31:20.719Z"}
+[2026-10-12T17:31:20.721Z] [PASS] [API_CORE] Validación de Código de Referidos (/wallets/referrals/validate) (1ms) - Endpoint respondió con código esperado 400
+[2026-10-12T17:31:20.723Z] [PASS] [SECURITY] Protección OWASP: Inyección SQL en clientName (1ms) - Validación Zod rechazó la carga hostil con HTTP 400 BadRequest
+[2026-10-12T17:31:20.724Z] [PASS] [SECURITY] Protección OWASP: XSS en Dirección (1ms) - Validación Zod rechazó la carga hostil con HTTP 400 BadRequest
+[2026-10-12T17:31:20.726Z] [PASS] [SECURITY] Protección OWASP: Monto Negativo en Total (1ms) - Validación Zod rechazó la carga hostil con HTTP 400 BadRequest
+[2026-10-12T17:32:06.153Z] [PASS] [PWA_CLIENT] Ruta / (Landing Page) (373ms) - Renderizado 200 OK (162 KB transferidos)
+[2026-10-12T17:32:06.478Z] [PASS] [PWA_CLIENT] Ruta /cotizar (Cotizador Inteligente) (306ms) - Renderizado 200 OK (64 KB transferidos)
+[2026-10-12T17:32:06.956Z] [PASS] [PWA_CLIENT] Ruta /agenda (Agendador de Citas & Despacho) (459ms) - Renderizado 200 OK (95 KB transferidos)
+[2026-10-12T17:32:07.314Z] [PASS] [PWA_CLIENT] Ruta /mis-citas (Live Tracking & Telemetría) (339ms) - Renderizado 200 OK (57 KB transferidos)
+[2026-10-12T17:32:07.671Z] [PASS] [PWA_CLIENT] Ruta /wallet (Billetera Cashback) (330ms) - Renderizado 200 OK (57 KB transferidos)
+[2026-10-12T17:32:07.988Z] [PASS] [PWA_CLIENT] Ruta /login (Acceso de Clientes) (298ms) - Renderizado 200 OK (53 KB transferidos)
+[2026-10-12T17:32:08.346Z] [PASS] [PWA_CLIENT] Ruta /registro (Registro de Clientes) (338ms) - Renderizado 200 OK (55 KB transferidos)
+[2026-10-12T17:32:08.798Z] [PASS] [ADMIN_PORTAL] Ruta / (Tablero Kanban de Despacho) (415ms) - Renderizado 200 OK (115 KB)
+[2026-10-12T17:32:09.415Z] [PASS] [ADMIN_PORTAL] Ruta /pagos (Revisión y Conciliación de Pagos) (603ms) - Renderizado 200 OK (52 KB)
+[2026-10-12T17:32:09.725Z] [PASS] [ADMIN_PORTAL] Ruta /clientes (Directorio de Clientes) (302ms) - Renderizado 200 OK (32 KB)
+[2026-10-12T17:32:09.967Z] [FAIL] [ADMIN_PORTAL] Ruta /catalogo (Catálogo de Muebles y Servicios) (233ms) - Código HTTP 404 | Error: Respuesta inesperada
+[2026-10-12T17:32:10.211Z] [FAIL] [ADMIN_PORTAL] Ruta /rutas (Mapa de Rutas Técnicas) (235ms) - Código HTTP 404 | Error: Respuesta inesperada
+[2026-10-12T17:32:10.214Z] [PASS] [API_CORE] Health Check (/health) (2ms) - Core API saludable
+[2026-10-12T17:32:10.216Z] [PASS] [API_CORE] Catálogo de Servicios (GET /catalog) (1ms) - Catálogo cargó 14 ítems de tapicería
+[2026-10-12T17:32:10.217Z] [PASS] [API_CORE] Políticas de Descuento (GET /config/discounts) (1ms) - Políticas activas para 4 zonas y 3 bloques
+[2026-10-12T17:32:10.228Z] [PASS] [API_CORE] Matriz de Bloques y Rutas Dinámicas (16 combinaciones) (0ms) - 16/16 consultas evaluadas correctamente en tiempo real
+[2026-10-12T17:32:10.230Z] [FAIL] [API_CORE] Creación de Cotización Inteligente (POST /quotations) (1ms) - HTTP 400 | Error: {"type":"https://alrcompany.com/errors/http-400","title":"Validation Error","status":400,"detail":"The submitted request payload failed schema validation.","instance":"/api/v1/quotations","errors":{"clientId":["Required"],"items.0.furnitureType":["Required"],"items.0.basePriceAmount":["Required"]},"timestamp":"2026-10-12T17:32:10.230Z"}
+[2026-10-12T17:32:10.232Z] [FAIL] [API_CORE] Agendamiento de Cita con Coordenadas GPS (POST /appointments) (1ms) - HTTP 400 | Error: {"type":"https://alrcompany.com/errors/http-400","title":"Bad Request","status":400,"detail":"The requested time slot is completely booked for this date.","instance":"/api/v1/appointments","timestamp":"2026-10-12T17:32:10.231Z"}
+[2026-10-12T17:32:10.233Z] [PASS] [API_CORE] Validación de Código de Referidos (/wallets/referrals/validate) (1ms) - Endpoint respondió con código esperado 400
+[2026-10-12T17:32:10.235Z] [PASS] [SECURITY] Protección OWASP: Inyección SQL en clientName (1ms) - Validación Zod rechazó la carga hostil con HTTP 400 BadRequest
+[2026-10-12T17:32:10.236Z] [PASS] [SECURITY] Protección OWASP: XSS en Dirección (1ms) - Validación Zod rechazó la carga hostil con HTTP 400 BadRequest
+[2026-10-12T17:32:10.239Z] [PASS] [SECURITY] Protección OWASP: Monto Negativo en Total (2ms) - Validación Zod rechazó la carga hostil con HTTP 400 BadRequest
+[2026-10-12T17:32:55.743Z] [PASS] [PWA_CLIENT] Ruta / (Landing Page) (443ms) - Renderizado 200 OK (162 KB transferidos)
+[2026-10-12T17:32:56.137Z] [PASS] [PWA_CLIENT] Ruta /cotizar (Cotizador Inteligente) (375ms) - Renderizado 200 OK (64 KB transferidos)
+[2026-10-12T17:32:56.641Z] [PASS] [PWA_CLIENT] Ruta /agenda (Agendador de Citas & Despacho) (486ms) - Renderizado 200 OK (95 KB transferidos)
+[2026-10-12T17:32:57.069Z] [PASS] [PWA_CLIENT] Ruta /mis-citas (Live Tracking & Telemetría) (360ms) - Renderizado 200 OK (57 KB transferidos)
+[2026-10-12T17:32:57.728Z] [PASS] [PWA_CLIENT] Ruta /wallet (Billetera Cashback) (637ms) - Renderizado 200 OK (57 KB transferidos)
+[2026-10-12T17:32:58.082Z] [PASS] [PWA_CLIENT] Ruta /login (Acceso de Clientes) (331ms) - Renderizado 200 OK (53 KB transferidos)
+[2026-10-12T17:32:58.431Z] [PASS] [PWA_CLIENT] Ruta /registro (Registro de Clientes) (329ms) - Renderizado 200 OK (55 KB transferidos)
+[2026-10-12T17:32:58.879Z] [PASS] [ADMIN_PORTAL] Ruta / (Tablero Kanban de Despacho) (401ms) - Renderizado 200 OK (115 KB)
+[2026-10-12T17:32:59.404Z] [PASS] [ADMIN_PORTAL] Ruta /pagos (Revisión y Conciliación de Pagos) (514ms) - Renderizado 200 OK (52 KB)
+[2026-10-12T17:32:59.752Z] [PASS] [ADMIN_PORTAL] Ruta /clientes (Directorio de Clientes) (335ms) - Renderizado 200 OK (32 KB)
+[2026-10-12T17:32:59.974Z] [FAIL] [ADMIN_PORTAL] Ruta /catalogo (Catálogo de Muebles y Servicios) (213ms) - Código HTTP 404 | Error: Respuesta inesperada
+[2026-10-12T17:33:00.334Z] [FAIL] [ADMIN_PORTAL] Ruta /rutas (Mapa de Rutas Técnicas) (290ms) - Código HTTP 404 | Error: Respuesta inesperada
+[2026-10-12T17:33:00.368Z] [PASS] [API_CORE] Health Check (/health) (33ms) - Core API saludable
+[2026-10-12T17:33:00.379Z] [PASS] [API_CORE] Catálogo de Servicios (GET /catalog) (10ms) - Catálogo cargó 14 ítems de tapicería
+[2026-10-12T17:33:00.389Z] [PASS] [API_CORE] Políticas de Descuento (GET /config/discounts) (10ms) - Políticas activas para 4 zonas y 3 bloques
+[2026-10-12T17:33:00.485Z] [PASS] [API_CORE] Matriz de Bloques y Rutas Dinámicas (16 combinaciones) (0ms) - 16/16 consultas evaluadas correctamente en tiempo real
+[2026-10-12T17:33:00.491Z] [FAIL] [API_CORE] Creación de Cotización Inteligente (POST /quotations) (5ms) - HTTP 400 | Error: {"type":"https://alrcompany.com/errors/http-400","title":"Validation Error","status":400,"detail":"The submitted request payload failed schema validation.","instance":"/api/v1/quotations","errors":{"clientId":["Required"],"items.0.furnitureType":["Required"],"items.0.basePriceAmount":["Required"]},"timestamp":"2026-10-12T17:33:00.486Z"}
+[2026-10-12T17:33:00.493Z] [FAIL] [API_CORE] Agendamiento de Cita con Coordenadas GPS (POST /appointments) (2ms) - HTTP 400 | Error: {"type":"https://alrcompany.com/errors/http-400","title":"Bad Request","status":400,"detail":"The requested time slot is completely booked for this date.","instance":"/api/v1/appointments","timestamp":"2026-10-12T17:33:00.492Z"}
+[2026-10-12T17:33:00.497Z] [PASS] [API_CORE] Validación de Código de Referidos (/wallets/referrals/validate) (3ms) - Endpoint respondió con código esperado 400
+[2026-10-12T17:33:00.499Z] [PASS] [SECURITY] Protección OWASP: Inyección SQL en clientName (2ms) - Validación Zod rechazó la carga hostil con HTTP 400 BadRequest
+[2026-10-12T17:33:00.502Z] [PASS] [SECURITY] Protección OWASP: XSS en Dirección (2ms) - Validación Zod rechazó la carga hostil con HTTP 400 BadRequest
+[2026-10-12T17:33:00.511Z] [PASS] [SECURITY] Protección OWASP: Monto Negativo en Total (9ms) - Validación Zod rechazó la carga hostil con HTTP 400 BadRequest
+[2026-10-12T17:33:46.013Z] [PASS] [PWA_CLIENT] Ruta / (Landing Page) (437ms) - Renderizado 200 OK (162 KB transferidos)
+[2026-10-12T17:33:46.405Z] [PASS] [PWA_CLIENT] Ruta /cotizar (Cotizador Inteligente) (373ms) - Renderizado 200 OK (64 KB transferidos)
+[2026-10-12T17:33:46.929Z] [PASS] [PWA_CLIENT] Ruta /agenda (Agendador de Citas & Despacho) (505ms) - Renderizado 200 OK (95 KB transferidos)
+[2026-10-12T17:33:47.307Z] [PASS] [PWA_CLIENT] Ruta /mis-citas (Live Tracking & Telemetría) (352ms) - Renderizado 200 OK (57 KB transferidos)
+[2026-10-12T17:33:47.693Z] [PASS] [PWA_CLIENT] Ruta /wallet (Billetera Cashback) (366ms) - Renderizado 200 OK (57 KB transferidos)
+[2026-10-12T17:33:48.039Z] [PASS] [PWA_CLIENT] Ruta /login (Acceso de Clientes) (325ms) - Renderizado 200 OK (53 KB transferidos)
+[2026-10-12T17:33:48.398Z] [PASS] [PWA_CLIENT] Ruta /registro (Registro de Clientes) (341ms) - Renderizado 200 OK (55 KB transferidos)
+[2026-10-12T17:33:48.822Z] [PASS] [ADMIN_PORTAL] Ruta / (Tablero Kanban de Despacho) (386ms) - Renderizado 200 OK (115 KB)
+[2026-10-12T17:33:49.310Z] [PASS] [ADMIN_PORTAL] Ruta /pagos (Revisión y Conciliación de Pagos) (478ms) - Renderizado 200 OK (52 KB)
+[2026-10-12T17:33:49.539Z] [PASS] [ADMIN_PORTAL] Ruta /clientes (Directorio de Clientes) (221ms) - Renderizado 200 OK (32 KB)
+[2026-10-12T17:33:49.820Z] [FAIL] [ADMIN_PORTAL] Ruta /catalogo (Catálogo de Muebles y Servicios) (269ms) - Código HTTP 404 | Error: Respuesta inesperada
+[2026-10-12T17:33:50.092Z] [FAIL] [ADMIN_PORTAL] Ruta /rutas (Mapa de Rutas Técnicas) (261ms) - Código HTTP 404 | Error: Respuesta inesperada
+[2026-10-12T17:33:50.095Z] [PASS] [API_CORE] Health Check (/health) (2ms) - Core API saludable
+[2026-10-12T17:33:50.097Z] [PASS] [API_CORE] Catálogo de Servicios (GET /catalog) (1ms) - Catálogo cargó 14 ítems de tapicería
+[2026-10-12T17:33:50.102Z] [PASS] [API_CORE] Políticas de Descuento (GET /config/discounts) (4ms) - Políticas activas para 4 zonas y 3 bloques
+[2026-10-12T17:33:50.173Z] [PASS] [API_CORE] Matriz de Bloques y Rutas Dinámicas (16 combinaciones) (0ms) - 16/16 consultas evaluadas correctamente en tiempo real
+[2026-10-12T17:33:50.184Z] [FAIL] [API_CORE] Creación de Cotización Inteligente (POST /quotations) (10ms) - HTTP 400 | Error: {"type":"https://alrcompany.com/errors/http-400","title":"Validation Error","status":400,"detail":"The submitted request payload failed schema validation.","instance":"/api/v1/quotations","errors":{"clientId":["Required"],"items.0.furnitureType":["Required"],"items.0.basePriceAmount":["Required"]},"timestamp":"2026-10-12T17:33:50.174Z"}
+[2026-10-12T17:33:50.188Z] [FAIL] [API_CORE] Agendamiento de Cita con Coordenadas GPS (POST /appointments) (4ms) - HTTP 400 | Error: {"type":"https://alrcompany.com/errors/http-400","title":"Bad Request","status":400,"detail":"The requested time slot is completely booked for this date.","instance":"/api/v1/appointments","timestamp":"2026-10-12T17:33:50.185Z"}
+[2026-10-12T17:33:50.190Z] [PASS] [API_CORE] Validación de Código de Referidos (/wallets/referrals/validate) (1ms) - Endpoint respondió con código esperado 400
+[2026-10-12T17:33:50.191Z] [PASS] [SECURITY] Protección OWASP: Inyección SQL en clientName (1ms) - Validación Zod rechazó la carga hostil con HTTP 400 BadRequest
+[2026-10-12T17:33:50.193Z] [PASS] [SECURITY] Protección OWASP: XSS en Dirección (1ms) - Validación Zod rechazó la carga hostil con HTTP 400 BadRequest
+[2026-10-12T17:33:50.194Z] [PASS] [SECURITY] Protección OWASP: Monto Negativo en Total (1ms) - Validación Zod rechazó la carga hostil con HTTP 400 BadRequest
+[2026-10-12T17:34:35.585Z] [PASS] [PWA_CLIENT] Ruta / (Landing Page) (348ms) - Renderizado 200 OK (162 KB transferidos)
+[2026-10-12T17:34:36.104Z] [PASS] [PWA_CLIENT] Ruta /cotizar (Cotizador Inteligente) (306ms) - Renderizado 200 OK (64 KB transferidos)
+[2026-10-12T17:34:36.495Z] [PASS] [PWA_CLIENT] Ruta /agenda (Agendador de Citas & Despacho) (378ms) - Renderizado 200 OK (95 KB transferidos)
+[2026-10-12T17:34:36.763Z] [PASS] [PWA_CLIENT] Ruta /mis-citas (Live Tracking & Telemetría) (254ms) - Renderizado 200 OK (57 KB transferidos)
+[2026-10-12T17:34:37.056Z] [PASS] [PWA_CLIENT] Ruta /wallet (Billetera Cashback) (278ms) - Renderizado 200 OK (57 KB transferidos)
+[2026-10-12T17:34:37.342Z] [PASS] [PWA_CLIENT] Ruta /login (Acceso de Clientes) (263ms) - Renderizado 200 OK (53 KB transferidos)
+[2026-10-12T17:34:37.624Z] [PASS] [PWA_CLIENT] Ruta /registro (Registro de Clientes) (261ms) - Renderizado 200 OK (55 KB transferidos)
+[2026-10-12T17:34:37.934Z] [PASS] [ADMIN_PORTAL] Ruta / (Tablero Kanban de Despacho) (284ms) - Renderizado 200 OK (115 KB)
+[2026-10-12T17:34:38.301Z] [PASS] [ADMIN_PORTAL] Ruta /pagos (Revisión y Conciliación de Pagos) (357ms) - Renderizado 200 OK (52 KB)
+[2026-10-12T17:34:38.526Z] [PASS] [ADMIN_PORTAL] Ruta /clientes (Directorio de Clientes) (215ms) - Renderizado 200 OK (32 KB)
+[2026-10-12T17:34:38.735Z] [FAIL] [ADMIN_PORTAL] Ruta /catalogo (Catálogo de Muebles y Servicios) (201ms) - Código HTTP 404 | Error: Respuesta inesperada
+[2026-10-12T17:34:38.995Z] [FAIL] [ADMIN_PORTAL] Ruta /rutas (Mapa de Rutas Técnicas) (198ms) - Código HTTP 404 | Error: Respuesta inesperada
+[2026-10-12T17:34:39.080Z] [PASS] [API_CORE] Health Check (/health) (84ms) - Core API saludable
+[2026-10-12T17:34:39.090Z] [PASS] [API_CORE] Catálogo de Servicios (GET /catalog) (9ms) - Catálogo cargó 14 ítems de tapicería
+[2026-10-12T17:34:39.091Z] [PASS] [API_CORE] Políticas de Descuento (GET /config/discounts) (1ms) - Políticas activas para 4 zonas y 3 bloques
+[2026-10-12T17:34:39.136Z] [PASS] [API_CORE] Matriz de Bloques y Rutas Dinámicas (16 combinaciones) (0ms) - 16/16 consultas evaluadas correctamente en tiempo real
+[2026-10-12T17:34:39.139Z] [FAIL] [API_CORE] Creación de Cotización Inteligente (POST /quotations) (2ms) - HTTP 400 | Error: {"type":"https://alrcompany.com/errors/http-400","title":"Validation Error","status":400,"detail":"The submitted request payload failed schema validation.","instance":"/api/v1/quotations","errors":{"clientId":["Required"],"items.0.furnitureType":["Required"],"items.0.basePriceAmount":["Required"]},"timestamp":"2026-10-12T17:34:39.137Z"}
+[2026-10-12T17:34:39.143Z] [FAIL] [API_CORE] Agendamiento de Cita con Coordenadas GPS (POST /appointments) (3ms) - HTTP 400 | Error: {"type":"https://alrcompany.com/errors/http-400","title":"Bad Request","status":400,"detail":"The requested time slot is completely booked for this date.","instance":"/api/v1/appointments","timestamp":"2026-10-12T17:34:39.141Z"}
+[2026-10-12T17:34:39.145Z] [PASS] [API_CORE] Validación de Código de Referidos (/wallets/referrals/validate) (1ms) - Endpoint respondió con código esperado 400
+[2026-10-12T17:34:39.147Z] [PASS] [SECURITY] Protección OWASP: Inyección SQL en clientName (1ms) - Validación Zod rechazó la carga hostil con HTTP 400 BadRequest
+[2026-10-12T17:34:39.148Z] [PASS] [SECURITY] Protección OWASP: XSS en Dirección (1ms) - Validación Zod rechazó la carga hostil con HTTP 400 BadRequest
+[2026-10-12T17:34:39.149Z] [PASS] [SECURITY] Protección OWASP: Monto Negativo en Total (1ms) - Validación Zod rechazó la carga hostil con HTTP 400 BadRequest
+[2026-10-12T17:35:24.486Z] [PASS] [PWA_CLIENT] Ruta / (Landing Page) (287ms) - Renderizado 200 OK (162 KB transferidos)
+[2026-10-12T17:35:24.778Z] [PASS] [PWA_CLIENT] Ruta /cotizar (Cotizador Inteligente) (278ms) - Renderizado 200 OK (64 KB transferidos)
+[2026-10-12T17:35:25.132Z] [PASS] [PWA_CLIENT] Ruta /agenda (Agendador de Citas & Despacho) (338ms) - Renderizado 200 OK (95 KB transferidos)
+[2026-10-12T17:35:25.472Z] [PASS] [PWA_CLIENT] Ruta /mis-citas (Live Tracking & Telemetría) (306ms) - Renderizado 200 OK (57 KB transferidos)
+[2026-10-12T17:35:26.034Z] [PASS] [PWA_CLIENT] Ruta /wallet (Billetera Cashback) (545ms) - Renderizado 200 OK (57 KB transferidos)
+[2026-10-12T17:35:26.282Z] [PASS] [PWA_CLIENT] Ruta /login (Acceso de Clientes) (229ms) - Renderizado 200 OK (53 KB transferidos)
+[2026-10-12T17:35:26.593Z] [PASS] [PWA_CLIENT] Ruta /registro (Registro de Clientes) (295ms) - Renderizado 200 OK (55 KB transferidos)
+[2026-10-12T17:35:26.928Z] [PASS] [ADMIN_PORTAL] Ruta / (Tablero Kanban de Despacho) (305ms) - Renderizado 200 OK (115 KB)
+[2026-10-12T17:35:27.388Z] [PASS] [ADMIN_PORTAL] Ruta /pagos (Revisión y Conciliación de Pagos) (453ms) - Renderizado 200 OK (52 KB)
+[2026-10-12T17:35:27.813Z] [PASS] [ADMIN_PORTAL] Ruta /clientes (Directorio de Clientes) (416ms) - Renderizado 200 OK (32 KB)
+[2026-10-12T17:35:28.028Z] [FAIL] [ADMIN_PORTAL] Ruta /catalogo (Catálogo de Muebles y Servicios) (206ms) - Código HTTP 404 | Error: Respuesta inesperada
+[2026-10-12T17:35:28.255Z] [FAIL] [ADMIN_PORTAL] Ruta /rutas (Mapa de Rutas Técnicas) (217ms) - Código HTTP 404 | Error: Respuesta inesperada
+[2026-10-12T17:35:28.260Z] [PASS] [API_CORE] Health Check (/health) (4ms) - Core API saludable
+[2026-10-12T17:35:28.262Z] [PASS] [API_CORE] Catálogo de Servicios (GET /catalog) (1ms) - Catálogo cargó 14 ítems de tapicería
+[2026-10-12T17:35:28.270Z] [PASS] [API_CORE] Políticas de Descuento (GET /config/discounts) (8ms) - Políticas activas para 4 zonas y 3 bloques
+[2026-10-12T17:35:28.291Z] [PASS] [API_CORE] Matriz de Bloques y Rutas Dinámicas (16 combinaciones) (0ms) - 16/16 consultas evaluadas correctamente en tiempo real
+[2026-10-12T17:35:28.293Z] [FAIL] [API_CORE] Creación de Cotización Inteligente (POST /quotations) (1ms) - HTTP 400 | Error: {"type":"https://alrcompany.com/errors/http-400","title":"Validation Error","status":400,"detail":"The submitted request payload failed schema validation.","instance":"/api/v1/quotations","errors":{"clientId":["Required"],"items.0.furnitureType":["Required"],"items.0.basePriceAmount":["Required"]},"timestamp":"2026-10-12T17:35:28.292Z"}
+[2026-10-12T17:35:28.295Z] [FAIL] [API_CORE] Agendamiento de Cita con Coordenadas GPS (POST /appointments) (2ms) - HTTP 400 | Error: {"type":"https://alrcompany.com/errors/http-400","title":"Bad Request","status":400,"detail":"The requested time slot is completely booked for this date.","instance":"/api/v1/appointments","timestamp":"2026-10-12T17:35:28.295Z"}
+[2026-10-12T17:35:28.297Z] [PASS] [API_CORE] Validación de Código de Referidos (/wallets/referrals/validate) (1ms) - Endpoint respondió con código esperado 400
+[2026-10-12T17:35:28.298Z] [PASS] [SECURITY] Protección OWASP: Inyección SQL en clientName (1ms) - Validación Zod rechazó la carga hostil con HTTP 400 BadRequest
+[2026-10-12T17:35:28.300Z] [PASS] [SECURITY] Protección OWASP: XSS en Dirección (1ms) - Validación Zod rechazó la carga hostil con HTTP 400 BadRequest
+[2026-10-12T17:35:28.308Z] [PASS] [SECURITY] Protección OWASP: Monto Negativo en Total (7ms) - Validación Zod rechazó la carga hostil con HTTP 400 BadRequest
+[2026-10-12T17:36:13.614Z] [PASS] [PWA_CLIENT] Ruta / (Landing Page) (258ms) - Renderizado 200 OK (162 KB transferidos)
+[2026-10-12T17:36:13.908Z] [PASS] [PWA_CLIENT] Ruta /cotizar (Cotizador Inteligente) (226ms) - Renderizado 200 OK (64 KB transferidos)
+[2026-10-12T17:36:14.267Z] [PASS] [PWA_CLIENT] Ruta /agenda (Agendador de Citas & Despacho) (343ms) - Renderizado 200 OK (95 KB transferidos)
+[2026-10-12T17:36:14.491Z] [PASS] [PWA_CLIENT] Ruta /mis-citas (Live Tracking & Telemetría) (204ms) - Renderizado 200 OK (57 KB transferidos)
+[2026-10-12T17:36:14.759Z] [PASS] [PWA_CLIENT] Ruta /wallet (Billetera Cashback) (254ms) - Renderizado 200 OK (57 KB transferidos)
+[2026-10-12T17:36:14.983Z] [PASS] [PWA_CLIENT] Ruta /login (Acceso de Clientes) (210ms) - Renderizado 200 OK (53 KB transferidos)
+[2026-10-12T17:36:15.224Z] [PASS] [PWA_CLIENT] Ruta /registro (Registro de Clientes) (227ms) - Renderizado 200 OK (55 KB transferidos)
+[2026-10-12T17:36:15.512Z] [PASS] [ADMIN_PORTAL] Ruta / (Tablero Kanban de Despacho) (257ms) - Renderizado 200 OK (115 KB)
+[2026-10-12T17:36:15.967Z] [PASS] [ADMIN_PORTAL] Ruta /pagos (Revisión y Conciliación de Pagos) (445ms) - Renderizado 200 OK (52 KB)
+[2026-10-12T17:36:16.234Z] [PASS] [ADMIN_PORTAL] Ruta /clientes (Directorio de Clientes) (257ms) - Renderizado 200 OK (32 KB)
+[2026-10-12T17:36:16.453Z] [FAIL] [ADMIN_PORTAL] Ruta /catalogo (Catálogo de Muebles y Servicios) (205ms) - Código HTTP 404 | Error: Respuesta inesperada
+[2026-10-12T17:36:16.740Z] [FAIL] [ADMIN_PORTAL] Ruta /rutas (Mapa de Rutas Técnicas) (209ms) - Código HTTP 404 | Error: Respuesta inesperada
+[2026-10-12T17:36:16.778Z] [PASS] [API_CORE] Health Check (/health) (37ms) - Core API saludable
+[2026-10-12T17:36:16.780Z] [PASS] [API_CORE] Catálogo de Servicios (GET /catalog) (1ms) - Catálogo cargó 14 ítems de tapicería
+[2026-10-12T17:36:16.782Z] [PASS] [API_CORE] Políticas de Descuento (GET /config/discounts) (1ms) - Políticas activas para 4 zonas y 3 bloques
+[2026-10-12T17:36:16.791Z] [PASS] [API_CORE] Matriz de Bloques y Rutas Dinámicas (16 combinaciones) (0ms) - 16/16 consultas evaluadas correctamente en tiempo real
+[2026-10-12T17:36:16.793Z] [FAIL] [API_CORE] Creación de Cotización Inteligente (POST /quotations) (2ms) - HTTP 400 | Error: {"type":"https://alrcompany.com/errors/http-400","title":"Validation Error","status":400,"detail":"The submitted request payload failed schema validation.","instance":"/api/v1/quotations","errors":{"clientId":["Required"],"items.0.furnitureType":["Required"],"items.0.basePriceAmount":["Required"]},"timestamp":"2026-10-12T17:36:16.793Z"}
+[2026-10-12T17:36:16.795Z] [FAIL] [API_CORE] Agendamiento de Cita con Coordenadas GPS (POST /appointments) (1ms) - HTTP 400 | Error: {"type":"https://alrcompany.com/errors/http-400","title":"Bad Request","status":400,"detail":"The requested time slot is completely booked for this date.","instance":"/api/v1/appointments","timestamp":"2026-10-12T17:36:16.794Z"}
+[2026-10-12T17:36:16.804Z] [PASS] [API_CORE] Validación de Código de Referidos (/wallets/referrals/validate) (9ms) - Endpoint respondió con código esperado 400
+[2026-10-12T17:36:16.808Z] [PASS] [SECURITY] Protección OWASP: Inyección SQL en clientName (2ms) - Validación Zod rechazó la carga hostil con HTTP 400 BadRequest
+[2026-10-12T17:36:16.812Z] [PASS] [SECURITY] Protección OWASP: XSS en Dirección (1ms) - Validación Zod rechazó la carga hostil con HTTP 400 BadRequest
+[2026-10-12T17:36:16.814Z] [PASS] [SECURITY] Protección OWASP: Monto Negativo en Total (1ms) - Validación Zod rechazó la carga hostil con HTTP 400 BadRequest
+[2026-10-12T17:37:02.315Z] [PASS] [PWA_CLIENT] Ruta / (Landing Page) (409ms) - Renderizado 200 OK (162 KB transferidos)
+[2026-10-12T17:37:02.676Z] [PASS] [PWA_CLIENT] Ruta /cotizar (Cotizador Inteligente) (344ms) - Renderizado 200 OK (64 KB transferidos)
+[2026-10-12T17:37:03.101Z] [PASS] [PWA_CLIENT] Ruta /agenda (Agendador de Citas & Despacho) (413ms) - Renderizado 200 OK (95 KB transferidos)
+[2026-10-12T17:37:03.396Z] [PASS] [PWA_CLIENT] Ruta /mis-citas (Live Tracking & Telemetría) (281ms) - Renderizado 200 OK (57 KB transferidos)
+[2026-10-12T17:37:03.674Z] [PASS] [PWA_CLIENT] Ruta /wallet (Billetera Cashback) (264ms) - Renderizado 200 OK (57 KB transferidos)
+[2026-10-12T17:37:03.945Z] [PASS] [PWA_CLIENT] Ruta /login (Acceso de Clientes) (245ms) - Renderizado 200 OK (53 KB transferidos)
+[2026-10-12T17:37:04.228Z] [PASS] [PWA_CLIENT] Ruta /registro (Registro de Clientes) (261ms) - Renderizado 200 OK (55 KB transferidos)
+[2026-10-12T17:37:04.589Z] [PASS] [ADMIN_PORTAL] Ruta / (Tablero Kanban de Despacho) (321ms) - Renderizado 200 OK (115 KB)
+[2026-10-12T17:37:05.019Z] [PASS] [ADMIN_PORTAL] Ruta /pagos (Revisión y Conciliación de Pagos) (411ms) - Renderizado 200 OK (52 KB)
+[2026-10-12T17:37:05.266Z] [PASS] [ADMIN_PORTAL] Ruta /clientes (Directorio de Clientes) (237ms) - Renderizado 200 OK (32 KB)
+[2026-10-12T17:37:05.502Z] [FAIL] [ADMIN_PORTAL] Ruta /catalogo (Catálogo de Muebles y Servicios) (227ms) - Código HTTP 404 | Error: Respuesta inesperada
+[2026-10-12T17:37:05.719Z] [FAIL] [ADMIN_PORTAL] Ruta /rutas (Mapa de Rutas Técnicas) (208ms) - Código HTTP 404 | Error: Respuesta inesperada
+[2026-10-12T17:37:05.721Z] [PASS] [API_CORE] Health Check (/health) (2ms) - Core API saludable
+[2026-10-12T17:37:05.723Z] [PASS] [API_CORE] Catálogo de Servicios (GET /catalog) (1ms) - Catálogo cargó 14 ítems de tapicería
+[2026-10-12T17:37:05.724Z] [PASS] [API_CORE] Políticas de Descuento (GET /config/discounts) (1ms) - Políticas activas para 4 zonas y 3 bloques
+[2026-10-12T17:37:05.740Z] [PASS] [API_CORE] Matriz de Bloques y Rutas Dinámicas (16 combinaciones) (0ms) - 16/16 consultas evaluadas correctamente en tiempo real
+[2026-10-12T17:37:05.742Z] [FAIL] [API_CORE] Creación de Cotización Inteligente (POST /quotations) (2ms) - HTTP 400 | Error: {"type":"https://alrcompany.com/errors/http-400","title":"Validation Error","status":400,"detail":"The submitted request payload failed schema validation.","instance":"/api/v1/quotations","errors":{"clientId":["Required"],"items.0.furnitureType":["Required"],"items.0.basePriceAmount":["Required"]},"timestamp":"2026-10-12T17:37:05.741Z"}
+[2026-10-12T17:37:05.745Z] [FAIL] [API_CORE] Agendamiento de Cita con Coordenadas GPS (POST /appointments) (2ms) - HTTP 400 | Error: {"type":"https://alrcompany.com/errors/http-400","title":"Bad Request","status":400,"detail":"The requested time slot is completely booked for this date.","instance":"/api/v1/appointments","timestamp":"2026-10-12T17:37:05.744Z"}
+[2026-10-12T17:37:05.754Z] [PASS] [API_CORE] Validación de Código de Referidos (/wallets/referrals/validate) (9ms) - Endpoint respondió con código esperado 400
+[2026-10-12T17:37:05.762Z] [PASS] [SECURITY] Protección OWASP: Inyección SQL en clientName (7ms) - Validación Zod rechazó la carga hostil con HTTP 400 BadRequest
+[2026-10-12T17:37:05.766Z] [PASS] [SECURITY] Protección OWASP: XSS en Dirección (3ms) - Validación Zod rechazó la carga hostil con HTTP 400 BadRequest
+[2026-10-12T17:37:05.773Z] [PASS] [SECURITY] Protección OWASP: Monto Negativo en Total (5ms) - Validación Zod rechazó la carga hostil con HTTP 400 BadRequest
+[2026-10-12T17:37:51.150Z] [PASS] [PWA_CLIENT] Ruta / (Landing Page) (321ms) - Renderizado 200 OK (162 KB transferidos)
+[2026-10-12T17:37:51.499Z] [PASS] [PWA_CLIENT] Ruta /cotizar (Cotizador Inteligente) (333ms) - Renderizado 200 OK (64 KB transferidos)
+[2026-10-12T17:37:51.895Z] [PASS] [PWA_CLIENT] Ruta /agenda (Agendador de Citas & Despacho) (379ms) - Renderizado 200 OK (95 KB transferidos)
+[2026-10-12T17:37:52.199Z] [PASS] [PWA_CLIENT] Ruta /mis-citas (Live Tracking & Telemetría) (278ms) - Renderizado 200 OK (57 KB transferidos)
+[2026-10-12T17:37:52.527Z] [PASS] [PWA_CLIENT] Ruta /wallet (Billetera Cashback) (257ms) - Renderizado 200 OK (57 KB transferidos)
+[2026-10-12T17:37:53.023Z] [PASS] [PWA_CLIENT] Ruta /login (Acceso de Clientes) (483ms) - Renderizado 200 OK (53 KB transferidos)
+[2026-10-12T17:37:53.271Z] [PASS] [PWA_CLIENT] Ruta /registro (Registro de Clientes) (234ms) - Renderizado 200 OK (55 KB transferidos)
+[2026-10-12T17:37:53.605Z] [PASS] [ADMIN_PORTAL] Ruta / (Tablero Kanban de Despacho) (294ms) - Renderizado 200 OK (115 KB)
+[2026-10-12T17:37:54.065Z] [PASS] [ADMIN_PORTAL] Ruta /pagos (Revisión y Conciliación de Pagos) (450ms) - Renderizado 200 OK (52 KB)
+[2026-10-12T17:37:54.334Z] [PASS] [ADMIN_PORTAL] Ruta /clientes (Directorio de Clientes) (261ms) - Renderizado 200 OK (32 KB)
+[2026-10-12T17:37:54.552Z] [FAIL] [ADMIN_PORTAL] Ruta /catalogo (Catálogo de Muebles y Servicios) (209ms) - Código HTTP 404 | Error: Respuesta inesperada
+[2026-10-12T17:37:54.824Z] [FAIL] [ADMIN_PORTAL] Ruta /rutas (Mapa de Rutas Técnicas) (203ms) - Código HTTP 404 | Error: Respuesta inesperada
+[2026-10-12T17:37:54.858Z] [PASS] [API_CORE] Health Check (/health) (34ms) - Core API saludable
+[2026-10-12T17:37:54.860Z] [PASS] [API_CORE] Catálogo de Servicios (GET /catalog) (1ms) - Catálogo cargó 14 ítems de tapicería
+[2026-10-12T17:37:54.862Z] [PASS] [API_CORE] Políticas de Descuento (GET /config/discounts) (1ms) - Políticas activas para 4 zonas y 3 bloques
+[2026-10-12T17:37:54.904Z] [PASS] [API_CORE] Matriz de Bloques y Rutas Dinámicas (16 combinaciones) (0ms) - 16/16 consultas evaluadas correctamente en tiempo real
+[2026-10-12T17:37:54.906Z] [FAIL] [API_CORE] Creación de Cotización Inteligente (POST /quotations) (1ms) - HTTP 400 | Error: {"type":"https://alrcompany.com/errors/http-400","title":"Validation Error","status":400,"detail":"The submitted request payload failed schema validation.","instance":"/api/v1/quotations","errors":{"clientId":["Required"],"items.0.furnitureType":["Required"],"items.0.basePriceAmount":["Required"]},"timestamp":"2026-10-12T17:37:54.905Z"}
+[2026-10-12T17:37:54.909Z] [FAIL] [API_CORE] Agendamiento de Cita con Coordenadas GPS (POST /appointments) (3ms) - HTTP 400 | Error: {"type":"https://alrcompany.com/errors/http-400","title":"Bad Request","status":400,"detail":"The requested time slot is completely booked for this date.","instance":"/api/v1/appointments","timestamp":"2026-10-12T17:37:54.908Z"}
+[2026-10-12T17:37:54.911Z] [PASS] [API_CORE] Validación de Código de Referidos (/wallets/referrals/validate) (1ms) - Endpoint respondió con código esperado 400
+[2026-10-12T17:37:54.913Z] [PASS] [SECURITY] Protección OWASP: Inyección SQL en clientName (2ms) - Validación Zod rechazó la carga hostil con HTTP 400 BadRequest
+[2026-10-12T17:37:54.916Z] [PASS] [SECURITY] Protección OWASP: XSS en Dirección (3ms) - Validación Zod rechazó la carga hostil con HTTP 400 BadRequest
+[2026-10-12T17:37:54.921Z] [PASS] [SECURITY] Protección OWASP: Monto Negativo en Total (4ms) - Validación Zod rechazó la carga hostil con HTTP 400 BadRequest
+[2026-10-12T17:38:40.307Z] [PASS] [PWA_CLIENT] Ruta / (Landing Page) (320ms) - Renderizado 200 OK (162 KB transferidos)
+[2026-10-12T17:38:40.661Z] [PASS] [PWA_CLIENT] Ruta /cotizar (Cotizador Inteligente) (337ms) - Renderizado 200 OK (64 KB transferidos)
+[2026-10-12T17:38:41.244Z] [PASS] [PWA_CLIENT] Ruta /agenda (Agendador de Citas & Despacho) (566ms) - Renderizado 200 OK (95 KB transferidos)
+[2026-10-12T17:38:41.652Z] [PASS] [PWA_CLIENT] Ruta /mis-citas (Live Tracking & Telemetría) (390ms) - Renderizado 200 OK (57 KB transferidos)
+[2026-10-12T17:38:41.978Z] [PASS] [PWA_CLIENT] Ruta /wallet (Billetera Cashback) (314ms) - Renderizado 200 OK (57 KB transferidos)
+[2026-10-12T17:38:42.258Z] [PASS] [PWA_CLIENT] Ruta /login (Acceso de Clientes) (265ms) - Renderizado 200 OK (53 KB transferidos)
+[2026-10-12T17:38:42.591Z] [PASS] [PWA_CLIENT] Ruta /registro (Registro de Clientes) (318ms) - Renderizado 200 OK (55 KB transferidos)
+[2026-10-12T17:38:42.941Z] [PASS] [ADMIN_PORTAL] Ruta / (Tablero Kanban de Despacho) (319ms) - Renderizado 200 OK (115 KB)
+[2026-10-12T17:38:43.389Z] [PASS] [ADMIN_PORTAL] Ruta /pagos (Revisión y Conciliación de Pagos) (439ms) - Renderizado 200 OK (52 KB)
+[2026-10-12T17:38:43.632Z] [PASS] [ADMIN_PORTAL] Ruta /clientes (Directorio de Clientes) (235ms) - Renderizado 200 OK (32 KB)
+[2026-10-12T17:38:43.851Z] [FAIL] [ADMIN_PORTAL] Ruta /catalogo (Catálogo de Muebles y Servicios) (212ms) - Código HTTP 404 | Error: Respuesta inesperada
+[2026-10-12T17:38:44.084Z] [FAIL] [ADMIN_PORTAL] Ruta /rutas (Mapa de Rutas Técnicas) (226ms) - Código HTTP 404 | Error: Respuesta inesperada
+[2026-10-12T17:38:44.087Z] [PASS] [API_CORE] Health Check (/health) (2ms) - Core API saludable
+[2026-10-12T17:38:44.089Z] [PASS] [API_CORE] Catálogo de Servicios (GET /catalog) (2ms) - Catálogo cargó 14 ítems de tapicería
+[2026-10-12T17:38:44.094Z] [PASS] [API_CORE] Políticas de Descuento (GET /config/discounts) (5ms) - Políticas activas para 4 zonas y 3 bloques
+[2026-10-12T17:38:44.143Z] [PASS] [API_CORE] Matriz de Bloques y Rutas Dinámicas (16 combinaciones) (0ms) - 16/16 consultas evaluadas correctamente en tiempo real
+[2026-10-12T17:38:44.147Z] [FAIL] [API_CORE] Creación de Cotización Inteligente (POST /quotations) (2ms) - HTTP 400 | Error: {"type":"https://alrcompany.com/errors/http-400","title":"Validation Error","status":400,"detail":"The submitted request payload failed schema validation.","instance":"/api/v1/quotations","errors":{"clientId":["Required"],"items.0.furnitureType":["Required"],"items.0.basePriceAmount":["Required"]},"timestamp":"2026-10-12T17:38:44.145Z"}
+[2026-10-12T17:38:44.156Z] [FAIL] [API_CORE] Agendamiento de Cita con Coordenadas GPS (POST /appointments) (8ms) - HTTP 400 | Error: {"type":"https://alrcompany.com/errors/http-400","title":"Bad Request","status":400,"detail":"The requested time slot is completely booked for this date.","instance":"/api/v1/appointments","timestamp":"2026-10-12T17:38:44.148Z"}
+[2026-10-12T17:38:44.159Z] [PASS] [API_CORE] Validación de Código de Referidos (/wallets/referrals/validate) (3ms) - Endpoint respondió con código esperado 400
+[2026-10-12T17:38:44.163Z] [PASS] [SECURITY] Protección OWASP: Inyección SQL en clientName (3ms) - Validación Zod rechazó la carga hostil con HTTP 400 BadRequest
+[2026-10-12T17:38:44.165Z] [PASS] [SECURITY] Protección OWASP: XSS en Dirección (1ms) - Validación Zod rechazó la carga hostil con HTTP 400 BadRequest
+[2026-10-12T17:38:44.172Z] [PASS] [SECURITY] Protección OWASP: Monto Negativo en Total (7ms) - Validación Zod rechazó la carga hostil con HTTP 400 BadRequest
+[2026-10-12T17:39:29.535Z] [PASS] [PWA_CLIENT] Ruta / (Landing Page) (312ms) - Renderizado 200 OK (162 KB transferidos)
+[2026-10-12T17:39:29.901Z] [PASS] [PWA_CLIENT] Ruta /cotizar (Cotizador Inteligente) (350ms) - Renderizado 200 OK (64 KB transferidos)
+[2026-10-12T17:39:30.266Z] [PASS] [PWA_CLIENT] Ruta /agenda (Agendador de Citas & Despacho) (353ms) - Renderizado 200 OK (95 KB transferidos)
+[2026-10-12T17:39:30.587Z] [PASS] [PWA_CLIENT] Ruta /mis-citas (Live Tracking & Telemetría) (306ms) - Renderizado 200 OK (57 KB transferidos)
+[2026-10-12T17:39:30.868Z] [PASS] [PWA_CLIENT] Ruta /wallet (Billetera Cashback) (267ms) - Renderizado 200 OK (57 KB transferidos)
+[2026-10-12T17:39:31.137Z] [PASS] [PWA_CLIENT] Ruta /login (Acceso de Clientes) (253ms) - Renderizado 200 OK (53 KB transferidos)
+[2026-10-12T17:39:31.465Z] [PASS] [PWA_CLIENT] Ruta /registro (Registro de Clientes) (310ms) - Renderizado 200 OK (55 KB transferidos)
+[2026-10-12T17:39:31.808Z] [PASS] [ADMIN_PORTAL] Ruta / (Tablero Kanban de Despacho) (314ms) - Renderizado 200 OK (115 KB)
+[2026-10-12T17:39:32.226Z] [PASS] [ADMIN_PORTAL] Ruta /pagos (Revisión y Conciliación de Pagos) (409ms) - Renderizado 200 OK (52 KB)
+[2026-10-12T17:39:32.478Z] [PASS] [ADMIN_PORTAL] Ruta /clientes (Directorio de Clientes) (243ms) - Renderizado 200 OK (32 KB)
+[2026-10-12T17:39:32.703Z] [FAIL] [ADMIN_PORTAL] Ruta /catalogo (Catálogo de Muebles y Servicios) (218ms) - Código HTTP 404 | Error: Respuesta inesperada
+[2026-10-12T17:39:33.021Z] [FAIL] [ADMIN_PORTAL] Ruta /rutas (Mapa de Rutas Técnicas) (250ms) - Código HTTP 404 | Error: Respuesta inesperada
+[2026-10-12T17:39:33.027Z] [PASS] [API_CORE] Health Check (/health) (6ms) - Core API saludable
+[2026-10-12T17:39:33.063Z] [PASS] [API_CORE] Catálogo de Servicios (GET /catalog) (35ms) - Catálogo cargó 14 ítems de tapicería
+[2026-10-12T17:39:33.103Z] [PASS] [API_CORE] Políticas de Descuento (GET /config/discounts) (39ms) - Políticas activas para 4 zonas y 3 bloques
+[2026-10-12T17:39:33.137Z] [PASS] [API_CORE] Matriz de Bloques y Rutas Dinámicas (16 combinaciones) (0ms) - 16/16 consultas evaluadas correctamente en tiempo real
+[2026-10-12T17:39:33.138Z] [FAIL] [API_CORE] Creación de Cotización Inteligente (POST /quotations) (1ms) - HTTP 400 | Error: {"type":"https://alrcompany.com/errors/http-400","title":"Validation Error","status":400,"detail":"The submitted request payload failed schema validation.","instance":"/api/v1/quotations","errors":{"clientId":["Required"],"items.0.furnitureType":["Required"],"items.0.basePriceAmount":["Required"]},"timestamp":"2026-10-12T17:39:33.138Z"}
+[2026-10-12T17:39:33.144Z] [FAIL] [API_CORE] Agendamiento de Cita con Coordenadas GPS (POST /appointments) (5ms) - HTTP 400 | Error: {"type":"https://alrcompany.com/errors/http-400","title":"Bad Request","status":400,"detail":"The requested time slot is completely booked for this date.","instance":"/api/v1/appointments","timestamp":"2026-10-12T17:39:33.143Z"}
+[2026-10-12T17:39:33.145Z] [PASS] [API_CORE] Validación de Código de Referidos (/wallets/referrals/validate) (1ms) - Endpoint respondió con código esperado 400
+[2026-10-12T17:39:33.147Z] [PASS] [SECURITY] Protección OWASP: Inyección SQL en clientName (1ms) - Validación Zod rechazó la carga hostil con HTTP 400 BadRequest
+[2026-10-12T17:39:33.149Z] [PASS] [SECURITY] Protección OWASP: XSS en Dirección (2ms) - Validación Zod rechazó la carga hostil con HTTP 400 BadRequest
+[2026-10-12T17:39:33.152Z] [PASS] [SECURITY] Protección OWASP: Monto Negativo en Total (2ms) - Validación Zod rechazó la carga hostil con HTTP 400 BadRequest
+[2026-10-12T17:40:18.634Z] [PASS] [PWA_CLIENT] Ruta / (Landing Page) (433ms) - Renderizado 200 OK (162 KB transferidos)
+[2026-10-12T17:40:19.017Z] [PASS] [PWA_CLIENT] Ruta /cotizar (Cotizador Inteligente) (365ms) - Renderizado 200 OK (64 KB transferidos)
+[2026-10-12T17:40:19.551Z] [PASS] [PWA_CLIENT] Ruta /agenda (Agendador de Citas & Despacho) (519ms) - Renderizado 200 OK (95 KB transferidos)
+[2026-10-12T17:40:19.922Z] [PASS] [PWA_CLIENT] Ruta /mis-citas (Live Tracking & Telemetría) (357ms) - Renderizado 200 OK (57 KB transferidos)
+[2026-10-12T17:40:20.441Z] [PASS] [PWA_CLIENT] Ruta /wallet (Billetera Cashback) (414ms) - Renderizado 200 OK (57 KB transferidos)
+[2026-10-12T17:40:21.074Z] [PASS] [PWA_CLIENT] Ruta /login (Acceso de Clientes) (618ms) - Renderizado 200 OK (53 KB transferidos)
+[2026-10-12T17:40:21.437Z] [PASS] [PWA_CLIENT] Ruta /registro (Registro de Clientes) (347ms) - Renderizado 200 OK (55 KB transferidos)
+[2026-10-12T17:40:21.854Z] [PASS] [ADMIN_PORTAL] Ruta / (Tablero Kanban de Despacho) (384ms) - Renderizado 200 OK (115 KB)
+[2026-10-12T17:40:22.384Z] [PASS] [ADMIN_PORTAL] Ruta /pagos (Revisión y Conciliación de Pagos) (517ms) - Renderizado 200 OK (52 KB)
+[2026-10-12T17:40:22.663Z] [PASS] [ADMIN_PORTAL] Ruta /clientes (Directorio de Clientes) (274ms) - Renderizado 200 OK (32 KB)
+[2026-10-12T17:40:22.915Z] [FAIL] [ADMIN_PORTAL] Ruta /catalogo (Catálogo de Muebles y Servicios) (243ms) - Código HTTP 404 | Error: Respuesta inesperada
+[2026-10-12T17:40:23.197Z] [FAIL] [ADMIN_PORTAL] Ruta /rutas (Mapa de Rutas Técnicas) (272ms) - Código HTTP 404 | Error: Respuesta inesperada
+[2026-10-12T17:40:23.199Z] [PASS] [API_CORE] Health Check (/health) (2ms) - Core API saludable
+[2026-10-12T17:40:23.201Z] [PASS] [API_CORE] Catálogo de Servicios (GET /catalog) (1ms) - Catálogo cargó 14 ítems de tapicería
+[2026-10-12T17:40:23.202Z] [PASS] [API_CORE] Políticas de Descuento (GET /config/discounts) (1ms) - Políticas activas para 4 zonas y 3 bloques
+[2026-10-12T17:40:23.256Z] [PASS] [API_CORE] Matriz de Bloques y Rutas Dinámicas (16 combinaciones) (0ms) - 16/16 consultas evaluadas correctamente en tiempo real
+[2026-10-12T17:40:23.259Z] [FAIL] [API_CORE] Creación de Cotización Inteligente (POST /quotations) (2ms) - HTTP 400 | Error: {"type":"https://alrcompany.com/errors/http-400","title":"Validation Error","status":400,"detail":"The submitted request payload failed schema validation.","instance":"/api/v1/quotations","errors":{"clientId":["Required"],"items.0.furnitureType":["Required"],"items.0.basePriceAmount":["Required"]},"timestamp":"2026-10-12T17:40:23.257Z"}
+[2026-10-12T17:40:23.262Z] [FAIL] [API_CORE] Agendamiento de Cita con Coordenadas GPS (POST /appointments) (2ms) - HTTP 400 | Error: {"type":"https://alrcompany.com/errors/http-400","title":"Bad Request","status":400,"detail":"The requested time slot is completely booked for this date.","instance":"/api/v1/appointments","timestamp":"2026-10-12T17:40:23.260Z"}
+[2026-10-12T17:40:23.271Z] [PASS] [API_CORE] Validación de Código de Referidos (/wallets/referrals/validate) (9ms) - Endpoint respondió con código esperado 400
+[2026-10-12T17:40:23.274Z] [PASS] [SECURITY] Protección OWASP: Inyección SQL en clientName (2ms) - Validación Zod rechazó la carga hostil con HTTP 400 BadRequest
+[2026-10-12T17:40:23.277Z] [PASS] [SECURITY] Protección OWASP: XSS en Dirección (3ms) - Validación Zod rechazó la carga hostil con HTTP 400 BadRequest
+[2026-10-12T17:40:23.290Z] [PASS] [SECURITY] Protección OWASP: Monto Negativo en Total (12ms) - Validación Zod rechazó la carga hostil con HTTP 400 BadRequest
+[2026-10-12T17:41:08.650Z] [PASS] [PWA_CLIENT] Ruta / (Landing Page) (313ms) - Renderizado 200 OK (162 KB transferidos)
+[2026-10-12T17:41:08.938Z] [PASS] [PWA_CLIENT] Ruta /cotizar (Cotizador Inteligente) (270ms) - Renderizado 200 OK (64 KB transferidos)
+[2026-10-12T17:41:09.310Z] [PASS] [PWA_CLIENT] Ruta /agenda (Agendador de Citas & Despacho) (357ms) - Renderizado 200 OK (95 KB transferidos)
+[2026-10-12T17:41:09.570Z] [PASS] [PWA_CLIENT] Ruta /mis-citas (Live Tracking & Telemetría) (245ms) - Renderizado 200 OK (57 KB transferidos)
+[2026-10-12T17:41:09.841Z] [PASS] [PWA_CLIENT] Ruta /wallet (Billetera Cashback) (253ms) - Renderizado 200 OK (57 KB transferidos)
+[2026-10-12T17:41:10.062Z] [PASS] [PWA_CLIENT] Ruta /login (Acceso de Clientes) (206ms) - Renderizado 200 OK (53 KB transferidos)
+[2026-10-12T17:41:10.316Z] [PASS] [PWA_CLIENT] Ruta /registro (Registro de Clientes) (241ms) - Renderizado 200 OK (55 KB transferidos)
+[2026-10-12T17:41:10.605Z] [PASS] [ADMIN_PORTAL] Ruta / (Tablero Kanban de Despacho) (262ms) - Renderizado 200 OK (115 KB)
+[2026-10-12T17:41:10.959Z] [PASS] [ADMIN_PORTAL] Ruta /pagos (Revisión y Conciliación de Pagos) (346ms) - Renderizado 200 OK (52 KB)
+[2026-10-12T17:41:11.183Z] [PASS] [ADMIN_PORTAL] Ruta /clientes (Directorio de Clientes) (216ms) - Renderizado 200 OK (32 KB)
+[2026-10-12T17:41:11.393Z] [FAIL] [ADMIN_PORTAL] Ruta /catalogo (Catálogo de Muebles y Servicios) (202ms) - Código HTTP 404 | Error: Respuesta inesperada
+[2026-10-12T17:41:11.658Z] [FAIL] [ADMIN_PORTAL] Ruta /rutas (Mapa de Rutas Técnicas) (199ms) - Código HTTP 404 | Error: Respuesta inesperada
+[2026-10-12T17:41:11.690Z] [PASS] [API_CORE] Health Check (/health) (31ms) - Core API saludable
+[2026-10-12T17:41:11.693Z] [PASS] [API_CORE] Catálogo de Servicios (GET /catalog) (2ms) - Catálogo cargó 14 ítems de tapicería
+[2026-10-12T17:41:11.700Z] [PASS] [API_CORE] Políticas de Descuento (GET /config/discounts) (7ms) - Políticas activas para 4 zonas y 3 bloques
+[2026-10-12T17:41:11.772Z] [PASS] [API_CORE] Matriz de Bloques y Rutas Dinámicas (16 combinaciones) (0ms) - 16/16 consultas evaluadas correctamente en tiempo real
+[2026-10-12T17:41:11.774Z] [FAIL] [API_CORE] Creación de Cotización Inteligente (POST /quotations) (1ms) - HTTP 400 | Error: {"type":"https://alrcompany.com/errors/http-400","title":"Validation Error","status":400,"detail":"The submitted request payload failed schema validation.","instance":"/api/v1/quotations","errors":{"clientId":["Required"],"items.0.furnitureType":["Required"],"items.0.basePriceAmount":["Required"]},"timestamp":"2026-10-12T17:41:11.774Z"}
+[2026-10-12T17:41:11.776Z] [FAIL] [API_CORE] Agendamiento de Cita con Coordenadas GPS (POST /appointments) (1ms) - HTTP 400 | Error: {"type":"https://alrcompany.com/errors/http-400","title":"Bad Request","status":400,"detail":"The requested time slot is completely booked for this date.","instance":"/api/v1/appointments","timestamp":"2026-10-12T17:41:11.776Z"}
+[2026-10-12T17:41:11.782Z] [PASS] [API_CORE] Validación de Código de Referidos (/wallets/referrals/validate) (5ms) - Endpoint respondió con código esperado 400
+[2026-10-12T17:41:11.788Z] [PASS] [SECURITY] Protección OWASP: Inyección SQL en clientName (5ms) - Validación Zod rechazó la carga hostil con HTTP 400 BadRequest
+[2026-10-12T17:41:11.792Z] [PASS] [SECURITY] Protección OWASP: XSS en Dirección (3ms) - Validación Zod rechazó la carga hostil con HTTP 400 BadRequest
+[2026-10-12T17:41:11.796Z] [PASS] [SECURITY] Protección OWASP: Monto Negativo en Total (4ms) - Validación Zod rechazó la carga hostil con HTTP 400 BadRequest
+[2026-10-12T17:41:57.146Z] [PASS] [PWA_CLIENT] Ruta / (Landing Page) (303ms) - Renderizado 200 OK (162 KB transferidos)
+[2026-10-12T17:41:57.436Z] [PASS] [PWA_CLIENT] Ruta /cotizar (Cotizador Inteligente) (272ms) - Renderizado 200 OK (64 KB transferidos)
+[2026-10-12T17:41:57.805Z] [PASS] [PWA_CLIENT] Ruta /agenda (Agendador de Citas & Despacho) (355ms) - Renderizado 200 OK (95 KB transferidos)
+[2026-10-12T17:41:58.060Z] [PASS] [PWA_CLIENT] Ruta /mis-citas (Live Tracking & Telemetría) (242ms) - Renderizado 200 OK (57 KB transferidos)
+[2026-10-12T17:41:58.326Z] [PASS] [PWA_CLIENT] Ruta /wallet (Billetera Cashback) (252ms) - Renderizado 200 OK (57 KB transferidos)
+[2026-10-12T17:41:58.564Z] [PASS] [PWA_CLIENT] Ruta /login (Acceso de Clientes) (221ms) - Renderizado 200 OK (53 KB transferidos)
+[2026-10-12T17:41:58.832Z] [PASS] [PWA_CLIENT] Ruta /registro (Registro de Clientes) (254ms) - Renderizado 200 OK (55 KB transferidos)
+[2026-10-12T17:41:59.155Z] [PASS] [ADMIN_PORTAL] Ruta / (Tablero Kanban de Despacho) (293ms) - Renderizado 200 OK (115 KB)
+[2026-10-12T17:41:59.569Z] [PASS] [ADMIN_PORTAL] Ruta /pagos (Revisión y Conciliación de Pagos) (403ms) - Renderizado 200 OK (52 KB)
+[2026-10-12T17:41:59.801Z] [PASS] [ADMIN_PORTAL] Ruta /clientes (Directorio de Clientes) (224ms) - Renderizado 200 OK (32 KB)
+[2026-10-12T17:41:59.998Z] [FAIL] [ADMIN_PORTAL] Ruta /catalogo (Catálogo de Muebles y Servicios) (188ms) - Código HTTP 404 | Error: Respuesta inesperada
+[2026-10-12T17:42:00.231Z] [FAIL] [ADMIN_PORTAL] Ruta /rutas (Mapa de Rutas Técnicas) (225ms) - Código HTTP 404 | Error: Respuesta inesperada
+[2026-10-12T17:42:00.234Z] [PASS] [API_CORE] Health Check (/health) (2ms) - Core API saludable
+[2026-10-12T17:42:00.236Z] [PASS] [API_CORE] Catálogo de Servicios (GET /catalog) (1ms) - Catálogo cargó 14 ítems de tapicería
+[2026-10-12T17:42:00.237Z] [PASS] [API_CORE] Políticas de Descuento (GET /config/discounts) (1ms) - Políticas activas para 4 zonas y 3 bloques
+[2026-10-12T17:42:00.245Z] [PASS] [API_CORE] Matriz de Bloques y Rutas Dinámicas (16 combinaciones) (0ms) - 16/16 consultas evaluadas correctamente en tiempo real
+[2026-10-12T17:42:00.247Z] [FAIL] [API_CORE] Creación de Cotización Inteligente (POST /quotations) (1ms) - HTTP 400 | Error: {"type":"https://alrcompany.com/errors/http-400","title":"Validation Error","status":400,"detail":"The submitted request payload failed schema validation.","instance":"/api/v1/quotations","errors":{"clientId":["Required"],"items.0.furnitureType":["Required"],"items.0.basePriceAmount":["Required"]},"timestamp":"2026-10-12T17:42:00.247Z"}
+[2026-10-12T17:42:00.249Z] [FAIL] [API_CORE] Agendamiento de Cita con Coordenadas GPS (POST /appointments) (1ms) - HTTP 400 | Error: {"type":"https://alrcompany.com/errors/http-400","title":"Bad Request","status":400,"detail":"The requested time slot is completely booked for this date.","instance":"/api/v1/appointments","timestamp":"2026-10-12T17:42:00.248Z"}
+[2026-10-12T17:42:00.250Z] [PASS] [API_CORE] Validación de Código de Referidos (/wallets/referrals/validate) (1ms) - Endpoint respondió con código esperado 400
+[2026-10-12T17:42:00.252Z] [PASS] [SECURITY] Protección OWASP: Inyección SQL en clientName (1ms) - Validación Zod rechazó la carga hostil con HTTP 400 BadRequest
+[2026-10-12T17:42:00.253Z] [PASS] [SECURITY] Protección OWASP: XSS en Dirección (1ms) - Validación Zod rechazó la carga hostil con HTTP 400 BadRequest
+[2026-10-12T17:42:00.255Z] [PASS] [SECURITY] Protección OWASP: Monto Negativo en Total (2ms) - Validación Zod rechazó la carga hostil con HTTP 400 BadRequest
+[2026-10-12T17:42:45.617Z] [PASS] [PWA_CLIENT] Ruta / (Landing Page) (314ms) - Renderizado 200 OK (162 KB transferidos)
+[2026-10-12T17:42:45.898Z] [PASS] [PWA_CLIENT] Ruta /cotizar (Cotizador Inteligente) (268ms) - Renderizado 200 OK (64 KB transferidos)
+[2026-10-12T17:42:46.255Z] [PASS] [PWA_CLIENT] Ruta /agenda (Agendador de Citas & Despacho) (342ms) - Renderizado 200 OK (95 KB transferidos)
+[2026-10-12T17:42:46.616Z] [PASS] [PWA_CLIENT] Ruta /mis-citas (Live Tracking & Telemetría) (348ms) - Renderizado 200 OK (57 KB transferidos)
+[2026-10-12T17:42:46.941Z] [PASS] [PWA_CLIENT] Ruta /wallet (Billetera Cashback) (260ms) - Renderizado 200 OK (57 KB transferidos)
+[2026-10-12T17:42:47.425Z] [PASS] [PWA_CLIENT] Ruta /login (Acceso de Clientes) (469ms) - Renderizado 200 OK (53 KB transferidos)
+[2026-10-12T17:42:47.676Z] [PASS] [PWA_CLIENT] Ruta /registro (Registro de Clientes) (238ms) - Renderizado 200 OK (55 KB transferidos)
+[2026-10-12T17:42:47.959Z] [PASS] [ADMIN_PORTAL] Ruta / (Tablero Kanban de Despacho) (258ms) - Renderizado 200 OK (115 KB)
+[2026-10-12T17:42:48.320Z] [PASS] [ADMIN_PORTAL] Ruta /pagos (Revisión y Conciliación de Pagos) (353ms) - Renderizado 200 OK (52 KB)
+[2026-10-12T17:42:48.541Z] [PASS] [ADMIN_PORTAL] Ruta /clientes (Directorio de Clientes) (214ms) - Renderizado 200 OK (32 KB)
+[2026-10-12T17:42:48.743Z] [FAIL] [ADMIN_PORTAL] Ruta /catalogo (Catálogo de Muebles y Servicios) (194ms) - Código HTTP 404 | Error: Respuesta inesperada
+[2026-10-12T17:42:48.987Z] [FAIL] [ADMIN_PORTAL] Ruta /rutas (Mapa de Rutas Técnicas) (179ms) - Código HTTP 404 | Error: Respuesta inesperada
+[2026-10-12T17:42:48.995Z] [PASS] [API_CORE] Health Check (/health) (8ms) - Core API saludable
+[2026-10-12T17:42:49.029Z] [PASS] [API_CORE] Catálogo de Servicios (GET /catalog) (33ms) - Catálogo cargó 14 ítems de tapicería
+[2026-10-12T17:42:49.033Z] [PASS] [API_CORE] Políticas de Descuento (GET /config/discounts) (3ms) - Políticas activas para 4 zonas y 3 bloques
+[2026-10-12T17:42:49.093Z] [PASS] [API_CORE] Matriz de Bloques y Rutas Dinámicas (16 combinaciones) (0ms) - 16/16 consultas evaluadas correctamente en tiempo real
+[2026-10-12T17:42:49.096Z] [FAIL] [API_CORE] Creación de Cotización Inteligente (POST /quotations) (3ms) - HTTP 400 | Error: {"type":"https://alrcompany.com/errors/http-400","title":"Validation Error","status":400,"detail":"The submitted request payload failed schema validation.","instance":"/api/v1/quotations","errors":{"clientId":["Required"],"items.0.furnitureType":["Required"],"items.0.basePriceAmount":["Required"]},"timestamp":"2026-10-12T17:42:49.094Z"}
+[2026-10-12T17:42:49.101Z] [FAIL] [API_CORE] Agendamiento de Cita con Coordenadas GPS (POST /appointments) (4ms) - HTTP 400 | Error: {"type":"https://alrcompany.com/errors/http-400","title":"Bad Request","status":400,"detail":"The requested time slot is completely booked for this date.","instance":"/api/v1/appointments","timestamp":"2026-10-12T17:42:49.098Z"}
+[2026-10-12T17:42:49.104Z] [PASS] [API_CORE] Validación de Código de Referidos (/wallets/referrals/validate) (3ms) - Endpoint respondió con código esperado 400
+[2026-10-12T17:42:49.106Z] [PASS] [SECURITY] Protección OWASP: Inyección SQL en clientName (1ms) - Validación Zod rechazó la carga hostil con HTTP 400 BadRequest
+[2026-10-12T17:42:49.110Z] [PASS] [SECURITY] Protección OWASP: XSS en Dirección (3ms) - Validación Zod rechazó la carga hostil con HTTP 400 BadRequest
+[2026-10-12T17:42:49.119Z] [PASS] [SECURITY] Protección OWASP: Monto Negativo en Total (8ms) - Validación Zod rechazó la carga hostil con HTTP 400 BadRequest

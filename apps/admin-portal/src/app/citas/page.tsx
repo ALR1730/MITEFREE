@@ -16,7 +16,10 @@ import {
   Zap,
   ChevronRight,
   UserCheck,
+  MessageCircle,
+  Share2,
 } from 'lucide-react';
+import { WhatsAppAdminAdapter } from '@/lib/whatsapp-adapter';
 
 interface KanbanAppointment {
   id: string;
@@ -157,6 +160,13 @@ export default function CitasPage() {
     'ALL',
   );
 
+  const CREW_UUID_MAP: Record<string, string> = {
+    'Ing. Kelvin Rosario (Cuadrilla #01 - San Pedro)': '11111111-1111-4111-8111-111111111111',
+    'Marcos Santana (Cuadrilla #02 - Santo Domingo Este)': '44444444-4444-4444-8444-444444444444',
+    'Darío Tavárez (Cuadrilla #03 - La Romana)': '33333333-3333-4333-8333-333333333333',
+    'Junior Polanco (Cuadrilla #04 - SPM / Consuelo)': '22222222-2222-4222-8222-222222222222',
+  };
+
   useEffect(() => {
     async function loadAppointments() {
       try {
@@ -178,8 +188,15 @@ export default function CitasPage() {
               zone: zoneNameMap[zCode] || 'San Pedro de Macorís',
               zoneCode: zCode,
               address: apt.address || `Servicio programado (${apt.scheduledDate})`,
-              timeSlot: apt.timeSlotLabel || (apt.timeSlotId.includes('MORNING') ? '08:30 – 11:30 AM' : '01:00 – 04:00 PM'),
-              service: apt.serviceDescription || `Cotización Ref #${apt.quotationId.substring(0, 6)}`,
+              timeSlot:
+                apt.timeSlotLabel ||
+                (apt.timeSlotId.includes('MORNING')
+                  ? '08:30 – 11:30 AM'
+                  : apt.timeSlotId.includes('EVENING')
+                    ? '04:30 – 07:30 PM'
+                    : '01:00 – 04:00 PM'),
+              service:
+                apt.serviceDescription || `Cotización Ref #${apt.quotationId.substring(0, 6)}`,
               total: apt.totalAmount ?? 3500.0,
               deposit: apt.depositAmount ?? 1050.0,
               status:
@@ -192,50 +209,59 @@ export default function CitasPage() {
                       : apt.status === 'Completed'
                         ? 'COMPLETED'
                         : 'PENDING_DEPOSIT',
-              technician: apt.technicianName || (apt.technicianId
-                ? `Cuadrilla #${apt.technicianId.substring(0, 6)}`
-                : undefined),
+              technician:
+                apt.technicianName ||
+                (apt.technicianId
+                  ? apt.technicianId.includes('1111')
+                    ? 'Ing. Kelvin Rosario (Cuadrilla #01 - San Pedro)'
+                    : apt.technicianId.includes('4444')
+                      ? 'Marcos Santana (Cuadrilla #02 - Santo Domingo Este)'
+                      : apt.technicianId.includes('3333')
+                        ? 'Darío Tavárez (Cuadrilla #03 - La Romana)'
+                        : 'Junior Polanco (Cuadrilla #04 - SPM / Consuelo)'
+                  : undefined),
             };
           });
 
-          setAppointments((prev) => {
-            const apiIds = new Set(apiCards.map((c) => c.id));
-            return [...apiCards, ...prev.filter((p) => !apiIds.has(p.id))];
-          });
+          setAppointments(apiCards);
         }
       } catch {
-        // Fallback a citas iniciales
+        // Fallback mantenido
       }
     }
+
     loadAppointments();
+    const interval = setInterval(loadAppointments, 5000);
+    return () => clearInterval(interval);
   }, []);
 
   const filteredAppointments =
     filterZone === 'ALL' ? appointments : appointments.filter((a) => a.zoneCode === filterZone);
 
   const moveStatus = async (id: string, nextStatus: KanbanAppointment['status']) => {
-    // Optimistic UI update
+    // Actualización optimista de UI
     setAppointments((prev) =>
       prev.map((apt) => (apt.id === id ? { ...apt, status: nextStatus } : apt)),
     );
 
-    // If UUID from database, update on API
-    if (id.includes('-') && id.length > 10) {
-      const apiStatusMap: Record<KanbanAppointment['status'], any> = {
-        PENDING_DEPOSIT: 'PendingPayment',
-        CONFIRMED: 'Confirmed',
-        IN_ROUTE: 'EnRoute',
-        IN_SERVICE: 'InProgress',
-        COMPLETED: 'Completed',
-      };
+    const apiStatusMap: Record<KanbanAppointment['status'], any> = {
+      PENDING_DEPOSIT: 'PendingPayment',
+      CONFIRMED: 'Confirmed',
+      IN_ROUTE: 'EnRoute',
+      IN_SERVICE: 'InProgress',
+      COMPLETED: 'Completed',
+    };
 
-      try {
-        await adminApiClient.appointments.transitionStatus(id, {
-          nextStatus: apiStatusMap[nextStatus],
-        });
-      } catch {
-        // Optimistic state preserved
+    try {
+      const res = await adminApiClient.appointments.transitionStatus(id, {
+        nextStatus: apiStatusMap[nextStatus],
+      });
+      if (res.success) {
+        setWhatsappToast(`Estado actualizado: ${nextStatus}`);
+        setTimeout(() => setWhatsappToast(null), 3000);
       }
+    } catch {
+      // Optimistic state preserved
     }
   };
 
@@ -244,15 +270,72 @@ export default function CitasPage() {
       prev.map((apt) => (apt.id === id ? { ...apt, technician: techName } : apt)),
     );
 
-    if (id.includes('-') && id.length > 10) {
-      try {
-        await adminApiClient.appointments.assignTechnician(id, {
-          technicianId: 'b0000000-0000-0000-0000-000000000001',
-        });
-      } catch {
-        // Optimistic state preserved
+    const targetTechId = CREW_UUID_MAP[techName] || '11111111-1111-4111-8111-111111111111';
+
+    try {
+      const res = await adminApiClient.appointments.assignTechnician(id, {
+        technicianId: targetTechId,
+      });
+      if (res.success) {
+        setWhatsappToast(`Cuadrilla asignada: ${techName.split('(')[0]?.trim()}`);
+        setTimeout(() => setWhatsappToast(null), 3000);
       }
+    } catch {
+      // Optimistic state preserved
     }
+  };
+
+  const [whatsappToast, setWhatsappToast] = useState<string | null>(null);
+
+  const handleWhatsAppClient = (apt: KanbanAppointment) => {
+    const deepLink = WhatsAppAdminAdapter.createBookingConfirmationLink(
+      {
+        appointmentCode: apt.id,
+        clientName: apt.client,
+        scheduledDate: 'Fecha Agendada',
+        timeSlotLabel: apt.timeSlot,
+        crewName: apt.technician || 'Por Asignar',
+        address: apt.address,
+        zoneName: apt.zone,
+        depositPaidDop: apt.deposit,
+        remainingBalanceDop: Math.max(0, apt.total - apt.deposit),
+      },
+      apt.phone,
+    );
+
+    const { opened } = WhatsAppAdminAdapter.openOrCopy(deepLink);
+    setWhatsappToast(
+      opened
+        ? `Abriendo WhatsApp para ${apt.client}...`
+        : `Mensaje de ${apt.client} copiado al portapapeles`,
+    );
+    setTimeout(() => setWhatsappToast(null), 3500);
+  };
+
+  const handleWhatsAppCrew = (apt: KanbanAppointment) => {
+    const crewLeaderPhone = '+18095134773';
+    const deepLink = WhatsAppAdminAdapter.createCrewDispatchLink(
+      {
+        appointmentCode: apt.id,
+        crewName: apt.technician || 'Cuadrilla MITEFREE',
+        clientName: apt.client,
+        clientPhone: apt.phone,
+        address: apt.address,
+        zoneName: apt.zone,
+        timeSlotLabel: apt.timeSlot,
+        taskSummary: apt.service,
+        mapsQuery: `${apt.address}, ${apt.zone}, Republica Dominicana`,
+      },
+      crewLeaderPhone,
+    );
+
+    const { opened } = WhatsAppAdminAdapter.openOrCopy(deepLink);
+    setWhatsappToast(
+      opened
+        ? `Despacho enviado a WhatsApp de ${apt.technician || 'la Cuadrilla'}!`
+        : `Ruta de despacho copiada al portapapeles`,
+    );
+    setTimeout(() => setWhatsappToast(null), 3500);
   };
 
   return (
@@ -402,6 +485,29 @@ export default function CitasPage() {
                       </select>
                     </div>
 
+                    {/* Quick WhatsApp Actions (Estrategia Sin API) */}
+                    <div className="flex items-center gap-1.5 pt-2 border-t border-admin-border/50">
+                      <button
+                        type="button"
+                        onClick={() => handleWhatsAppClient(apt)}
+                        title="Enviar confirmación oficial de cita al cliente"
+                        className="flex-1 flex items-center justify-center gap-1 py-1 px-1.5 rounded-lg bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 hover:bg-emerald-500/25 transition-colors text-[10px] font-semibold cursor-pointer active:scale-95"
+                      >
+                        <MessageCircle className="w-3 h-3 text-emerald-400" />
+                        <span>WA Cliente</span>
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() => handleWhatsAppCrew(apt)}
+                        title="Despachar hoja de ruta con Google Maps a la cuadrilla técnica"
+                        className="flex-1 flex items-center justify-center gap-1 py-1 px-1.5 rounded-lg bg-cyan-500/15 border border-cyan-500/30 text-cyan-300 hover:bg-cyan-500/25 transition-colors text-[10px] font-semibold cursor-pointer active:scale-95"
+                      >
+                        <Share2 className="w-3 h-3 text-cyan-400" />
+                        <span>Despacho WA</span>
+                      </button>
+                    </div>
+
                     {/* Status Advance Buttons */}
                     <div className="flex items-center justify-between pt-2 border-t border-admin-border/40 text-[10px]">
                       <span className="font-mono font-bold text-white">
@@ -440,6 +546,17 @@ export default function CitasPage() {
                           Finalizar ✓
                         </button>
                       )}
+                      {col.id === 'COMPLETED' && (
+                        <a
+                          href={adminApiClient.appointments.getFinalInvoicePdfUrl(apt.id)}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="px-2 py-1 rounded bg-teal-500/20 text-teal-300 hover:bg-teal-500/30 font-semibold flex items-center gap-1 text-[11px]"
+                          title="Descargar o Imprimir Factura Final Térmica 80mm"
+                        >
+                          Factura Final 🧾
+                        </a>
+                      )}
                     </div>
                   </div>
                 ))}
@@ -454,6 +571,14 @@ export default function CitasPage() {
           );
         })}
       </div>
+
+      {/* Floating Feedback Toast */}
+      {whatsappToast && (
+        <div className="fixed bottom-6 right-6 z-50 px-4 py-2.5 rounded-2xl bg-emerald-500/20 border border-emerald-500/40 text-emerald-200 text-xs font-semibold backdrop-blur-md shadow-xl flex items-center gap-2 animate-bounce">
+          <CheckCircle className="w-4 h-4 text-emerald-400" />
+          <span>{whatsappToast}</span>
+        </div>
+      )}
     </div>
   );
 }

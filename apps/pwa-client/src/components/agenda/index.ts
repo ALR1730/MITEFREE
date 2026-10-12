@@ -5,5 +5,6 @@ export * from './DateSelectorSection';
 export * from './ZoneSelectorSection';
 export * from './TimeSlotSection';
 export * from './ContactDetailsSection';
+export * from './LocationMapPicker';
 export * from './BookingConfirmSection';
 export * from './BookingSuccessView';

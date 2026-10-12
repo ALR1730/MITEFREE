@@ -12,6 +12,7 @@
     "lint": "prettier --check \"src/**/*.{ts,tsx}\""
   },
   "dependencies": {
+    "@mitefree/domain-core": "workspace:*",
     "@mitefree/shared-types": "workspace:*",
     "clsx": "^2.1.1",
     "lucide-react": "^1.49.0",

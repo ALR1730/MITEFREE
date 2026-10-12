@@ -22,6 +22,13 @@ export class DrizzleAppointmentRepository implements IAppointmentRepository {
             id: apt.id,
             quotationId: apt.quotationId,
             clientId: apt.clientId,
+            clientName: (apt as any).clientName ?? undefined,
+            clientPhone: (apt as any).clientPhone ?? undefined,
+            address: (apt as any).address ?? undefined,
+            zoneCode: (apt as any).zoneCode ?? undefined,
+            serviceDescription: (apt as any).serviceDescription ?? undefined,
+            totalAmount: (apt as any).totalAmount ? Number((apt as any).totalAmount) : undefined,
+            depositAmount: (apt as any).depositAmount ? Number((apt as any).depositAmount) : undefined,
             technicianId: apt.technicianId ?? undefined,
             timeSlotId: apt.timeSlotId,
             scheduledDate: apt.scheduledDate,
@@ -31,6 +38,30 @@ export class DrizzleAppointmentRepository implements IAppointmentRepository {
           }),
         );
       }
+
+      // Cita canónica para el Founder Angel Luis Rosario
+      const angelAptId = 'a8715231-5c84-4376-81c5-807a5a4583ef';
+      this.memoryStore.set(
+        angelAptId,
+        new Appointment({
+          id: angelAptId,
+          quotationId: 'f67f3eac-4ef8-4745-824e-2660c039720f',
+          clientId: SEED_IDS.CLIENT_LAURA,
+          clientName: 'Angel Luis Rosario',
+          clientPhone: '+1 829-207-4079',
+          address: 'Calle Duarte, Villa Municipal, San Pedro de Macorís (velmar) [GPS: 18.45272, -69.30809]',
+          zoneCode: 'ZONE-SPM',
+          serviceDescription: 'Desinfección de 1x Colchón Matrimonial (Full) + Protocolo UV-C',
+          totalAmount: 3000.0,
+          depositAmount: 900.0,
+          technicianId: SEED_IDS.TECH_KELVIN,
+          timeSlotId: 'EVENING',
+          scheduledDate: new Date('2026-10-18T18:00:00Z'),
+          status: AppointmentStatus.Confirmed,
+          createdAt: now,
+          updatedAt: now,
+        }),
+      );
     }
   }
 

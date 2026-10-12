@@ -14,6 +14,7 @@ import {
 import type { CreateQuotationRequestDto, QuotationResponseDto } from '@mitefree/shared-types';
 import { IUseCase } from '../common/use-case.interface.js';
 import { QUOTATION_REPOSITORY } from '../../infrastructure/database/database.tokens.js';
+import { SEED_IDS } from '@mitefree/database';
 
 @Injectable()
 export class CreateQuotationUseCase implements IUseCase<
@@ -48,9 +49,16 @@ export class CreateQuotationUseCase implements IUseCase<
     const discountAmount =
       dto.discountCode === 'ALRPROMO' ? Money.create(15).unwrap() : Money.zero();
 
+    const resolvedClientId =
+      dto.clientId &&
+      dto.clientId.length === 36 &&
+      dto.clientId !== '00000000-0000-0000-0000-000000000000'
+        ? dto.clientId
+        : SEED_IDS.CLIENT_LAURA;
+
     const quoteResult = Quotation.create({
       id: randomUUID(),
-      clientId: dto.clientId,
+      clientId: resolvedClientId,
       items,
       discountAmount,
     });
@@ -62,9 +70,21 @@ export class CreateQuotationUseCase implements IUseCase<
     const quotation = quoteResult.value;
     await this.quotationRepo.save(quotation);
 
+    const quotationItemsDto = quotation.items.map((item) => ({
+      id: item.id,
+      furnitureType: item.furnitureType,
+      fabricType: item.fabricType,
+      stainSeverity: item.stainSeverity,
+      basePrice: item.basePrice.amount,
+      fabricMultiplier: item.fabricMultiplier,
+      stainSurcharge: item.stainSurcharge.amount,
+      subtotal: item.subtotal.amount,
+    }));
+
     return ok({
       id: quotation.id,
       clientId: quotation.clientId,
+      items: quotationItemsDto,
       subtotal: quotation.subtotal.amount,
       discountAmount: quotation.discountAmount.amount,
       total: quotation.total.amount,

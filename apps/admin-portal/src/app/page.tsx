@@ -22,6 +22,7 @@ export default function DashboardPage() {
       icon: DollarSign,
       color: 'text-emerald-400',
       bg: 'bg-emerald-500/10 border-emerald-500/20',
+      href: '/pagos',
     },
     {
       title: 'Citas Hoy (SPM, LR, SDE)',
@@ -32,6 +33,7 @@ export default function DashboardPage() {
       icon: CalendarCheck,
       color: 'text-brand-400',
       bg: 'bg-brand-500/10 border-brand-500/20',
+      href: '/citas',
     },
     {
       title: 'Conversión de Cotizador',
@@ -42,6 +44,7 @@ export default function DashboardPage() {
       icon: TrendingUp,
       color: 'text-indigo-400',
       bg: 'bg-indigo-500/10 border-indigo-500/20',
+      href: '/citas',
     },
     {
       title: 'Cashback Acreditado',
@@ -52,6 +55,7 @@ export default function DashboardPage() {
       icon: Percent,
       color: 'text-amber-400',
       bg: 'bg-amber-500/10 border-amber-500/20',
+      href: '/clientes',
     },
   ];
 
@@ -126,12 +130,15 @@ export default function DashboardPage() {
         {kpis.map((kpi, i) => {
           const Icon = kpi.icon;
           return (
-            <div
+            <Link
               key={i}
-              className="admin-card rounded-2xl p-5 border border-admin-border admin-card-hover transition-all"
+              href={kpi.href}
+              className="admin-card rounded-2xl p-5 border border-admin-border admin-card-hover transition-all block group hover:border-brand-500/50"
             >
               <div className="flex justify-between items-start mb-3">
-                <span className="text-xs font-semibold text-gray-400">{kpi.title}</span>
+                <span className="text-xs font-semibold text-gray-400 group-hover:text-gray-200 transition-colors">
+                  {kpi.title}
+                </span>
                 <div className={`p-2 rounded-xl border ${kpi.bg} ${kpi.color}`}>
                   <Icon className="w-4 h-4" />
                 </div>
@@ -141,7 +148,7 @@ export default function DashboardPage() {
                 <span className="text-emerald-400 font-bold">{kpi.change}</span>
                 <span className="text-gray-500">{kpi.sub}</span>
               </div>
-            </div>
+            </Link>
           );
         })}
       </div>
@@ -150,9 +157,18 @@ export default function DashboardPage() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Territory dispatch */}
         <div className="admin-card rounded-2xl p-6 border border-admin-border space-y-4">
-          <h3 className="text-sm font-bold uppercase tracking-wider text-gray-300">
-            Despacho por Zonas Exclusivas
-          </h3>
+          <div className="flex justify-between items-center">
+            <h3 className="text-sm font-bold uppercase tracking-wider text-gray-300">
+              Despacho por Zonas Exclusivas
+            </h3>
+            <Link
+              href="/tecnicos"
+              className="text-[11px] font-bold text-cyan-400 hover:text-cyan-300 flex items-center gap-1 transition-colors"
+            >
+              <span>Cuadrillas</span>
+              <ArrowUpRight className="w-3 h-3" />
+            </Link>
+          </div>
           <div className="space-y-3">
             {[
               {
@@ -260,10 +276,19 @@ export default function DashboardPage() {
       {/* Recent Orders Table */}
       <div className="admin-card rounded-2xl p-6 border border-admin-border space-y-4">
         <div className="flex justify-between items-center">
-          <h3 className="text-sm font-bold uppercase tracking-wider text-gray-300">
-            Últimas Órdenes y Servicios Generados
-          </h3>
-          <span className="text-xs text-gray-500 font-mono">Actualizado en vivo</span>
+          <div>
+            <h3 className="text-sm font-bold uppercase tracking-wider text-gray-300">
+              Últimas Órdenes y Servicios Generados
+            </h3>
+            <span className="text-xs text-gray-500 font-mono">Actualizado en vivo</span>
+          </div>
+          <Link
+            href="/citas"
+            className="text-xs font-bold text-indigo-400 hover:text-indigo-300 flex items-center gap-1 transition-colors"
+          >
+            <span>Ver Tablero Kanban</span>
+            <ArrowUpRight className="w-3.5 h-3.5" />
+          </Link>
         </div>
 
         {/* Mobile Cards View */}

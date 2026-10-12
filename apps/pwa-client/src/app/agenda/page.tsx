@@ -131,7 +131,23 @@ function AgendaContent() {
     scrollToSection('agenda-slot-section', 80);
   };
 
+  // Siguiente día disponible para saltos rápidos cuando un día está lleno
+  const nextDateIndex = availableDates.findIndex((d) => d.offset === selectedDayOffset);
+  const nextDateObj =
+    nextDateIndex >= 0 && nextDateIndex < availableDates.length - 1
+      ? availableDates[nextDateIndex + 1]
+      : null;
+
+  const handleSelectNextDay = () => {
+    if (nextDateObj) {
+      handleSelectDate(nextDateObj.offset);
+      scrollToSection('agenda-slot-section', 80);
+    }
+  };
+
   const handleSelectSlot = (slotId: string) => {
+    const target = dynamicSlots.find((s) => s.id === slotId);
+    if (!target || !target.available) return;
     setSelectedSlot(slotId);
     setActiveStep((prev) => Math.max(prev, 4));
     scrollToSection('agenda-address-section', 80);
@@ -150,14 +166,23 @@ function AgendaContent() {
       try {
         const res = await apiClient.appointments.getSlots(selectedZone, selectedDateObj.dateStr);
         if (res.success && res.data.length > 0 && !isCancelled) {
-          setDynamicSlots(
-            res.data.map((slot) => ({
-              id: slot.timeSlotCode,
-              label: slot.label,
-              time: `${slot.startTime} – ${slot.endTime}`,
-              available: slot.isAvailable,
-            })),
-          );
+          const mappedSlots = res.data.map((slot) => ({
+            id: slot.timeSlotCode,
+            label: slot.label,
+            time: `${slot.startTime} – ${slot.endTime}`,
+            available: slot.isAvailable,
+          }));
+          setDynamicSlots(mappedSlots);
+
+          // Auto-conmutar si el turno seleccionado actualmente no tiene disponibilidad
+          setSelectedSlot((currentSlotId) => {
+            const currentSlot = mappedSlots.find((s) => s.id === currentSlotId);
+            if (currentSlot && currentSlot.available) {
+              return currentSlotId;
+            }
+            const firstAvailable = mappedSlots.find((s) => s.available);
+            return firstAvailable ? firstAvailable.id : currentSlotId;
+          });
         }
       } catch {
         // Fallback a slots predefinidos
@@ -192,6 +217,16 @@ function AgendaContent() {
   const handleConfirm = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMessage(null);
+
+    // Validación defensiva de disponibilidad de cuadrilla
+    if (!currentSlotObj.available) {
+      const errorMsg =
+        'El turno seleccionado no tiene cuadrillas disponibles. Por favor selecciona otro turno o fecha.';
+      setErrorMessage(errorMsg);
+      alert(errorMsg);
+      scrollToSection('agenda-slot-section', 80);
+      return;
+    }
 
     if (!fullName.trim() || !phone.trim() || !address.trim()) {
       alert('Por favor completa tu nombre, teléfono y dirección.');
@@ -299,12 +334,15 @@ function AgendaContent() {
               discountPolicy={discountPolicy}
               onSelectSlot={handleSelectSlot}
               onScrollToSection={scrollToSection}
+              onSelectNextDay={nextDateObj ? handleSelectNextDay : undefined}
+              nextDayLabel={nextDateObj ? `${nextDateObj.dayName} ${nextDateObj.dayNum}` : undefined}
             />
 
             <ContactDetailsSection
               fullName={fullName}
               phone={phone}
               address={address}
+              selectedZoneCode={selectedZone}
               onChangeFullName={setFullName}
               onChangePhone={setPhone}
               onChangeAddress={setAddress}
@@ -321,6 +359,7 @@ function AgendaContent() {
               phone={phone}
               isSubmitting={isSubmitting}
               errorMessage={errorMessage}
+              isSlotAvailable={currentSlotObj.available}
             />
           </form>
         </>

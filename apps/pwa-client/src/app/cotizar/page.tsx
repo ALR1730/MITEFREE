@@ -141,6 +141,8 @@ function CotizadorContent() {
           onGoToStep={state.goToStep}
           onProceedToSchedule={state.handleProceedToSchedule}
           whatsappMessage={state.generateWhatsAppMessage()}
+          persistedQuotationId={state.persistedQuotationId}
+          pdfDownloadUrl={state.pdfDownloadUrl}
         />
       )}
 

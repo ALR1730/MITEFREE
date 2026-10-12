@@ -42,10 +42,23 @@ export type ApiResult<T> =
       };
     };
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000/api/v1';
+function getApiBaseUrl(): string {
+  if (process.env.NEXT_PUBLIC_API_URL) {
+    return process.env.NEXT_PUBLIC_API_URL;
+  }
+  if (typeof window !== 'undefined') {
+    // Si el usuario navega desde su celular o IP de red (ej: 10.0.0.176),
+    // la API debe apuntar a la misma IP del host en el puerto 4000.
+    const hostname = window.location.hostname;
+    const protocol = window.location.protocol;
+    return `${protocol}//${hostname}:4000/api/v1`;
+  }
+  return 'http://localhost:4000/api/v1';
+}
 
 async function request<T>(path: string, options: RequestInit = {}): Promise<ApiResult<T>> {
-  const url = `${API_BASE_URL}${path.startsWith('/') ? path : `/${path}`}`;
+  const baseUrl = getApiBaseUrl();
+  const url = `${baseUrl}${path.startsWith('/') ? path : `/${path}`}`;
 
   const headers: Record<string, string> = {
     'Content-Type': 'application/json',
@@ -122,7 +135,7 @@ export const apiClient = {
 
     getById: (id: string) => request<QuotationResponseDto>(`/quotations/${id}`),
 
-    getPdfUrl: (id: string) => `${API_BASE_URL}/quotations/${id}/pdf`,
+    getPdfUrl: (id: string) => `${getApiBaseUrl()}/quotations/${id}/pdf`,
 
     requestPhotoUpload: (body: PhotoUploadIntentDto) =>
       request<PhotoUploadIntentResponseDto>('/quotations/photos/upload-intent', {
@@ -150,6 +163,15 @@ export const apiClient = {
       }),
 
     getById: (id: string) => request<AppointmentResponseDto>(`/appointments/${id}`),
+
+    getFinalInvoicePdfUrl: (id: string) => `${getApiBaseUrl()}/appointments/${id}/invoice/pdf`,
+
+    lookup: (params: { phone?: string; code?: string }) => {
+      const q = new URLSearchParams();
+      if (params.phone) q.set('phone', params.phone);
+      if (params.code) q.set('code', params.code);
+      return request<AppointmentResponseDto[]>(`/appointments/lookup?${q.toString()}`);
+    },
   },
 
   wallets: {

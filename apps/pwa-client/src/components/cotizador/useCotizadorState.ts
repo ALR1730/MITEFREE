@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
 import { apiClient } from '@/lib/api-client';
+import { WhatsAppClientAdapter } from '@/lib/whatsapp-adapter';
 import {
   type CatalogItem,
   type FabricType,
@@ -443,12 +444,10 @@ export function useCotizadorState() {
     Math.round((activeSubtotal / MIN_DOMICILE_ORDER_RD) * 100),
   );
 
-  const fabricMultiplier = selectedFabric.multiplier;
-  const stainSurcharge = selectedStain.surcharge;
+  const fabricMultiplier = 1.0;
+  const stainSurcharge = 0;
 
-  const subtotalWithFabric = Math.round(
-    activeSubtotal * fabricMultiplier + (activeSubtotal > 0 ? stainSurcharge : 0),
-  );
+  const subtotalWithFabric = Math.round(activeSubtotal);
 
   const discountApplied = couponDiscount;
   const subtotalAfterDiscount = Math.max(0, subtotalWithFabric - discountApplied);
@@ -504,80 +503,148 @@ export function useCotizadorState() {
     setUploadedPhotos((prev) => prev.filter((p) => p.id !== id));
   };
 
-  const generateWhatsAppMessage = () => {
-    const itemsList = selectedItems
-      .map(
-        (it) =>
-          `• ${it.quantity}x ${it.name}${it.bothSides ? ' (Ambos Lados)' : ''}${it.extraSeats > 0 ? ` (+${it.extraSeats} plazas)` : ''}${it.rugDimensions ? ` [${it.rugDimensions}]` : ''} -> RD$ ${Math.round(it.itemTotal).toLocaleString('es-DO')}`,
-      )
-      .join('\n');
+  const getWhatsAppDeepLink = () => {
+    const quoteItems =
+      selectedItems.length > 0
+        ? selectedItems.map((it) => ({
+            name: `${it.name}${it.bothSides ? ' (Ambos Lados)' : ''}${it.extraSeats > 0 ? ` (+${it.extraSeats} plazas)` : ''}`,
+            quantity: it.quantity,
+            totalAmountDop: it.itemTotal,
+          }))
+        : [
+            {
+              name: currentCatalogItem.name,
+              quantity: currentQty,
+              totalAmountDop: currentItemTotal,
+            },
+          ];
 
-    const msg = `¡Hola Mite Free Clean! 👋 Deseo solicitar el servicio de limpieza y desinfección a domicilio para las siguientes piezas:
-
-${itemsList || `• ${currentCatalogItem.name} -> RD$ ${Math.round(currentItemTotal).toLocaleString('es-DO')}`}
-
-📌 Tipo de Tela: ${selectedFabric.name}
-💧 Nivel de Manchas: ${selectedStain.name}
-💰 Inversión Total Estimada: RD$ ${Math.round(total).toLocaleString('es-DO')} (0% de anticipo)
-
-¿Podrían confirmarme la disponibilidad de cuadrilla técnica? ¡Gracias!`;
-
-    return encodeURIComponent(msg);
+    return WhatsAppClientAdapter.createQuotationLink({
+      quotationCode: persistedQuotationId
+        ? persistedQuotationId.substring(0, 8).toUpperCase()
+        : `MITE-${Date.now().toString().slice(-4)}`,
+      clientName: user?.fullName || undefined,
+      items: quoteItems,
+      fabricName: selectedFabric.name,
+      stainSeverityName: selectedStain.name,
+      totalDop: total,
+      deposit30PercentDop: Math.round(total * 0.3),
+      quotationUrl: typeof window !== 'undefined' ? window.location.href : undefined,
+    });
   };
+
+  const generateWhatsAppMessage = () => {
+    return getWhatsAppDeepLink().url;
+  };
+
+  const buildQuotationPayload = (): CreateQuotationRequestDto => {
+    const quoteItems =
+      selectedItems.length > 0
+        ? selectedItems
+        : [
+            {
+              cartId: `${currentCatalogItem.id}-default`,
+              catalogId: currentCatalogItem.id,
+              name: currentCatalogItem.name,
+              category: currentCatalogItem.category,
+              iconText: currentCatalogItem.iconText,
+              bothSides: currentBothSides,
+              extraSeats: currentExtraSeats,
+              quantity: currentQty,
+              unitPrice: currentUnitPrice,
+              itemTotal: currentItemTotal,
+            },
+          ];
+
+    return {
+      clientId: user?.id && user.id.length === 36 ? user.id : undefined,
+      items: quoteItems.flatMap((item) =>
+        Array.from({ length: item.quantity }).map(() => ({
+          furnitureType: item.name,
+          fabricType: selectedFabric.id as FabricType,
+          stainSeverity: selectedStain.id as StainSeverity,
+          basePriceAmount: item.unitPrice,
+          photoUrls: [],
+        })),
+      ),
+      discountCode: couponApplied ? promoCode : undefined,
+    };
+  };
+
+  // Auto-persistencia de la cotización formal al ingresar al Resumen (Paso 3)
+  useEffect(() => {
+    if (currentStep === 3) {
+      let isCancelled = false;
+      async function autoPersist() {
+        try {
+          const payload = buildQuotationPayload();
+          const res = await apiClient.quotations.create(payload);
+          if (res.success && res.data && !isCancelled) {
+            setPersistedQuotationId(res.data.id);
+            if (typeof window !== 'undefined') {
+              localStorage.setItem('mitefree_last_quotation_id', res.data.id);
+              localStorage.setItem(
+                'mitefree_quote_summary',
+                JSON.stringify({
+                  quotationId: res.data.id,
+                  items: selectedItems,
+                  total: res.data.total,
+                  deposit: res.data.depositRequired,
+                  fabric: selectedFabric.name,
+                  stain: selectedStain.name,
+                }),
+              );
+            }
+          }
+        } catch {
+          // Fallback silencioso
+        }
+      }
+      autoPersist();
+      return () => {
+        isCancelled = true;
+      };
+    }
+  }, [currentStep, total, selectedItems, selectedFabric.id, selectedStain.id, couponApplied]);
 
   const handleProceedToSchedule = async () => {
     setIsSubmittingQuotation(true);
     try {
-      const quotationPayload: CreateQuotationRequestDto = {
-        clientId:
-          user?.id && user.id.length === 36
-            ? user.id
-            : '00000000-0000-0000-0000-000000000000',
-        items: (selectedItems.length > 0
-          ? selectedItems
-          : [
-              {
-                cartId: `${currentCatalogItem.id}-default`,
-                catalogId: currentCatalogItem.id,
-                name: currentCatalogItem.name,
-                category: currentCatalogItem.category,
-                iconText: currentCatalogItem.iconText,
-                bothSides: currentBothSides,
-                extraSeats: currentExtraSeats,
-                quantity: currentQty,
-                unitPrice: currentUnitPrice,
-                itemTotal: currentItemTotal,
-              },
-            ]
-        ).flatMap((item) =>
-          Array.from({ length: item.quantity }).map(() => ({
-            furnitureType: item.name,
-            fabricType: selectedFabric.id as FabricType,
-            stainSeverity: selectedStain.id as StainSeverity,
-            basePriceAmount: item.unitPrice,
-            photoUrls: [],
-          })),
-        ),
-        discountCode: couponApplied ? promoCode : undefined,
-      };
+      let quoteId = persistedQuotationId;
+      let quoteTotal = total;
+      let quoteDeposit = Math.round(total * 0.3);
 
-      const res = await apiClient.quotations.create(quotationPayload);
+      if (!quoteId) {
+        const payload = buildQuotationPayload();
+        const res = await apiClient.quotations.create(payload);
+        if (res.success && res.data) {
+          quoteId = res.data.id;
+          quoteTotal = res.data.total;
+          quoteDeposit = res.data.depositRequired;
+          setPersistedQuotationId(res.data.id);
+        }
+      }
+
       if (typeof window !== 'undefined') {
         localStorage.setItem(
           'mitefree_quote_summary',
           JSON.stringify({
+            quotationId: quoteId,
             items: selectedItems,
-            total,
-            deposit: Math.round(total * 0.3),
+            total: quoteTotal,
+            deposit: quoteDeposit,
             fabric: selectedFabric.name,
             stain: selectedStain.name,
           }),
         );
+        if (quoteId) {
+          localStorage.setItem('mitefree_last_quotation_id', quoteId);
+        }
       }
-      if (res.success) {
-        setPersistedQuotationId(res.data.id);
+
+      if (quoteId) {
         router.push(
-          `/agenda?quotationId=${res.data.id}&total=${res.data.total}&deposit=${res.data.depositRequired}`,
+          `/agenda?quotationId=${quoteId}&total=${quoteTotal}&deposit=${quoteDeposit}`,
         );
         return;
       }
@@ -601,6 +668,10 @@ ${itemsList || `• ${currentCatalogItem.name} -> RD$ ${Math.round(currentItemTo
     }
     router.push(`/agenda?total=${total}&deposit=${Math.round(total * 0.3)}`);
   };
+
+  const pdfDownloadUrl = persistedQuotationId
+    ? apiClient.quotations.getPdfUrl(persistedQuotationId)
+    : null;
 
   const filteredCatalog = catalogItems.filter((item) => {
     return item.category === selectedMainCategory;
@@ -671,7 +742,10 @@ ${itemsList || `• ${currentCatalogItem.name} -> RD$ ${Math.round(currentItemTo
     walletCreditApplied,
     total,
     isSubmittingQuotation,
+    persistedQuotationId,
+    pdfDownloadUrl,
     handleProceedToSchedule,
     generateWhatsAppMessage,
+    getWhatsAppDeepLink,
   };
 }

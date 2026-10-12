@@ -1,0 +1,1 @@
+{"type":"https://alrcompany.com/errors/http-404","title":"Not Found","status":404,"detail":"Quotation with id '98210000-0000-0000-0000-000000000000' was not found.","instance":"/api/v1/quotations/98210000-0000-0000-0000-000000000000/pdf","timestamp":"2026-10-12T21:10:02.266Z"}

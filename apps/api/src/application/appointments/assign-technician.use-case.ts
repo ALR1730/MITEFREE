@@ -11,6 +11,7 @@ import {
 import type { AppointmentResponseDto } from '@mitefree/shared-types';
 import { IUseCase } from '../common/use-case.interface.js';
 import { APPOINTMENT_REPOSITORY } from '../../infrastructure/database/database.tokens.js';
+import { resolveTechnicianName } from './technician-name.helper.js';
 
 export interface AssignTechnicianInput {
   appointmentId: string;
@@ -80,6 +81,7 @@ export class AssignTechnicianUseCase implements IUseCase<
       totalAmount: updated.totalAmount,
       depositAmount: updated.depositAmount,
       technicianId: updated.technicianId,
+      technicianName: resolveTechnicianName(updated.technicianId),
       timeSlotId: updated.timeSlotId,
       scheduledDate: updated.scheduledDate.toISOString(),
       status: updated.status,

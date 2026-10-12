@@ -23,13 +23,33 @@ async function bootstrap() {
         'http://127.0.0.1:3001',
       ];
 
+  // Función de validación de orígenes locales de desarrollo y red
+  const isLocalDevOrigin = (urlStr: string): boolean => {
+    try {
+      const url = new URL(urlStr);
+      const host = url.hostname;
+      return (
+        host === 'localhost' ||
+        host === '127.0.0.1' ||
+        host.startsWith('192.168.') ||
+        host.startsWith('10.') ||
+        host.startsWith('172.') ||
+        host.endsWith('.loca.lt') ||
+        host.endsWith('.trycloudflare.com') ||
+        host.endsWith('.ngrok-free.app')
+      );
+    } catch {
+      return false;
+    }
+  };
+
   app.enableCors({
     origin: (
       origin: string | undefined,
       callback: (err: Error | null, allow?: boolean) => void,
     ) => {
-      // Permitir peticiones server-to-server o desde orígenes explícitos
-      if (!origin || allowedOrigins.includes(origin) || origin.startsWith('http://localhost:')) {
+      // Permitir peticiones server-to-server, orígenes explícitos o redes locales de desarrollo
+      if (!origin || allowedOrigins.includes(origin) || isLocalDevOrigin(origin)) {
         callback(null, true);
       } else {
         callback(new Error(`Origen ${origin} no permitido por política CORS de ALR COMPANY.`));

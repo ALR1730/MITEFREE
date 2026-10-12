@@ -2,7 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { CheckCircle, ArrowRight } from 'lucide-react';
+import { CheckCircle, ArrowRight, MessageCircle } from 'lucide-react';
 
 interface BookingSuccessViewProps {
   bookedAppointmentId: string | null;
@@ -81,8 +81,20 @@ export function BookingSuccessView({
       </div>
 
       <div className="flex flex-col sm:flex-row justify-center gap-3 pt-4">
+        <a
+          href={`https://wa.me/18095134773?text=${encodeURIComponent(
+            `¡Hola MITEFREE! 👋 Acabo de agendar mi cita en la web:\n\n📋 *Cita:* #${(bookedAppointmentId || 'PENDIENTE').substring(0, 8).toUpperCase()}\n👤 *Cliente:* ${fullName}\n📅 *Fecha:* ${selectedDateObj.dayNum} de ${selectedDateObj.month} (${displaySlotLabel})\n📍 *Sector:* ${currentZoneObj.name}\n🏠 *Dirección:* ${address}\n💰 *Total:* RD$ ${effectiveTotal.toLocaleString('es-DO')}\n\n🔗 *Rastrear Cuadrilla en Vivo:* https://mitefree.com/mis-citas?id=${bookedAppointmentId || ''}\n\n¿Me confirman la asignación de la cuadrilla técnica? ¡Gracias!`,
+          )}`}
+          target="_blank"
+          rel="noreferrer"
+          className="flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs transition-all shadow-md active:scale-95 cursor-pointer"
+        >
+          <MessageCircle className="w-4 h-4" />
+          <span>Confirmar por WhatsApp al Despacho</span>
+        </a>
+
         <Link
-          href="/mis-citas"
+          href={bookedAppointmentId ? `/mis-citas?id=${bookedAppointmentId}` : '/mis-citas'}
           className="flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-brand-500 to-cyan-500 text-dark-bg font-bold text-xs tech-glow"
         >
           <span>Ver en Mis Citas (Live Tracking)</span>

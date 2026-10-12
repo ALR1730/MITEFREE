@@ -147,10 +147,11 @@ export class QuotationsController {
     }
 
     const pdfBuffer = await this.pdfService.generateQuotationPdf(result.value);
+    const shortCode = id.substring(0, 8).toUpperCase();
     res.setHeader('Content-Type', 'application/pdf');
     res.setHeader(
       'Content-Disposition',
-      `attachment; filename="cotizacion-${id.substring(0, 8)}.pdf"`,
+      `attachment; filename="Factura-MITEFREE-COT-${shortCode}.pdf"`,
     );
     res.send(pdfBuffer);
   }

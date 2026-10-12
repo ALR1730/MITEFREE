@@ -34,7 +34,7 @@ export function CotizadorHeader({
       <div className="flex items-center justify-between mb-8 max-w-sm mx-auto px-2">
         {[
           { num: 1, label: '1. Piezas' },
-          { num: 2, label: '2. Tela & Manchas' },
+          { num: 2, label: '2. Fotos (Opcional)' },
           { num: 3, label: '3. Resumen' },
         ].map((s, idx) => (
           <div key={s.num} className="flex items-center flex-1 last:flex-initial">
